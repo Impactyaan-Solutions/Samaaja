@@ -9,7 +9,7 @@ const router = useRouter()
 const emit = defineEmits(['act'])
 
 const tabs = [
-  { name: 'Home', path: '/', icon: Home },
+  { name: 'Home', path: 'homepage', icon: Home },
   { name: 'Leaderboard', path: '/leaderboard', icon: BarChart2 },
   { name: 'Act', path: null, icon: Zap, isAction: true },
   { name: 'Alerts', path: '/announcements', icon: Bell },

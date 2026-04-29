@@ -21,10 +21,10 @@ const handleActClick = () => {
     </main>
 
     <!-- Global Bottom Navigation Bar (Hidden on specific views like Form) -->
-    <BottomTabBar 
-      v-if="route.name !== 'log-action'" 
-      @act="handleActClick" 
-    />
+  <BottomTabBar 
+    v-if="!route.meta.hideNavbar" 
+    @act="handleActClick" 
+  />
 
     <!-- Action Sheet Overlay -->
     <ActionBottomSheet 
