@@ -5,14 +5,34 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../views/HomeView.vue')
+      name: 'landingpage',
+      meta: { hideNavbar: true },
+      component: () => import('../views/landingpage.vue')
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      meta: { hideNavbar: true },
+      component: () => import('../views/SignupView.vue')
+    },
+
+    {
+      path: '/login',
+      name: 'login',
+      meta: { hideNavbar: true },
+      component: () => import('../views/loginview.vue')
     },
     {
       path: '/leaderboard',
       name: 'leaderboard',
       component: () => import('../views/LeaderboardView.vue')
     },
+    {
+      path: '/homepage',
+      name: 'home',
+      component: () => import('../views/HomeView.vue')
+    },
+
     {
       path: '/announcements',
       name: 'announcements',
