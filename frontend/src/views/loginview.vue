@@ -12,6 +12,40 @@ const goBack = () => {
   // Check if router exists, otherwise fallback to browser history
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
 };
+
+const loginWithGoogle = async () => {
+  try {
+
+    const response = await fetch('/api/method/samaaja.api.login.get_google_auth_url');
+    
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (result.message) {
+
+      window.location.href = result.message;
+    } else {
+      console.error("Backend did not return a URL:", result);
+      alert("Social login is currently unavailable. Please try again.");
+    }
+  } catch (error) {
+    console.error("Failed to fetch Google Auth URL:", error);
+    alert("Connection error. Could not reach the login server.");
+  }
+};
+
+const handleSendOTP = () => {
+  console.log("Sending OTP to:", mobileNumber.value);
+
+};
+
+const loginWithFacebook = () => {
+  console.log("Facebook login triggered");
+};
+
 </script>
 
 <template>
