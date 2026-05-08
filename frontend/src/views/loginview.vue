@@ -5,22 +5,59 @@ import {
   Facebook 
 } from 'lucide-vue-next';
 
-// 
+const mobileNumber = ref('');
 
 // Navigation Helper
 const goBack = () => {
-  // Check if router exists, otherwise fallback to browser history
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
 };
+
+const loginWithGoogle = async () => {
+  try {
+    // 1. Clean, relative path. Nginx handles the routing seamlessly.
+    const response = await fetch('/api/method/samaaja.api.login.get_google_auth_url', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    // 2. Catch actual server errors (like 500s or 404s)
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server Error Output:", errorText);
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    // 3. Parse the successful response
+    const result = await response.json();
+
+    // 4. Frappe wraps its return values inside a 'message' key
+    if (result.message) {
+      console.log("Redirecting to Google Auth...");
+      window.location.href = result.message;
+    } else {
+      console.error("Backend response missing 'message' key:", result);
+      alert("Login service is temporarily unavailable.");
+    }
+
+  } catch (error) {
+    // 5. Catch network failures or JSON parsing errors
+    console.error("Login Error:", error);
+    alert(`Connection failed: ${error.message}`);
+  }
+};
+
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-sans">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-sm p-8 flex flex-col">
+  <div class="min-h-screen bg-gray-100 flex justify-center font-sans">
+    
+    <div class="bg-white w-full max-w-md min-h-screen px-8 flex flex-col">
       
       <button 
         @click="goBack" 
-        class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors mb-6 -ml-2"
+        class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors mb-6 -ml-2 mt-6"
       >
         <ArrowLeft :size="20" />
       </button>
@@ -44,16 +81,13 @@ const goBack = () => {
             class="w-full px-4 py-3 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
           />
         </div>
-      <router-link to="/homepage">
+        
         <button
           @click="handleSendOTP"
           class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
         >
-      
           Send OTP
-    </button>
-
-    </router-link>
+        </button>
       </div>
 
       <div class="relative my-10 text-center">
@@ -65,7 +99,7 @@ const goBack = () => {
         </span>
       </div>
 
-      <div class="space-y-3">
+      <div class="space-y-4">
         <button 
           @click="loginWithGoogle"
           class="w-full flex items-center justify-center gap-3 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700"
@@ -79,16 +113,10 @@ const goBack = () => {
           Google
         </button>
 
-        <button 
-          @click="loginWithFacebook"
-          class="w-full flex items-center justify-center gap-3 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700"
-        >
-          <Facebook :size="18" fill="currentColor" class="text-gray-700" />
-          Facebook
-        </button>
+
       </div>
 
-      <p class="mt-auto pt-10 text-center text-[10px] text-gray-400 leading-relaxed px-4">
+      <p class="mt-auto mb-6 text-center text-[10px] text-gray-400 leading-relaxed px-4">
         By logging in, you agree to our 
         <a href="#" class="text-blue-600 font-semibold hover:underline">Terms of Service</a> and 
         <a href="#" class="text-blue-600 font-semibold hover:underline">Privacy Policy</a>.
@@ -99,14 +127,11 @@ const goBack = () => {
 </template>
 
 <style scoped>
-/* Chrome, Safari, Edge, Opera - Remove arrows from number input */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-/* Firefox - Remove arrows from number input */
 input[type=number] {
   -moz-appearance: textfield;
 }
