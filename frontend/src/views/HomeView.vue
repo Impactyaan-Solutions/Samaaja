@@ -2,37 +2,36 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Menu, Plus, Edit3, HelpCircle, Loader2 } from 'lucide-vue-next'
 import CommunityPost from '../components/common/CommunityPost.vue'
+import { getFeed } from '@/services/api'
 
 const posts = ref([
   {
     id: 1,
-    author: {
-      name: 'Rahul Verma',
-      role: 'Member @ Green City',
-      verified: true
+    user_profile: {
+      full_name: 'Rahul Verma',
+      user_category: 'Member @ Green City',
+      user_image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80',
     },
     timeAgo: '2h ago',
     description: 'Successfully planted 50 saplings today at the Central Park drive! Huge thanks to everyone who showed up early morning. Let\'s keep our city green! 🌳',
     media: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80',
     category: 'Environment',
-    visibility: 'Public',
-    reactionsCount: 42,
-    commentsCount: 12
+    like_count: 42,
+    comment_count: 12
   },
   {
     id: 2,
-    author: {
-      name: 'Anjali Sharma',
-      role: 'Volunteer @ EcoWarriors',
-      verified: false
+    user_profile: {
+      full_name: 'Anjali Sharma',
+      user_category: 'Volunteer @ EcoWarriors',
+      user_image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80',
     },
     timeAgo: '5h ago',
     description: 'We are organizing a river cleanup drive this weekend. Please join us and bring your friends. Gloves and bags will be provided! Click here https://google.com',
     media: null,
     category: 'Cleanliness',
-    visibility: 'Public',
-    reactionsCount: 89,
-    commentsCount: 34
+    like_count: 89,
+    comment_count: 34
   }
 ])
 
@@ -121,7 +120,13 @@ const loadMorePosts = () => {
   }, 1200);
 }
 
-onMounted(() => {
+onMounted(async() => {
+  console.log('onMounted')
+  const feed=await getFeed();
+  console.log(feed)
+  // if(feed){
+  //   posts.value=feed;
+  // }
   observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       loadMorePosts();
