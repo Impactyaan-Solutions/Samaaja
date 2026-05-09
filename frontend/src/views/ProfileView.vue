@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ChevronDown, Leaf, Droplets, BookOpen, Settings } from 'lucide-vue-next'
+// Import the helper we created
+import { getProfile } from '@/services/api'
 
-// 1. Initialize user as a reactive ref
 const user = ref({
-  name: 'Loading...',
-  role: 'Volunteer @ XYZ Organisation',
-  bio: '',
+  name: 'fallback_loading_name',
+  role: 'fallback_role',
+  bio: '', // Initialized empty so it doesn't flicker "fallback_bio" before API returns
   image: '',
   stats: {
     actions: 0,
@@ -17,38 +18,41 @@ const user = ref({
 
 const isLoading = ref(true)
 
-// 2. Fetch function
 const fetchUserData = async () => {
   try {
-    const response = await fetch('https://dev.samaaja.impactyaan.com/api/method/samaaja.api.leaderboard.user_leaderboard')
-    const result = await response.json()
-
-    if (result.status === 'success') {
-      const apiData = result.data
-      
-      // 3. Map API data to our state
+    // Using our clean API helper
+    const apiData = await getProfile('ankit@impactyaan.com')
+    console.log("API Data:", apiData)
+    
+    if (apiData) {
       user.value = {
-        name: apiData.full_name || apiData.name,
-        role: 'Volunteer @ XYZ Organisation', // Static as API doesn't provide this
-        // Use interest from API or a default bio
-        bio: apiData.interest || "Working on water conservation and community mobilization", 
-        // Use user_image from API or a fallback placeholder
+        name: apiData.full_name || apiData.name || 'fallback_name',
+        // Map user_category from API (e.g., "Volunteer")
+        role: `${apiData.user_category || 'fallback_volunteer'} @ Impactyaan`, 
+        
+        // --- Mapping Interest to Bio with Null Check ---
+        // If interest is null/undefined, bio is empty. If array, joined. If string, used.
+        bio: apiData.interest 
+          ? (Array.isArray(apiData.interest) ? apiData.interest.join(', ') : apiData.interest) 
+          : '', 
+        
         image: apiData.user_image || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&q=80",
         stats: {
-          actions: 24, // Placeholders as API doesn't provide stats yet
-          issuesResolved: 10,
-          posts: 8
+          // Map 'contributions' from API to 'actions'
+          actions: apiData.contributions || 0, 
+          issuesResolved: 0, // Showing 0 to indicate no API mapping yet
+          posts: 0 
         }
       }
     }
   } catch (error) {
     console.error("Error fetching profile:", error)
+    console.log("fallback_api_error_log") 
   } finally {
     isLoading.value = false
   }
 }
 
-// 4. Trigger fetch when component loads
 onMounted(() => {
   fetchUserData()
 })
@@ -68,14 +72,25 @@ onMounted(() => {
       <div class="flex flex-col items-center pt-8 px-6 text-center">
         <!-- Avatar -->
         <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4">
-          <img :src="user.image" class="w-full h-full object-cover" />
+          <img 
+            :src="user.image" 
+            class="w-full h-full object-cover" 
+            onerror="this.src='https://ui-avatars.com/api/?name=fallback_avatar'"
+          />
         </div>
         
         <h1 class="text-2xl font-bold text-gray-900">{{ user.name }}</h1>
-        <p class="text-primary-600 font-semibold text-sm mt-1">{{ user.role }}</p>
-        <p class="text-gray-500 italic text-sm mt-4 px-2 tracking-wide leading-relaxed">"{{ user.bio }}"</p>
+        <p class="text-blue-600 font-semibold text-sm mt-1">{{ user.role }}</p>
+        
+        <!-- Bio: Skips rendering entirely if interest/bio is null or empty -->
+        <p 
+          v-if="user.bio" 
+          class="text-gray-500 italic text-sm mt-4 px-2 tracking-wide leading-relaxed"
+        >
+          "{{ user.bio }}"
+        </p>
 
-        <!-- Tags -->
+        <!-- Tags (Kept static as per design) -->
         <div class="flex items-center space-x-3 mt-6">
           <div class="bg-blue-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-blue-100/50">
             <Droplets class="w-5 h-5 text-blue-500 mb-1" />
@@ -91,8 +106,8 @@ onMounted(() => {
           </div>
         </div>
 
-        <button class="mt-8 border border-gray-200 rounded-2xl px-6 py-3.5 flex items-center space-x-3 w-full justify-between hover:bg-gray-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-          <span class="font-bold text-gray-800 text-sm pl-2">Switch Layer (Volunteer)</span>
+        <button class="mt-8 border border-gray-200 rounded-2xl px-6 py-3.5 flex items-center space-x-3 w-full justify-between hover:bg-gray-50 transition-colors shadow-sm">
+          <span class="font-bold text-gray-800 text-sm pl-2">Switch Layer ({{ user.role.split(' @')[0] }})</span>
           <ChevronDown class="w-5 h-5 text-gray-400" />
         </button>
       </div>
@@ -107,34 +122,37 @@ onMounted(() => {
       
       <div class="grid grid-cols-3 gap-3">
         <div class="bg-white border border-gray-100 p-4 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <span class="text-3xl font-bold text-primary-600 mb-1">{{ user.stats.actions }}</span>
+          <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.actions }}</span>
           <span class="text-[11px] text-gray-500 font-medium leading-tight">Actions</span>
         </div>
         <div class="bg-white border border-gray-100 p-4 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <span class="text-3xl font-bold text-primary-600 mb-1">{{ user.stats.issuesResolved }}</span>
+          <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.issuesResolved }}</span>
           <span class="text-[11px] text-gray-500 font-medium leading-tight">Issues<br/>Resolved</span>
         </div>
         <div class="bg-white border border-gray-100 p-4 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <span class="text-3xl font-bold text-primary-600 mb-1">{{ user.stats.posts }}</span>
+          <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.posts }}</span>
           <span class="text-[11px] text-gray-500 font-medium leading-tight">Posts</span>
         </div>
       </div>
     </div>
 
-    <!-- Badges Earned -->
+    <!-- Badges -->
     <div class="px-5 mt-8 mb-20">
       <div class="flex items-center space-x-2 mb-4">
         <span class="text-xl">🥇</span>
         <h3 class="font-bold text-gray-900 text-lg">Badges Earned</h3>
       </div>
       <div class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm italic text-gray-400 text-sm text-center">
-        No badges earned yet. Keep contributing!
+        no badges earned
       </div>
     </div>
   </div>
 
   <!-- Loading State -->
-  <div v-else class="h-screen flex items-center justify-center">
-    <p class="text-gray-500 font-medium">Fetching profile...</p>
+  <div v-else class="h-screen flex items-center justify-center bg-white">
+    <div class="flex flex-col items-center space-y-4">
+       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+       <p class="text-gray-500 font-medium tracking-wide">fallback_syncing_status</p>
+    </div>
   </div>
 </template>
