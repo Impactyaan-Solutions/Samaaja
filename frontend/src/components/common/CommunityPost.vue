@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { MoreHorizontal, MessageSquare, Heart, Share2, Award } from 'lucide-vue-next'
-
+import { getTimeSinceCreation } from '@/utils/utils'
 defineProps({
   post: {
     type: Object,
@@ -44,27 +44,27 @@ onUnmounted(() => {
     class="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] mb-4 border border-gray-100"
     :style="{ minHeight: !isVisible && savedHeight ? `${savedHeight}px` : 'auto' }"
   >
-    <!-- Pruned DOM state: When off-screen, all internal HTML nodes are purged from memory -->
-    <template v-if="isVisible">
+    <!-- Hiding via CSS: When off-screen, it hides the DOM to reduce rendering load, but keeps nodes in memory to prevent image re-fetching -->
+    <div v-show="isVisible">
     <!-- Header -->
     <div class="p-4 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
-          <img v-if="post.user_profile.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover"/>
+          <img v-if="post.user_profile?.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover"/>
           <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-            {{ post.user_profile.full_name.charAt(0) }}
+            {{ post.user_profile?.full_name?.charAt(0) || '?' }}
           </div>
         </div>
         <div>
           <div class="flex items-center space-x-1">
-            <h4 class="font-semibold text-gray-900 text-sm">{{ post.user_profile.full_name }}</h4>
-            <Award v-if="post.user_profile.user_type" class="w-3.5 h-3.5 text-green-500" />
+            <h4 class="font-semibold text-gray-900 text-sm">{{ post.user_profile?.full_name || 'Unknown User' }}</h4>
+            <Award v-if="post.user_profile?.user_type" class="w-3.5 h-3.5 text-green-500" />
           </div>
-          <p class="text-xs text-gray-500">{{ post.user_profile.user_category }}</p>
+          <p class="text-xs text-gray-500">{{ post.user_profile?.user_category || '' }}</p>
         </div>
       </div>
       <div class="flex items-center space-x-2">
-        <span class="text-xs text-gray-400 font-medium">{{ post.creation_date }}</span>
+        <span class="text-xs text-gray-400 font-medium">{{ getTimeSinceCreation(post.creation) }}</span>
       </div>
     </div>
 
@@ -99,10 +99,7 @@ onUnmounted(() => {
           <span class="text-xs font-semibold">{{ post.comment_count }}</span>
         </button>
       </div>
-      <button class="text-gray-400 hover:text-gray-600">
-        <Share2 class="w-5 h-5" />
-      </button>
     </div>
-    </template>
+    </div>
   </div>
 </template>

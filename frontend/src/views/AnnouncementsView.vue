@@ -1,5 +1,6 @@
 <script setup>
 import { Bell, CheckCircle } from 'lucide-vue-next'
+import AppHeader from '@/components/common/AppHeader.vue'
 
 const announcements = [
   {
@@ -21,12 +22,7 @@ const announcements = [
 
 <template>
   <div class="min-h-full bg-gray-50/50 pb-6 text-gray-800">
-    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm border-b border-gray-100">
-      <h2 class="font-bold text-gray-900 text-xl">Announcements</h2>
-      <button class="bg-gray-50 text-gray-600 text-[11px] font-bold px-3 py-1.5 rounded-lg hover:bg-gray-100">
-        Mark All Read
-      </button>
-    </header>
+    <AppHeader />
 
     <div class="px-5 mt-4 space-y-3">
       <div 

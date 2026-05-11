@@ -9,4 +9,21 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://dev.samaaja.impactyaan.com',
+        changeOrigin: true,
+        cookieDomainRewrite: "localhost"
+      },
+      '/files': {
+        target: 'https://dev.samaaja.impactyaan.com',
+        changeOrigin: true
+      },
+      '/private': {
+        target: 'https://dev.samaaja.impactyaan.com',
+        changeOrigin: true
+      }
+    }
+  }
 })

@@ -1,75 +1,31 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { ChevronDown, Leaf, Droplets, BookOpen, Settings } from 'lucide-vue-next'
-// Import the helper we created
-import { getProfile } from '@/services/api'
+import AppHeader from '@/components/common/AppHeader.vue'
+import { authState } from '@/auth'
 
-const user = ref({
-  name: 'fallback_loading_name',
-  role: 'fallback_role',
-  bio: '', // Initialized empty so it doesn't flicker "fallback_bio" before API returns
-  image: '',
+const user = computed(() => ({
+  name: authState.profile.fullName || 'Loading...',
+  role: authState.profile.category || 'Volunteer',
+  bio: authState.profile.interests || '', 
+  image: authState.profile.imageBase64 || authState.profile.image,
   stats: {
-    actions: 0,
-    issuesResolved: 0,
-    posts: 0
+    actions: authState.profile.stats.actions,
+    issuesResolved: authState.profile.stats.issuesReported,
+    posts: 0 
   }
-})
+}))
 
-const isLoading = ref(true)
-
-const fetchUserData = async () => {
-  try {
-    // Using our clean API helper
-    const apiData = await getProfile('ankit@impactyaan.com')
-    console.log("API Data:", apiData)
-    
-    if (apiData) {
-      user.value = {
-        name: apiData.full_name || apiData.name || 'fallback_name',
-        // Map user_category from API (e.g., "Volunteer")
-        role: `${apiData.user_category || 'fallback_volunteer'} @ Impactyaan`, 
-        
-        // --- Mapping Interest to Bio with Null Check ---
-        // If interest is null/undefined, bio is empty. If array, joined. If string, used.
-        bio: apiData.interest 
-          ? (Array.isArray(apiData.interest) ? apiData.interest.join(', ') : apiData.interest) 
-          : '', 
-        
-        image: apiData.user_image || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&q=80",
-        stats: {
-          // Map 'contributions' from API to 'actions'
-          actions: apiData.contributions || 0, 
-          issuesResolved: 0, // Showing 0 to indicate no API mapping yet
-          posts: 0 
-        }
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching profile:", error)
-    console.log("fallback_api_error_log") 
-  } finally {
-    isLoading.value = false
-  }
-}
-
-onMounted(() => {
-  fetchUserData()
-})
+const isLoading = computed(() => authState.isInitialLoad)
 </script>
 
 <template>
   <div v-if="!isLoading" class="min-h-full bg-gray-50/50 pb-6">
     <!-- Header -->
-    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
-      <h2 class="font-bold text-gray-900 text-xl">Profile</h2>
-      <button class="w-9 h-9 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100">
-        <Settings class="w-5 h-5 text-gray-600" />
-      </button>
-    </header>
+    <AppHeader/>
 
-    <div class="bg-white pb-6 rounded-b-[2rem] shadow-sm mb-6 border-b border-gray-100">
-      <div class="flex flex-col items-center pt-8 px-6 text-center">
+    <div class="px-5 pb-2 rounded-2xl shadow-sm mb-5">
+      <div class="flex flex-col items-center p-2 px-4 text-center">
         <!-- Avatar -->
         <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4">
           <img 
@@ -87,7 +43,7 @@ onMounted(() => {
           v-if="user.bio" 
           class="text-gray-500 italic text-sm mt-4 px-2 tracking-wide leading-relaxed"
         >
-          "{{ user.bio }}"
+          {{ user.bio }}
         </p>
 
         <!-- Tags (Kept static as per design) -->
@@ -106,30 +62,26 @@ onMounted(() => {
           </div>
         </div>
 
-        <button class="mt-8 border border-gray-200 rounded-2xl px-6 py-3.5 flex items-center space-x-3 w-full justify-between hover:bg-gray-50 transition-colors shadow-sm">
-          <span class="font-bold text-gray-800 text-sm pl-2">Switch Layer ({{ user.role.split(' @')[0] }})</span>
-          <ChevronDown class="w-5 h-5 text-gray-400" />
-        </button>
       </div>
     </div>
 
     <!-- Impact Summary -->
-    <div class="px-5">
+    <div class="px-5 mb-5">
       <div class="flex items-center space-x-2 mb-4">
         <span class="text-xl">🌟</span>
         <h3 class="font-bold text-gray-900 text-lg">Impact Summary</h3>
       </div>
       
       <div class="grid grid-cols-3 gap-3">
-        <div class="bg-white border border-gray-100 p-4 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
+        <div class="bg-white border border-gray-100 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
           <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.actions }}</span>
           <span class="text-[11px] text-gray-500 font-medium leading-tight">Actions</span>
         </div>
-        <div class="bg-white border border-gray-100 p-4 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
+        <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
           <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.issuesResolved }}</span>
-          <span class="text-[11px] text-gray-500 font-medium leading-tight">Issues<br/>Resolved</span>
+          <span class="text-[11px] text-gray-500 font-medium leading-tight">Issues Resolved</span>
         </div>
-        <div class="bg-white border border-gray-100 p-4 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
+        <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
           <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.posts }}</span>
           <span class="text-[11px] text-gray-500 font-medium leading-tight">Posts</span>
         </div>
@@ -137,7 +89,7 @@ onMounted(() => {
     </div>
 
     <!-- Badges -->
-    <div class="px-5 mt-8 mb-20">
+    <div class="px-5 mb-20">
       <div class="flex items-center space-x-2 mb-4">
         <span class="text-xl">🥇</span>
         <h3 class="font-bold text-gray-900 text-lg">Badges Earned</h3>

@@ -1,39 +1,11 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Menu, Plus, Edit3, HelpCircle, Loader2 } from 'lucide-vue-next'
+import { Plus, Edit3, HelpCircle, Loader2 } from 'lucide-vue-next'
 import CommunityPost from '../components/common/CommunityPost.vue'
+import AppHeader from '@/components/common/AppHeader.vue'
 import { getFeed } from '@/services/api'
 
-const posts = ref([
-  {
-    id: 1,
-    user_profile: {
-      full_name: 'Rahul Verma',
-      user_category: 'Member @ Green City',
-      user_image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80',
-    },
-    timeAgo: '2h ago',
-    description: 'Successfully planted 50 saplings today at the Central Park drive! Huge thanks to everyone who showed up early morning. Let\'s keep our city green! 🌳',
-    media: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80',
-    category: 'Environment',
-    like_count: 42,
-    comment_count: 12
-  },
-  {
-    id: 2,
-    user_profile: {
-      full_name: 'Anjali Sharma',
-      user_category: 'Volunteer @ EcoWarriors',
-      user_image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80',
-    },
-    timeAgo: '5h ago',
-    description: 'We are organizing a river cleanup drive this weekend. Please join us and bring your friends. Gloves and bags will be provided! Click here https://google.com',
-    media: null,
-    category: 'Cleanliness',
-    like_count: 89,
-    comment_count: 34
-  }
-])
+const posts = ref([])
 
 const startY = ref(0)
 const currentY = ref(0)
@@ -124,9 +96,9 @@ onMounted(async() => {
   console.log('onMounted')
   const feed=await getFeed();
   console.log(feed)
-  // if(feed){
-  //   posts.value=feed;
-  // }
+  if(feed){
+       posts.value=feed;
+   }
   observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       loadMorePosts();
@@ -166,19 +138,7 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Header -->
-    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">AS</div>
-        <div>
-          <h2 class="font-bold text-gray-900 text-[15px]">Anjali Sharma</h2>
-          <p class="text-[11px] text-gray-500">Volunteer @ EcoWarriors</p>
-        </div>
-      </div>
-      <button class="w-9 h-9 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100">
-        <Menu class="w-5 h-5 text-gray-600" />
-      </button>
-    </header>
+    <AppHeader />
 
     <!-- Stats Grid -->
     <div class="px-5 mt-5 grid grid-cols-3 gap-3">
@@ -200,7 +160,7 @@ onUnmounted(() => {
     <div class="px-5 mt-4 grid grid-cols-3 gap-3">
       <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
         <Plus class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Action</span>
+        <span class="text-[11px] font-semibold">Actiondddd</span>
       </button>
       <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
         <Edit3 class="w-4 h-4 text-primary-500" />

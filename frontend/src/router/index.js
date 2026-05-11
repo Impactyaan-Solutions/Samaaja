@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { authState, checkAuth } from '../auth' // Ensure this import exists!
+import { authState, checkAuth, isProfileComplete } from '../auth' // Ensure this import exists!
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +43,12 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue')
     },
     {
+      path: '/complete-profile',
+      name: 'complete-profile',
+      meta: { hideNavbar: true },
+      component: () => import('../views/ProfileCompletionView.vue')
+    },
+    {
       path: '/log-action',
       name: 'log-action',
       component: () => import('../views/LogActionView.vue')
@@ -61,7 +67,19 @@ router.beforeEach(async (to, from, next) => {
 
   const isLoggedIn = authState.isLoggedIn;
   const isPublic = to.meta.public;
+  const profileComplete = isProfileComplete();
+
   // 2. Redirect Logic - Logic is evaluated top-down
+
+  // Force onboarding if profile is incomplete
+  if (isLoggedIn && !profileComplete && to.name !== 'complete-profile') {
+    return next({ name: 'complete-profile' });
+  }
+
+  // Prevent accessing onboarding if profile is already complete
+  if (isLoggedIn && profileComplete && to.name === 'complete-profile') {
+    return next({ name: 'home' });
+  }
   
   if (isLoggedIn && (to.name === 'login' || to.name === 'signup' || to.name === 'landingpage')) {
     // Already logged in? Send them to the app.

@@ -4,6 +4,8 @@ import {
   ArrowLeft, 
   Facebook 
 } from 'lucide-vue-next';
+import { getGoogleSignInURL } from '@/services/api';
+
 
 const mobileNumber = ref('');
 
@@ -14,35 +16,9 @@ const goBack = () => {
 
 const loginWithGoogle = async () => {
   try {
-    // 1. Clean, relative path. Nginx handles the routing seamlessly.
-    const response = await fetch('/api/method/samaaja.api.login.get_google_auth_url', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-
-    // 2. Catch actual server errors (like 500s or 404s)
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Server Error Output:", errorText);
-      throw new Error(`Server error: ${response.status}`);
-    }
-
-    // 3. Parse the successful response
-    const result = await response.json();
-
-    // 4. Frappe wraps its return values inside a 'message' key
-    if (result.message) {
-      console.log("Redirecting to Google Auth...");
-      window.location.href = result.message;
-    } else {
-      console.error("Backend response missing 'message' key:", result);
-      alert("Login service is temporarily unavailable.");
-    }
-
+    const url = await getGoogleSignInURL();
+    window.location.href = url;
   } catch (error) {
-    // 5. Catch network failures or JSON parsing errors
     console.error("Login Error:", error);
     alert(`Connection failed: ${error.message}`);
   }

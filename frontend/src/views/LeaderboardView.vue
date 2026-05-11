@@ -2,6 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { Search, Filter, Menu, Award } from 'lucide-vue-next'
 import { getLeaderboard } from '@/services/api' // Adjust path if necessary
+import { ref } from 'vue'
+import { Search, Filter, Award } from 'lucide-vue-next'
+import AppHeader from '@/components/common/AppHeader.vue'
 
 const scope = ref('organisation')
 const list = ref([])
@@ -36,19 +39,7 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-full bg-gray-50/50 pb-6">
-    <!-- Header (Hardcoded or could be dynamic) -->
-    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm border-b border-gray-100 mb-1">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">AS</div>
-        <div>
-          <h2 class="font-bold text-gray-900 text-[15px]">Anjali Sharma</h2>
-          <p class="text-[11px] text-gray-500">Volunteer @ EcoWarriors</p>
-        </div>
-      </div>
-      <button class="w-9 h-9 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100">
-        <Menu class="w-5 h-5 text-gray-600" />
-      </button>
-    </header>
+    <AppHeader />
 
     <!-- Toggle & Search -->
     <div class="px-5 mt-4">
