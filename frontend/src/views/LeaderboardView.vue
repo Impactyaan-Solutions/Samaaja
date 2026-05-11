@@ -1,9 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Search, Filter, Menu, Award } from 'lucide-vue-next'
-import { getLeaderboard } from '@/services/api' // Adjust path if necessary
-import { ref } from 'vue'
 import { Search, Filter, Award } from 'lucide-vue-next'
+import { getLeaderboard } from '@/services/api' // Adjust path if necessary
 import AppHeader from '@/components/common/AppHeader.vue'
 
 const scope = ref('organisation')

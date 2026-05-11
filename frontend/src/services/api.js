@@ -136,3 +136,29 @@ export const updateUserProfile = async (data) => {
     const result = await response.json()
     return result.message || result.data
 }
+export const getLeaderboard = async () => {
+    const requestOption = getRequestOptions()
+
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        ...requestOption.headers
+    }
+
+    const url = `${baseurl}/api/method/samaaja.api.leaderboard.user_leaderboard`
+
+    const response = await fetch(url, {
+        ...requestOption,
+        headers
+    })
+
+    if (response.ok) {
+        const result = await response.json()
+        // Returning result.data to stay consistent with your other methods
+        return result.data
+        console.log("Leaderboard API Response:", result) // Debugging log
+    } else {
+        throw new Error(`Leaderboard fetch failed: ${response.statusText}`)
+
+    }
+}
