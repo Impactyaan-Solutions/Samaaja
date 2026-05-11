@@ -1,4 +1,4 @@
-import { getRequestOptions } from '../auth'
+import { getAPIToken, getRequestOptions } from '../auth'
 
 // For local dev, use relative paths to hit the Vite proxy (fixes CORS/Cookies)
 // For production (Capacitor/Web), use the absolute URL
@@ -49,11 +49,12 @@ export const getProfile = async (email) => {
 }
 
 export const getLoggedUser = async () => {
+    const requestOptions = getRequestOptions()
     const headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...requestOptions.headers
     }
-    const requestOptions = getRequestOptions()
     const response = await fetch(
         baseurl + '/api/method/frappe.auth.get_logged_user',
         { ...requestOptions, headers }

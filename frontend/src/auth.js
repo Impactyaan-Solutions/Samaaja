@@ -28,7 +28,7 @@ export const authState = reactive({
 })
 
 export const isProfileComplete = () => {
-
+  return true
   const p = authState.profile;
   // All these are mandatory: Gender, Bio (interests/bio), Category, Date of birth, Mobile Number
   // Using interests or bio based on what gets saved. Let's rely on 'bio'.
@@ -92,8 +92,9 @@ export async function checkAuth() {
     const data = await getLoggedUser();
     authState.email = data.message;
     authState.isLoggedIn = true;
-
-    const user_profile = await getProfile(data.message)
+    authState.isInitialLoad = false;
+    console.log("User Email: ", data)
+    const user_profile = await getProfile(data)
     console.log("User Profile: ", user_profile)
     if (user_profile) {
       authState.profile.fullName = user_profile.full_name
@@ -134,8 +135,6 @@ export async function checkAuth() {
     console.log("Error: ", error)
     authState.isLoggedIn = false;
     clearCachedAuth() // Clear cache if the session is dead
-  } finally {
-    authState.isInitialLoad = false;
   }
 }
 
@@ -150,4 +149,8 @@ export const getRequestOptions = () => {
   return {
     credentials: 'include'
   }
+}
+
+export const getAPIToken = () => {
+  return `token ${API_KEY}:${API_SECRET}`
 }
