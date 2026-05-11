@@ -1,22 +1,42 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Search, Filter, Menu, Award } from 'lucide-vue-next'
+import { getLeaderboard } from '@/services/api' // Adjust path if necessary
 
-const scope = ref('organisation') // 'organisation' or 'global'
+const scope = ref('organisation')
+const list = ref([])
+const isLoading = ref(true)
 
-const list = [
-  { rank: 1, name: 'Meera Nair', role: 'Lead @ Save Earth', actions: 156, avatar: 'M', verified: true },
-  { rank: 2, name: 'Vikram Singh', role: 'Volunteer @ Green City', actions: 142, avatar: 'V', verified: false },
-  { rank: 3, name: 'Anjali Sharma', role: 'Volunteer @ EcoWarriors', actions: 128, avatar: 'A', verified: false, isCurrentUser: true },
-  { rank: 4, name: 'Rahul Verma', role: 'Member @ Green City', actions: 94, avatar: 'R', verified: false },
-  { rank: 5, name: 'Priya Patel', role: 'Resident @ Ward 45', actions: 87, avatar: 'P', verified: false },
-  { rank: 6, name: 'Karan Desai', role: 'Volunteer @ EcoWarriors', actions: 62, avatar: 'K', verified: false }
-]
+// Fetch data on component mount
+onMounted(async () => {
+  try {
+    const data = await getLeaderboard()
+    
+    // Map the API data to your UI format
+    list.value = data.map((item, index) => ({
+      rank: index + 1,
+      name: item.full_name || 'Anonymous',
+      // Fallback to "Member" if user_category is null
+      role: item.user_category || 'Community Member',
+      actions: item.contributions,
+      // Use user_image if available, otherwise use the first letter of name
+      avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),
+      verified: false, // Set default or based on other logic
+      email: item.user,
+      // Logic for current user could be added here if you have auth state
+      isCurrentUser: false 
+    }))
+  } catch (error) {
+    console.error("Error loading leaderboard:", error)
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
   <div class="min-h-full bg-gray-50/50 pb-6">
-    <!-- Header -->
+    <!-- Header (Hardcoded or could be dynamic) -->
     <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm border-b border-gray-100 mb-1">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">AS</div>
@@ -62,6 +82,11 @@ const list = [
       </div>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="px-5 mt-10 text-center text-gray-400">
+      <p class="text-sm">Loading leaderboard...</p>
+    </div>
+
     <!-- List -->
     <div class="px-5 mt-6 space-y-3">
       <div 
@@ -74,7 +99,7 @@ const list = [
             {{ user.rank }}
           </span>
           <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 overflow-hidden">
-            <img v-if="user.avatar.length > 2" :src="user.avatar" />
+            <img v-if="user.avatar.length > 2" :src="user.avatar" class="w-full h-full object-cover" />
             <span v-else class="font-bold">{{ user.avatar }}</span>
           </div>
           <div>
