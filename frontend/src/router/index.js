@@ -8,39 +8,39 @@ const router = createRouter({
       path: '/',
       name: 'landingpage',
       meta: { hideNavbar: true, public: true },
-      component: () => import('../views/landingpage.vue')
+      component: () => import('../views/Landing.vue')
     },
     {
       path: '/signup',
       name: 'signup',
       meta: { hideNavbar: true, public: true },
-      component: () => import('../views/SignupView.vue')
+      component: () => import('../views/Signup.vue')
     },
     {
       path: '/login',
       name: 'login',
       meta: { hideNavbar: true, public: true },
-      component: () => import('../views/loginview.vue')
+      component: () => import('../views/Login.vue')
     },
     {
       path: '/leaderboard',
       name: 'leaderboard',
-      component: () => import('../views/LeaderboardView.vue')
+      component: () => import('../views/Leaderboard.vue')
     },
     {
       path: '/homepage',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/Home.vue')
     },
     {
       path: '/announcements',
       name: 'announcements',
-      component: () => import('../views/AnnouncementsView.vue')
+      component: () => import('../views/Announcements.vue')
     },
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('../views/ProfileView.vue')
+      component: () => import('../views/Profile.vue')
     },
     {
       path: '/settings',
@@ -52,12 +52,12 @@ const router = createRouter({
       path: '/complete-profile',
       name: 'complete-profile',
       meta: { hideNavbar: true },
-      component: () => import('../views/ProfileCompletionView.vue')
+      component: () => import('../views/ProfileCompletion.vue')
     },
     {
       path: '/log-action',
       name: 'log-action',
-      component: () => import('../views/LogActionView.vue')
+      component: () => import('../views/LogAction.vue')
     }
   ]
 })

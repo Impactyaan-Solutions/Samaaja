@@ -66,41 +66,6 @@ const handleLogout = () => {
   <div class="min-h-full bg-gray-50/50 pb-10 relative">
     <AppHeader />
 
-    <!-- Profile Header Section -->
-    <div class="px-5 mt-6">
-      <div class="bg-white border border-gray-100 p-5 rounded-3xl shadow-sm flex items-center space-x-4">
-        <!-- Avatar / Loading Spinner -->
-        <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center text-primary-600">
-          <Loader2 v-if="isLoading" class="w-7 h-7 animate-spin" />
-          <User v-else class="w-8 h-8" />
-        </div>
-
-        <!-- User Info -->
-        <div class="flex-1">
-          <template v-if="isLoading">
-            <div class="h-5 w-32 bg-gray-100 animate-pulse rounded mb-2"></div>
-            <div class="h-3 w-40 bg-gray-50 animate-pulse rounded"></div>
-          </template>
-          
-          <template v-else>
-            <h2 class="text-lg font-bold text-gray-900 leading-tight">{{ user.name }}</h2>
-            <p class="text-[12px] text-gray-500 font-medium">{{ user.email }}</p>
-            <div class="inline-flex items-center mt-1 px-2 py-0.5 bg-primary-50 rounded-md">
-              <span class="text-[10px] font-bold text-primary-600 uppercase tracking-wider">
-                {{ user.role }}
-              </span>
-            </div>
-          </template>
-        </div>
-
-        <button class="p-2 bg-gray-50 rounded-xl text-gray-400 hover:text-primary-500 transition-colors">
-          <router-link to="/profile">
-            <ChevronRight class="w-5 h-5" />
-          </router-link>
-        </button>
-      </div>
-    </div>
-
     <!-- Settings Groups -->
     <div class="px-5 mt-8">
       <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">App Settings</h3>

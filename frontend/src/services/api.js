@@ -40,7 +40,6 @@ export const getProfile = async (email) => {
 
     if (response.ok) {
         const result = await response.json()
-        console.log("API Response:", result) // Debugging log
         // Returns the message object from Frappe
         return result.data
     } else {
@@ -176,4 +175,47 @@ export const completeProfile = async (data) => {
 
     const result = await response.json()
     return result.message || result.data
+}
+
+export const createAccount = async (data) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    const response = await fetch(baseurl + '/api/method/samaaja.api.user.create_user', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data)
+    })
+
+    if (!response.ok) {
+        throw new Error(`Failed to complete profile: ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result.message || result.data
+}
+
+export const loginUsingOtp = async (data) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    const response = await fetch(baseurl + '/api/method/samaaja.api.login.login_using_otp', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data)
+    })
+
+
+    if (response.status === 404) {
+        alert("User not found!")
+        return false
+    }
+    if (!response.ok) {
+        throw new Error(`Failed to verify otp and login: ${response.statusText}`)
+    }
+    return true
 }

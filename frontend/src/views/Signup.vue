@@ -1,42 +1,63 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { 
-  ArrowLeftIcon, 
-  CalendarIcon, 
-  SearchIcon, 
-  UserIcon 
+import { ref, computed } from 'vue';
+import { useRouter  } from 'vue-router';
+import {
+  ArrowLeftIcon,
+  CalendarIcon,
+  SearchIcon,
+  UserIcon
 } from 'lucide-vue-next';
-
+import router from '../router';
+import { createAccount } from '@/services/api';
 // Import the service that works in your Login component
 import { getGoogleSignInURL } from '@/services/api';
 
-const router = useRouter();
+// const router = useRouter();
 
-// Form State
-const fullName = ref('');
-const dob = ref('');
-const gender = ref('Male');
-const role = ref('Volunteer');
-const mobileNumber = ref('');
+const formData = ref({
+  'name': '',
+  'gender': '',
+  'bio': '',
+  'category': '',
+  'dob': '',
+  'mobile_no': ''
+});
+
+const isSubmitting = ref(false);
+const errorMessage = ref('');
+
+const isFormValid = computed(() => {
+  return formData.value.gender && 
+         formData.value.bio && 
+         formData.value.category && 
+         formData.value.dob && 
+         formData.value.mobile_no &&
+         formData.value.name;
+});
 
 // Logic for Manual Signup
-const handleSubmit = () => {
-  if (!mobileNumber.value || !fullName.value) {
-    alert("Please fill in the required fields.");
+const handleSubmit = async () => {
+  if (!isFormValid.value) {
+    alert("Please fill in all the required fields.");
     return;
   }
-  
-  console.log('Registering user:', {
-    name: fullName.value,
-    dob: dob.value,
-    gender: gender.value,
-    role: role.value,
-    mobile: mobileNumber.value
-  });
-
-  // Redirect to homepage after "registration"
-  router.push('/homepage');
+  const data = {
+    name: formData.value.name,  
+    dob: formData.value.dob,
+    gender: formData.value.gender,
+    category: formData.value.category,
+    mobile_no: formData.value.mobile_no,
+    bio: formData.value.bio
+  }
+  isSubmitting.value = true;
+  try{
+    await createAccount(data)
+    router.push('/login')
+  } catch(err){
+    errorMessage.value = err.response.data.message;
+  } finally{
+    isSubmitting.value = false;
+  }
 };
 
 // Logic for Google Signup (Uses the same working logic as Login)
@@ -61,7 +82,7 @@ const goBack = () => {
     <div class="bg-white w-full max-w-md min-h-screen shadow-sm px-8 py-0 flex flex-col">
       
       <!-- Header -->
-      <div class="flex items-center justify-between mt-4 mb-6">
+      <div class="flex items-center justify-between mt-2 mb-2">
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
         </button>
@@ -69,52 +90,55 @@ const goBack = () => {
         <div class="w-5"></div> 
       </div>
 
-      <div class="mb-3">
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Sign Up</h2>
-        <p class="text-gray-500 text-sm leading-relaxed">
-          Join the community to start making a real impact in your local area.
+      <div class="mb-2">
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-1">Sign Up</h2>
+        <p class="text-gray-500 text-xs leading-relaxed">
+          Join the community to start making a real impact!
         </p>
       </div>
 
       <!-- Signup Form -->
-      <form @submit.prevent="handleSubmit" class="space-y-5">
-        
+      <form @submit.prevent="handleSubmit" class="space-y-2">
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Full Name</label>
+          <label class="block text-sm font-semibold text-gray-700">Full Name <span class="text-red-500">*</span></label>
           <div class="relative">
             <input 
-              v-model="fullName"
+              v-model="formData.name"
               type="text" 
+              maxlength="30"
               placeholder="e.g. Rahul Poddar"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
+              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
             />
           </div>
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Date of Birth</label>
+          <label class="block text-sm font-semibold text-gray-700">Date of Birth <span class="text-red-500">*</span></label>
           <div class="relative">
             <input 
-              v-model="dob"
+              v-model="formData.dob"
               type="text" 
               placeholder="DD/MM/YYYY"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
+              onfocus="this.type='date'; this.showPicker()"
+              onblur="if(!this.value) this.type='text'"
+              @keydown.prevent
+              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300 cursor-pointer"
             />
             <CalendarIcon class="w-5 h-5 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2" />
           </div>
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Gender</label>
+          <label class="block text-sm font-semibold text-gray-700">Gender <span class="text-red-500">*</span></label>
           <div class="grid grid-cols-3 gap-3">
             <button 
               type="button" 
               v-for="option in ['Female', 'Male', 'Other']" 
               :key="option"
-              @click="gender = option"
+              @click="formData.gender = option"
               :class="[
-                'py-3 rounded-xl border text-sm font-medium transition-all',
-                gender === option 
+                'py-2 rounded-xl border text-sm font-medium transition-all',
+                formData.gender === option 
                   ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100' 
                   : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100'
               ]"
@@ -125,10 +149,10 @@ const goBack = () => {
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Role</label>
+          <label class="block text-sm font-semibold text-gray-700">Role <span class="text-red-500">*</span></label>
           <select 
-            v-model="role"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
+            v-model="formData.category"
+            class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
           >
             <option>Volunteer</option>
             <option>Organizer</option>
@@ -137,28 +161,43 @@ const goBack = () => {
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">Mobile Number</label>
+          <label class="block text-sm font-semibold text-gray-700">Mobile Number <span class="text-red-500">*</span></label>
           <div class="relative flex items-center">
             <span class="absolute left-4 text-gray-500 font-medium">+91</span>
             <input 
-              v-model="mobileNumber"
+              v-model="formData.mobile_no"
               type="tel" 
+              maxlength="10"
+              @input="formData.mobile_no = $event.target.value.replace(/[^0-9]/g, '')"
               placeholder="Mobile Number"
-              class="w-full pl-14 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-gray-300"
+              class="w-full pl-14 pr-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-gray-300"
             />
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-sm font-semibold text-gray-700">Bio <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <textarea 
+              v-model="formData.bio"
+              rows="2"
+              maxlength="100"
+              placeholder="Short bio"
+              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300 resize-none"
+            ></textarea>
           </div>
         </div>
 
         <button 
           type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-200 mt-4 active:scale-[0.98]"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200 mt-2 active:scale-[0.98]"
         >
           Create Account
         </button>
       </form>
 
       <!-- Divider -->
-      <div class="relative my-6">
+      <div class="relative my-4">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-gray-100"></div>
         </div>
@@ -168,10 +207,10 @@ const goBack = () => {
       </div>
 
       <!-- Social Signup -->
-      <div class="pb-8">
+      <div class="pb-4">
         <button 
           @click="loginWithGoogle"
-          class="w-full flex items-center justify-center gap-3 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700"
+          class="w-full flex items-center justify-center gap-3 border border-gray-200 py-2 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700"
         >
           <svg width="18" height="18" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

@@ -1,18 +1,57 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { 
   ArrowLeft, 
   Facebook 
 } from 'lucide-vue-next';
 import { getGoogleSignInURL } from '@/services/api';
-
+import { loginUsingOtp } from '@/services/api';
 
 const mobileNumber = ref('');
-
+const otp = ref('');
+const router = useRouter();
 // Navigation Helper
 const goBack = () => {
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
 };
+
+const handleSendOTP = () => {
+  if (mobileNumber.value.length != 10) {
+    alert("Please enter a valid 10-digit mobile number")
+    return
+  }
+  alert("OTP Sent Successfully. Use 1111 to login")
+  // Show OTP field
+  const otpField = document.querySelector('.hidden');
+  otpField.classList.remove('hidden');
+  // Show login button
+  const loginBtn = document.getElementById('login-btn');
+  loginBtn.classList.remove('hidden');
+  // Change send otp button to verify otp
+  const sendOtpBtn = document.getElementById('send-otp-btn');
+  sendOtpBtn.classList.add('hidden');
+}
+
+const handleLogin = async () => {
+  try {
+    if (otp.value.length != 4) {
+      alert("Please enter a valid 4-digit OTP")
+      return
+    }
+    const data = {
+      mobile_no: mobileNumber.value,
+      otp: otp.value
+    }
+    const result = await loginUsingOtp(data)
+    if(result) {
+      router.push('/homepage')
+    }
+  } catch (error) {
+    console.error("Login Error:", error);
+    alert(`Connection failed: ${error.message}`);
+  }
+}
 
 const loginWithGoogle = async () => {
   try {
@@ -27,23 +66,25 @@ const loginWithGoogle = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex justify-center font-sans">
+  <div class="min-h-screen bg-gray-100 flex justify-center px-4 font-sans">
     
-    <div class="bg-white w-full max-w-md min-h-screen px-8 flex flex-col">
+    <div class="bg-white w-full max-w-md min-h-screen shadow-sm px-8 py-0 flex flex-col">
       
-      <button 
-        @click="goBack" 
-        class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors mb-6 -ml-2 mt-6"
-      >
-        <ArrowLeft :size="20" />
-      </button>
+      <!-- Header -->
+      <div class="flex items-center justify-between mt-2 mb-2">
+        <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
+          <ArrowLeft class="w-5 h-5 text-gray-600" />
+        </button>
+        <h1 class="text-blue-600 font-bold text-xl tracking-tight">Samaaja</h1>
+        <div class="w-5"></div> 
+      </div>
 
-      <h2 class="text-blue-600 text-2xl font-bold mb-8 tracking-tight">Samaaja</h2>
-
-      <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Log In</h1>
-      <p class="text-gray-500 text-sm leading-relaxed mb-8">
-        Enter your mobile number to get a verification code and securely log in.
-      </p>
+      <div class="mb-2">
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-1">Log In</h2>
+        <p class="text-gray-500 text-xs leading-relaxed">
+          Enter your mobile number to get a verification code and securely log in.
+        </p>
+      </div>
 
       <div class="space-y-4">
         <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
@@ -54,15 +95,39 @@ const loginWithGoogle = async () => {
             v-model="mobileNumber"
             type="tel" 
             placeholder="Mobile Number" 
+            @input="mobileNumber = $event.target.value.replace(/[^0-9]/g, '')"
+            maxlength="10"
             class="w-full px-4 py-3 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
           />
+        </div>
+
+        <div class="space-y-1 hidden">
+          <label class="block text-sm font-semibold text-gray-700">OTP <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input 
+              v-model="otp"
+              type="text" 
+              maxlength="4"
+              placeholder="1111"
+              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
+            />
+          </div>
         </div>
         
         <button
           @click="handleSendOTP"
+          id="send-otp-btn"
           class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
         >
           Send OTP
+        </button>
+
+        <button
+          id="login-btn"
+          @click="handleLogin"
+          class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
+        >
+          Login
         </button>
       </div>
 

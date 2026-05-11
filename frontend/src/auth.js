@@ -92,9 +92,7 @@ export async function checkAuth() {
     authState.email = data;
     authState.isLoggedIn = true;
     authState.isInitialLoad = false;
-    console.log("User Email: ", data)
     const user_profile = await getProfile(data)
-    console.log("User Profile: ", user_profile)
     if (user_profile) {
       authState.profile.fullName = user_profile.full_name
       authState.profile.image = user_profile.user_image
@@ -138,13 +136,6 @@ export async function checkAuth() {
 }
 
 export const getRequestOptions = () => {
-  if (import.meta.env.DEV) {
-    return {
-      headers: {
-        Authorization: `token ${API_KEY}:${API_SECRET}`
-      }
-    }
-  }
   return {
     credentials: 'include'
   }
