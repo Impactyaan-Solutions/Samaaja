@@ -11,7 +11,7 @@ export const getFeed = async () => {
     }
     const requestOptions = getRequestOptions()
     const response = await fetch(
-        baseurl + '/api/method/samaaja.api.feed.get_feed',
+        baseurl + '/api/method/samaaja.api.feed.get',
         { ...requestOptions, headers }
     )
     if (response.ok) {
@@ -112,31 +112,6 @@ export const fetchImageAsBase64 = async (url) => {
     }
 }
 
-export const updateUserProfile = async (data) => {
-    // Note: The endpoint `samaaja.api.user.update_profile` is a placeholder. 
-    // You will need to replace this with the exact endpoint provided by your backend team.
-    const url = `${baseurl}/api/method/samaaja.api.user.update_profile`
-
-    const requestOptions = getRequestOptions()
-    const headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-    }
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        ...requestOptions,
-        body: JSON.stringify(data)
-    })
-
-    if (!response.ok) {
-        throw new Error(`Failed to update profile: ${response.statusText}`)
-    }
-
-    const result = await response.json()
-    return result.message || result.data
-}
 export const getLeaderboard = async () => {
     const requestOption = getRequestOptions()
 
@@ -162,4 +137,43 @@ export const getLeaderboard = async () => {
         throw new Error(`Leaderboard fetch failed: ${response.statusText}`)
 
     }
+}
+export const logout = async () => {
+    const requestOptions = getRequestOptions();
+
+    // Changing to GET often bypasses CSRF issues on logout
+    const response = await fetch(baseurl + '/api/method/logout', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            ...requestOptions.headers
+        },
+        ...requestOptions
+    });
+
+    // We don't strictly throw an error here because if the logout fails 
+    // on the server, we still want the user to be logged out locally.
+    return response.ok;
+};
+
+export const completeProfile = async (data) => {
+    const requestOptions = getRequestOptions()
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    const response = await fetch(baseurl + '/api/method/samaaja.api.user.complete_user_profile', {
+        method: 'POST',
+        headers,
+        ...requestOptions,
+        body: JSON.stringify(data)
+    })
+
+    if (!response.ok) {
+        throw new Error(`Failed to complete profile: ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result.message || result.data
 }

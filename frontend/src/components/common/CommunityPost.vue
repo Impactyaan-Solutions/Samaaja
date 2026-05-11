@@ -71,9 +71,11 @@ onUnmounted(() => {
     <!-- Content -->
     <div class="px-4 pb-3">
       <p class="text-gray-800 text-sm leading-relaxed mb-3">
+        {{ post.title }}
+      </p>
+      <p v-if = "post.description" class="text-gray-800 text-sm leading-relaxed mb-3">
         {{ post.description }}
       </p>
-      
       <!-- Media -->
       <div v-if="post.media" class="rounded-xl overflow-hidden mb-3 max-h-64 bg-gray-100">
         <img :src="post.media" class="w-full h-full object-cover" />
@@ -82,7 +84,7 @@ onUnmounted(() => {
       <!-- Tags -->
       <div class="flex items-center space-x-2 mb-2">
         <span class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold tracking-wide uppercase">
-          {{ post.category }}
+          {{ post.tag }}
         </span>
       </div>
     </div>

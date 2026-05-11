@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { updateUserProfile } from '@/services/api';
-import { checkAuth } from '@/auth';
+import { completeProfile } from '@/services/api';
+import { checkAuth, authState } from '@/auth';
 import { User, Calendar, Phone, BookOpen, Tag } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -34,12 +34,14 @@ const submitForm = async () => {
 
   try {
     // Call the backend update API
-    await updateUserProfile({
-      gender: formData.value.gender,
-      bio: formData.value.bio,
+    console.log(authState.email)
+    await completeProfile({
+      user_gender: formData.value.gender,
+      user_bio: formData.value.bio,
       user_category: formData.value.category,
-      birth_date: formData.value.dob,
-      mobile_no: formData.value.mobileNumber
+      user_dob: formData.value.dob,
+      user_mobile_no: formData.value.mobileNumber,
+      user_email: authState.email
     });
 
     // Refresh the local authState cache to pull down the newly saved data

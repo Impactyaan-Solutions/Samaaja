@@ -43,6 +43,12 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue')
     },
     {
+      path: '/settings',
+      name: 'settings',
+      meta: { hideNavbar: true },
+      component: () => import('../views/Settings.vue')
+    },
+    {
       path: '/complete-profile',
       name: 'complete-profile',
       meta: { hideNavbar: true },
@@ -80,7 +86,7 @@ router.beforeEach(async (to, from, next) => {
   if (isLoggedIn && profileComplete && to.name === 'complete-profile') {
     return next({ name: 'home' });
   }
-  
+
   if (isLoggedIn && (to.name === 'login' || to.name === 'signup' || to.name === 'landingpage')) {
     // Already logged in? Send them to the app.
     return next({ name: 'home' });

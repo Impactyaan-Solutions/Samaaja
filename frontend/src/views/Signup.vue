@@ -1,55 +1,58 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { 
   ArrowLeftIcon, 
   CalendarIcon, 
   SearchIcon, 
-  GlobeIcon, 
-  FacebookIcon 
+  UserIcon 
 } from 'lucide-vue-next';
 
-const gender = ref('Male');
+// Import the service that works in your Login component
+import { getGoogleSignInURL } from '@/services/api';
 
+const router = useRouter();
+
+// Form State
+const fullName = ref('');
+const dob = ref('');
+const gender = ref('Male');
+const role = ref('Volunteer');
+const mobileNumber = ref('');
+
+// Logic for Manual Signup
 const handleSubmit = () => {
-  console.log('Form submitted');
+  if (!mobileNumber.value || !fullName.value) {
+    alert("Please fill in the required fields.");
+    return;
+  }
+  
+  console.log('Registering user:', {
+    name: fullName.value,
+    dob: dob.value,
+    gender: gender.value,
+    role: role.value,
+    mobile: mobileNumber.value
+  });
+
+  // Redirect to homepage after "registration"
+  router.push('/homepage');
 };
 
+// Logic for Google Signup (Uses the same working logic as Login)
 const loginWithGoogle = async () => {
   try {
-    // 1. Clean, relative path. Nginx handles the routing seamlessly.
-    const response = await fetch('/api/method/samaaja.api.login.get_google_auth_url', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-
-    // 2. Catch actual server errors (like 500s or 404s)
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Server Error Output:", errorText);
-      throw new Error(`Server error: ${response.status}`);
-    }
-
-    // 3. Parse the successful response
-    const result = await response.json();
-
-    // 4. Frappe wraps its return values inside a 'message' key
-    if (result.message) {
-      console.log("Redirecting to Google Auth...");
-      window.location.href = result.message;
-    } else {
-      console.error("Backend response missing 'message' key:", result);
-      alert("Login service is temporarily unavailable.");
-    }
-
+    const url = await getGoogleSignInURL();
+    window.location.href = url;
   } catch (error) {
-    // 5. Catch network failures or JSON parsing errors
-    console.error("Login Error:", error);
+    console.error("Google Auth Error:", error);
     alert(`Connection failed: ${error.message}`);
   }
 };
 
+const goBack = () => {
+  router.back();
+};
 </script>
 
 <template>
@@ -57,8 +60,9 @@ const loginWithGoogle = async () => {
     
     <div class="bg-white w-full max-w-md min-h-screen shadow-sm px-8 py-0 flex flex-col">
       
+      <!-- Header -->
       <div class="flex items-center justify-between mt-4 mb-6">
-        <button @click="$router.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
+        <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
         </button>
         <h1 class="text-blue-600 font-bold text-xl tracking-tight">Samaaja</h1>
@@ -72,21 +76,26 @@ const loginWithGoogle = async () => {
         </p>
       </div>
 
+      <!-- Signup Form -->
       <form @submit.prevent="handleSubmit" class="space-y-5">
         
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">Full Name</label>
-          <input 
-            type="text" 
-            placeholder="e.g. Rahul Poddar"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
-          />
+          <div class="relative">
+            <input 
+              v-model="fullName"
+              type="text" 
+              placeholder="e.g. Rahul Poddar"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
+            />
+          </div>
         </div>
 
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">Date of Birth</label>
           <div class="relative">
             <input 
+              v-model="dob"
               type="text" 
               placeholder="DD/MM/YYYY"
               class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
@@ -117,7 +126,10 @@ const loginWithGoogle = async () => {
 
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">Role</label>
-          <select class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700">
+          <select 
+            v-model="role"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
+          >
             <option>Volunteer</option>
             <option>Organizer</option>
             <option>Partner</option>
@@ -127,33 +139,36 @@ const loginWithGoogle = async () => {
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">Mobile Number</label>
           <div class="relative flex items-center">
-            <SearchIcon class="w-4 h-4 text-gray-400 absolute left-4" />
+            <span class="absolute left-4 text-gray-500 font-medium">+91</span>
             <input 
-              type="text" 
-            
-              class="w-full pl-10 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-gray-300"
+              v-model="mobileNumber"
+              type="tel" 
+              placeholder="Mobile Number"
+              class="w-full pl-14 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-gray-300"
             />
-
           </div>
         </div>
 
-        <router-link to="/homepage">
-          <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-200 mt-4 active:scale-[0.98]">
-            Create Account
-          </button>
-        </router-link>
+        <button 
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-200 mt-4 active:scale-[0.98]"
+        >
+          Create Account
+        </button>
       </form>
 
-      <div class="relative my-5">
+      <!-- Divider -->
+      <div class="relative my-6">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-gray-100"></div>
         </div>
         <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-3 text-gray-400">Or sign up with</span>
+          <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">Or sign up with</span>
         </div>
       </div>
 
-      <div class="space-y-4">
+      <!-- Social Signup -->
+      <div class="pb-8">
         <button 
           @click="loginWithGoogle"
           class="w-full flex items-center justify-center gap-3 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700"
@@ -166,15 +181,11 @@ const loginWithGoogle = async () => {
           </svg>
           Google
         </button>
-
-
       </div>
 
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 select {
@@ -182,8 +193,5 @@ select {
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1.25em;
-}
-div {
-  font-family: 'Inter', sans-serif;
 }
 </style>

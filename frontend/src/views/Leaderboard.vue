@@ -19,7 +19,7 @@ onMounted(async () => {
       name: item.full_name || 'Anonymous',
       // Fallback to "Member" if user_category is null
       role: item.user_category || 'Community Member',
-      actions: item.contributions,
+      actions: item.action_count,
       // Use user_image if available, otherwise use the first letter of name
       avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),
       verified: false, // Set default or based on other logic

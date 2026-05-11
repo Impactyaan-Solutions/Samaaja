@@ -28,7 +28,6 @@ export const authState = reactive({
 })
 
 export const isProfileComplete = () => {
-  return true
   const p = authState.profile;
   // All these are mandatory: Gender, Bio (interests/bio), Category, Date of birth, Mobile Number
   // Using interests or bio based on what gets saved. Let's rely on 'bio'.
@@ -90,7 +89,7 @@ export async function checkAuth() {
     }
 
     const data = await getLoggedUser();
-    authState.email = data.message;
+    authState.email = data;
     authState.isLoggedIn = true;
     authState.isInitialLoad = false;
     console.log("User Email: ", data)
