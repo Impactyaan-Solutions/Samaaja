@@ -219,3 +219,30 @@ export const loginUsingOtp = async (data) => {
     }
     return true
 }
+
+export const logAction = async (data) => {
+    const requestOptions = getRequestOptions()
+
+    const formData = new FormData()
+
+    for (const key in data) {
+        if (Array.isArray(data[key])) {
+            data[key].forEach(file => formData.append(key, file))
+        } else {
+            formData.append(key, data[key])
+        }
+    }
+
+    const response = await fetch(baseurl + '/api/method/samaaja.api.action.create', {
+        method: 'POST',
+        headers: requestOptions,
+        body: formData
+    })
+
+    if (!response.ok) {
+        throw new Error(`Failed to log action: ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result.message || result.data
+}

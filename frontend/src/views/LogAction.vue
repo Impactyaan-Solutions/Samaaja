@@ -1,60 +1,136 @@
 <script setup>
-import { ArrowLeft, Zap, Image as ImageIcon, MapPin } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { ArrowLeft, Image as ImageIcon, X, Video } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-
+import { logAction } from '../services/api'
 const router = useRouter()
+
+const fileInput = ref(null)
+const uploadedFiles = ref([])
+
+
+
+const category = ref('')
+const description = ref('')
+const hours_invested = ref('')
+
+const submitAction = async () => {
+  try {
+    await logAction({
+      action_category: category.value,
+      description: description.value,
+      hours_invested: hours_invested.value,
+      attachments: uploadedFiles.value
+    })
+  } catch (error) {
+    console.error('Error logging action:', error)
+  }
+}
+
+const handleMediaClick = () => {
+  fileInput.value?.click()
+}
+
+const handleFileChange = (event) => {
+  const files = Array.from(event.target.files || [])
+  processFiles(files)
+}
+
+
+const processFiles = (files) => {
+  const mappedFiles = files.map((file) => ({
+    file,
+    type: file.type,
+    preview: file.type.startsWith('image/')
+      ? URL.createObjectURL(file)
+      : null,
+  }))
+
+  uploadedFiles.value.push(...mappedFiles)
+}
+
+const removeFile = (index) => {
+  const item = uploadedFiles.value[index]
+
+  if (item.preview) {
+    URL.revokeObjectURL(item.preview)
+  }
+
+  uploadedFiles.value.splice(index, 1)
+}
 </script>
 
 <template>
   <div class="min-h-full bg-white">
     <!-- Header -->
-    <header class="flex items-center px-5 py-5 sticky top-0 bg-white z-20 border-b border-gray-50">
-      <button @click="router.back()" class="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
+    <header
+      class="flex items-center px-5 py-5 sticky top-0 bg-white z-20 border-b border-gray-50"
+    >
+      <button
+        @click="router.back()"
+        class="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors"
+      >
         <ArrowLeft class="w-6 h-6 text-gray-800" />
       </button>
-      <h2 class="font-bold text-lg text-gray-900 mx-auto -ml-2">Log Action</h2>
-      <div class="w-6"></div> <!-- Spacer for centering -->
+
+      <h2 class="font-bold text-lg text-gray-900 mx-auto -ml-2">
+        Log Action
+      </h2>
+
+      <div class="w-6"></div>
     </header>
 
-    <div class="px-5 pt-6 pb-12">
+    <div class="px-5 pt-2 pb-12">
       <form class="space-y-6">
-        <!-- Action Type -->
-        <div>
-          <label class="block text-sm font-bold text-gray-900 mb-2">Action Type</label>
-          <div class="flex items-center bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-inner">
-            <Zap class="w-5 h-5 text-gray-400 mr-3" />
-            <input 
-              type="text" 
-              value="Log your Action" 
-              class="bg-transparent w-full text-gray-800 font-medium focus:outline-none"
-              readonly
-            />
-          </div>
-        </div>
-
         <!-- Action Category -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Action Category <span class="text-red-500">*</span>
+            Action Category
+            <span class="text-red-500">*</span>
           </label>
-          <select class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium">
-            <option value="" disabled selected>Select a category...</option>
-            <option value="water">Water Conservation</option>
-            <option value="cleanliness">Cleanliness</option>
-            <option value="education">Education</option>
+
+          <select
+            class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
+          >
+            <option value="" disabled selected>
+              Select a category...
+            </option>
+
+            <option value="Water">Water</option>
+            <option value="Climate">Climate</option>
+            <option value="Civic">Civic</option>
+            <option value="Education">Education</option>
           </select>
         </div>
 
         <!-- Description -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Description <span class="text-red-500">*</span>
+            Description
+            <span class="text-red-500">*</span>
           </label>
-          <textarea 
-            rows="5"
-            placeholder="What impact did you make today?&#10;(Supports local language typing)"
+
+          <textarea
+            rows="3"
+            placeholder="What impact did you make today?"
             class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm resize-none"
           ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-gray-900 mb-2">
+            Hours Invested
+            <span class="text-red-500">*</span>
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            max="24"
+            step="0.5"
+            placeholder="0"
+            class="w-full bg-white border border-gray-200 rounded-xl p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm resize-none"
+          />
         </div>
 
         <!-- Media -->
@@ -62,26 +138,88 @@ const router = useRouter()
           <label class="block text-sm font-bold text-gray-900 mb-1">
             Media (Optional)
           </label>
-          <p class="text-xs text-gray-500 mb-3">(Adding photos improves trust)</p>
-          <div class="border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group">
-            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+
+          <p class="text-xs text-gray-500 mb-3">
+            (Adding photos improves trust)
+          </p>
+
+          <!-- Hidden File Input -->
+          <input
+            ref="fileInput"
+            type="file"
+            multiple
+            accept="image/*"
+            class="hidden"
+            @change="handleFileChange"
+          />
+
+          <!-- Upload Box -->
+          <div
+            class="border-2 border-dashed rounded-2xl p-1 flex flex-col items-center justify-center transition-colors cursor-pointer group"
+            :class="'border-gray-300 bg-gray-50 hover:bg-gray-100'"
+            @click="handleMediaClick"
+          >
+            <div
+              class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
+            >
               <ImageIcon class="w-6 h-6 text-primary-500" />
             </div>
-            <span class="font-bold text-gray-900 text-sm">Add photos or videos</span>
-            <span class="text-sm text-gray-500 mt-1">Tap to browse from your device</span>
+
+            <span class="font-bold text-gray-900 text-sm">  
+              Add photos or videos
+            </span>
+
+            <span class="text-sm text-gray-500 mt-1">
+              Tap to browse from your device
+            </span>
+          </div>
+
+          <!-- Preview Grid -->
+          <div
+            v-if="uploadedFiles.length"
+            class="grid grid-cols-3 gap-3 mt-4"
+          >
+            <div
+              v-for="(item, index) in uploadedFiles"
+              :key="index"
+              class="relative rounded-2xl overflow-hidden border border-gray-200 bg-gray-100"
+            >
+              <!-- Image -->
+              <img
+                v-if="item.preview"
+                :src="item.preview"
+                class="w-full h-28 object-cover"
+              />
+
+              <!-- Video -->
+              <div
+                v-else
+                class="h-28 flex flex-col items-center justify-center text-gray-600 text-xs p-2 text-center"
+              >
+                <Video class="w-6 h-6 mb-2" />
+                <span class="line-clamp-2">
+                  {{ item.file.name }}
+                </span>
+              </div>
+
+              <!-- Remove -->
+              <button
+                type="button"
+                class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1"
+                @click.stop="removeFile(index)"
+              >
+                <X class="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Location -->
-        <div>
-          <label class="block text-sm font-bold text-gray-900 mb-2">Location</label>
-          <button type="button" class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-700 flex items-center justify-center space-x-2 hover:bg-gray-50 shadow-sm mb-6">
-            <MapPin class="w-5 h-5 text-gray-400" />
-            <span class="font-semibold">Add Location</span>
-          </button>
-        </div>
-        
-        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl p-4 shadow-lg shadow-primary-500/30 transition-colors uppercase tracking-wider text-sm">
+        <!-- Submit -->
+        <button
+          @click="submitAction"
+          type="submit"
+          class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl p-4 shadow-lg shadow-primary-500/30 transition-colors uppercase tracking-wider text-sm"
+        >
           Submit Action
         </button>
       </form>

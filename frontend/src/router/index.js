@@ -66,6 +66,15 @@ const router = createRouter({
  * Navigation Guard
  */
 router.beforeEach(async (to, from, next) => {
+  if (import.meta.env.DEV === true) {
+    authState.isLoggedIn = true;
+    authState.email = 'Administrator';
+    authState.profile.fullName = 'Ankit Saxena';
+    authState.profile.category = 'Admin';
+    next();
+    return;
+  }
+
   // 1. Ensure we check the server session on initial load/reload
   if (authState.isInitialLoad) {
     await checkAuth();

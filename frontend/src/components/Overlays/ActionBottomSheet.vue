@@ -13,7 +13,7 @@ const actions = [
     colorClass: 'bg-green-100 text-green-600',
     path: '/log-action'
   },
-  {
+  /* {
     title: 'Report an Issue',
     description: 'Raise a problem that needs support or attention.',
     icon: AlertTriangle,
@@ -26,7 +26,7 @@ const actions = [
     icon: Zap,
     colorClass: 'bg-blue-100 text-blue-600',
     path: '/log-action' // Redirecting here for demo
-  }
+  } */
 ]
 
 const handleAction = (path) => {
