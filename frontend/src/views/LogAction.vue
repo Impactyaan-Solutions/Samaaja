@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { ArrowLeft, Image as ImageIcon, X, Video } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { logAction } from '../services/api'
+import { checkAuth } from '../auth'
 const router = useRouter()
 
 const fileInput = ref(null)
@@ -14,14 +15,18 @@ const category = ref('')
 const description = ref('')
 const hours_invested = ref('')
 
-const submitAction = async () => {
+const submitAction = async (e) => {
   try {
-    await logAction({
-      action_category: category.value,
+    e.preventDefault()
+    const response = await logAction({
+      category: category.value,
       description: description.value,
       hours_invested: hours_invested.value,
       attachments: uploadedFiles.value
     })
+    alert("Action logged successfully!")
+    await checkAuth()
+    router.push({ name: 'home' });
   } catch (error) {
     console.error('Error logging action:', error)
   }
@@ -90,6 +95,7 @@ const removeFile = (index) => {
           </label>
 
           <select
+            v-model="category"
             class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
           >
             <option value="" disabled selected>
@@ -112,6 +118,7 @@ const removeFile = (index) => {
 
           <textarea
             rows="3"
+            v-model="description"
             placeholder="What impact did you make today?"
             class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm resize-none"
           ></textarea>
@@ -126,6 +133,7 @@ const removeFile = (index) => {
           <input
             type="number"
             min="0"
+            v-model="hours_invested"
             max="24"
             step="0.5"
             placeholder="0"
@@ -217,7 +225,7 @@ const removeFile = (index) => {
         <!-- Submit -->
         <button
           @click="submitAction"
-          type="submit"
+          type="button"
           class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl p-4 shadow-lg shadow-primary-500/30 transition-colors uppercase tracking-wider text-sm"
         >
           Submit Action

@@ -45,7 +45,10 @@ const features = [
     <div class="w-full max-w-md bg-white min-h-screen shadow-sm px-8 py-0 flex flex-col gap-0">
       
       <header class="flex justify-between items-center mt-4 mb-2">
-        <h1 class="text-2xl font-black text-blue-600">Samaaja</h1>
+        <div class="flex items-center gap-2">
+          <img src="/samaaja.png" alt="Samaaja" class="w-12 h-12" />
+          <h1 class="text-2xl font-black text-blue-600">Samaaja</h1>
+        </div>
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
           EN

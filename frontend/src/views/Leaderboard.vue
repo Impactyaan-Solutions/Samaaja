@@ -16,15 +16,12 @@ onMounted(async () => {
     // Map the API data to your UI format
     list.value = data.map((item, index) => ({
       rank: index + 1,
-      name: item.full_name || 'Anonymous',
-      // Fallback to "Member" if user_category is null
-      role: item.user_category || 'Community Member',
+      name: item.full_name,
+      role: item.user_category,
       actions: item.action_count,
-      // Use user_image if available, otherwise use the first letter of name
       avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),
-      verified: false, // Set default or based on other logic
+      verified: false, 
       email: item.user,
-      // Logic for current user could be added here if you have auth state
       isCurrentUser: false 
     }))
   } catch (error) {

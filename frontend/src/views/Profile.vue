@@ -32,15 +32,18 @@ const goToSettings = () => {
 
 // --- Original User Logic ---
 const user = computed(() => ({
-  name: authState.profile.fullName || 'Loading...',
-  role: authState.profile.category || 'Volunteer',
-  bio: authState.profile.interests || '', 
+  name: authState.profile.fullName,
+  role: authState.profile.category,
+  bio: authState.profile.bio, 
   image: authState.profile.imageBase64 || authState.profile.image,
   stats: {
     actions: authState.profile.stats.actions,
-    issuesResolved: authState.profile.stats.issuesReported,
-    posts: 0 
-  }
+    issuesResolved: authState.profile.stats.issuesReported || 0,
+    posts: authState.profile.stats.posts || 0,
+    hours: authState.profile.stats.hours || 0
+  },
+  interests:authState.profile.interests,
+  badges:authState.profile.badges
 }))
 
 const isLoading = computed(() => authState.isInitialLoad)
@@ -101,11 +104,41 @@ const isLoading = computed(() => authState.isInitialLoad)
       <div class="flex flex-col items-center p-2 px-4 text-center">
         <!-- Avatar -->
         <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4">
+
+          <!-- User Image -->
           <img 
+            v-if="user.image"
             :src="user.image" 
-            class="w-full h-full object-cover" 
-            onerror="this.src='https://ui-avatars.com/api/?name=fallback_avatar'"
+            class="w-full h-full object-cover"
+            @error="user.image = null"
           />
+
+          <!-- Fallback SVG -->
+          <svg
+          v-else
+          viewBox="0 0 120 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Background -->
+          <circle cx="60" cy="60" r="60" fill="#EEF2FF"/>
+
+          <!-- Decorative Circle -->
+          <circle cx="60" cy="60" r="52" fill="#E0E7FF"/>
+
+          <!-- Head -->
+          <circle cx="60" cy="42" r="20" fill="#6366F1"/>
+
+          <!-- Body -->
+          <path
+            d="M30 98C30 80.3269 43.3269 67 61 67C78.6731 67 92 80.3269 92 98V120H30V98Z"
+            fill="#6366F1"
+          />
+
+          <!-- Shine -->
+          <circle cx="52" cy="36" r="4" fill="#A5B4FC" fill-opacity="0.7"/>
+        </svg>
+
         </div>
         
         <h1 class="text-2xl font-bold text-gray-900">{{ user.name }}</h1>
@@ -120,17 +153,14 @@ const isLoading = computed(() => authState.isInitialLoad)
 
         <!-- Tags -->
         <div class="flex items-center space-x-3 mt-6">
-          <div class="bg-blue-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-blue-100/50">
-            <Droplets class="w-5 h-5 text-blue-500 mb-1" />
-            <span class="text-[11px] font-bold text-gray-700">Water</span>
-          </div>
-          <div class="bg-amber-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-amber-100/50">
-            <Leaf class="w-5 h-5 text-amber-600 mb-1" />
-            <span class="text-[11px] font-bold text-gray-700">Cleanliness</span>
-          </div>
-          <div class="bg-rose-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-rose-100/50">
-            <BookOpen class="w-5 h-5 text-rose-500 mb-1" />
-            <span class="text-[11px] font-bold text-gray-700">Education</span>
+          <!-- Render interests -->
+          <div 
+            v-for="(interest, index) in user.interests"
+            :key="index"
+            class="bg-blue-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-blue-100/50"
+          >
+            <img :src="interest.icon" class="w-8 h-8 mb-1 rounded-full"/>
+            <span class="text-[11px] font-bold text-gray-700">{{ interest.action_category?.trim() }}</span>
           </div>
         </div>
 
@@ -150,8 +180,8 @@ const isLoading = computed(() => authState.isInitialLoad)
           <span class="text-[11px] text-gray-500 font-medium leading-tight">Actions</span>
         </div>
         <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.issuesResolved }}</span>
-          <span class="text-[11px] text-gray-500 font-medium leading-tight">Issues Resolved</span>
+          <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.hours }}</span>
+          <span class="text-[11px] text-gray-500 font-medium leading-tight">Hours</span>
         </div>
         <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
           <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.posts }}</span>
@@ -166,7 +196,13 @@ const isLoading = computed(() => authState.isInitialLoad)
         <span class="text-xl">🥇</span>
         <h3 class="font-bold text-gray-900 text-lg">Badges Earned</h3>
       </div>
-      <div class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm italic text-gray-400 text-sm text-center">
+      <div v-if="user.badges" class="grid grid-cols-3 gap-3">
+        <div v-for="(badge, index) in user.badges" :key="index" class="flex flex-col justify-center items-center text-center">
+          <img :src="badge.badge_icon" class="w-8 h-8 mb-1 rounded-full"/>
+          <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ badge.badge_name }}</span>
+        </div>
+      </div>
+      <div v-else class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm italic text-gray-400 text-sm text-center">
         no badges earned
       </div>
     </div>

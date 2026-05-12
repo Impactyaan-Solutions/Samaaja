@@ -1,5 +1,5 @@
 <script setup>
-import { Zap, AlertTriangle, HelpCircle, X } from 'lucide-vue-next'
+import { Zap, X, MessageSquareText } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['close'])
@@ -13,14 +13,14 @@ const actions = [
     colorClass: 'bg-green-100 text-green-600',
     path: '/log-action'
   },
-  /* {
-    title: 'Report an Issue',
-    description: 'Raise a problem that needs support or attention.',
-    icon: AlertTriangle,
-    colorClass: 'bg-red-100 text-red-600',
-    path: '/log-action' // Redirecting here for demo
-  },
   {
+    title: 'Add a Post',
+    description: 'Post an update to share with your community.',
+    icon: MessageSquareText,
+    colorClass: 'bg-blue-100 text-blue-600',
+    path: '/add-post'
+  },
+  /* {
     title: 'Ask for Help',
     description: 'Request volunteers, resources, or quick guidance.',
     icon: Zap,

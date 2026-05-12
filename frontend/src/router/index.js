@@ -45,7 +45,6 @@ const router = createRouter({
     {
       path: '/settings',
       name: 'settings',
-      meta: { hideNavbar: true },
       component: () => import('../views/Settings.vue')
     },
     {
@@ -58,6 +57,11 @@ const router = createRouter({
       path: '/log-action',
       name: 'log-action',
       component: () => import('../views/LogAction.vue')
+    },
+    {
+      path: '/add-post',
+      name: 'add-post',
+      component: () => import('../views/AddPost.vue')
     }
   ]
 })

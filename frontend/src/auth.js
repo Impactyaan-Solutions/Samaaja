@@ -22,7 +22,8 @@ export const authState = reactive({
     bio: null, // Separating bio from interests for clarity if needed, or keeping it as interests
     stats: {
       actions: 0,
-      issuesReported: 0
+      posts: 0,
+      hours: 0
     }
   }
 })
@@ -102,18 +103,11 @@ export async function checkAuth() {
       authState.profile.dob = user_profile.birth_date // Assuming Frappe standard field
       authState.profile.mobileNumber = user_profile.mobile_no // Assuming Frappe standard field
       authState.profile.bio = user_profile.bio
-
-      // Handle array or string
-      authState.profile.interests = user_profile.interest
-        ? (Array.isArray(user_profile.interest) ? user_profile.interest.join(', ') : user_profile.interest)
-        : ''
-
-      if (!authState.profile.bio) {
-        authState.profile.bio = authState.profile.interests; // Fallback
-      }
-
-      authState.profile.stats.actions = user_profile.contributions || 0
-      authState.profile.stats.issuesReported = user_profile.issues_reported || 0
+      authState.profile.interests = user_profile.interests
+      authState.profile.badges = user_profile.badges
+      authState.profile.stats.actions = user_profile.action_count || 0
+      authState.profile.stats.posts = user_profile.posts || 0
+      authState.profile.stats.hours = user_profile.hours_invested || 0
 
       // Cache the fresh data!
       saveCachedAuth()

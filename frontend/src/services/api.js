@@ -1,17 +1,18 @@
 import { getAPIToken, getRequestOptions } from '../auth'
+import imageCompression from 'browser-image-compression'
 
 // For local dev, use relative paths to hit the Vite proxy (fixes CORS/Cookies)
 // For production (Capacitor/Web), use the absolute URL
 const baseurl = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL
 
-export const getFeed = async () => {
+export const getFeed = async (limit = 10, offset = 0) => {
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
     const requestOptions = getRequestOptions()
     const response = await fetch(
-        baseurl + '/api/method/samaaja.api.feed.get',
+        `${baseurl}/api/method/samaaja.api.feed.get?limit=${limit}&offset=${offset}`,
         { ...requestOptions, headers }
     )
     if (response.ok) {
@@ -221,28 +222,160 @@ export const loginUsingOtp = async (data) => {
 }
 
 export const logAction = async (data) => {
-    const requestOptions = getRequestOptions()
+    try {
+        console.log("ORIGINAL DATA", data)
 
-    const formData = new FormData()
+        const formData = new FormData()
 
-    for (const key in data) {
-        if (Array.isArray(data[key])) {
-            data[key].forEach(file => formData.append(key, file))
-        } else {
-            formData.append(key, data[key])
+        for (const key in data) {
+
+            // Handle file arrays
+            if (Array.isArray(data[key])) {
+
+                for (const item of data[key]) {
+
+                    if (item.file instanceof File) {
+
+                        console.log("Compressing:", item.file.name)
+
+                        const compressedFile = await imageCompression(
+                            item.file,
+                            {
+                                maxSizeMB: 0.25,
+                                maxWidthOrHeight: 1280,
+                                initialQuality: 0.6,
+                                useWebWorker: true,
+                            }
+                        )
+
+                        console.log(
+                            `Compressed ${item.file.size / 1024} KB → ${compressedFile.size / 1024} KB`
+                        )
+
+                        formData.append(
+                            key,
+                            compressedFile,
+                            compressedFile.name
+                        )
+                    }
+                }
+
+            } else {
+
+                // Skip null/undefined
+                if (data[key] !== null && data[key] !== undefined) {
+                    formData.append(key, data[key])
+                }
+            }
         }
+
+        console.log("FORM DATA READY")
+
+        const response = await fetch(
+            baseurl + '/api/method/samaaja.api.action.create',
+            {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            }
+        )
+
+        console.log("RESPONSE RECEIVED", response)
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+        }
+
+        const result = await response.json()
+
+        console.log("RESULT", result)
+
+        return result
+
+    } catch (err) {
+
+        console.error("FETCH FAILED", err)
+
+        throw err
     }
+}
 
-    const response = await fetch(baseurl + '/api/method/samaaja.api.action.create', {
-        method: 'POST',
-        headers: requestOptions,
-        body: formData
-    })
 
-    if (!response.ok) {
-        throw new Error(`Failed to log action: ${response.statusText}`)
+export const addPost = async (data) => {
+    try {
+        console.log("ORIGINAL DATA", data)
+
+        const formData = new FormData()
+
+        for (const key in data) {
+
+            // Handle file arrays
+            if (Array.isArray(data[key])) {
+
+                for (const item of data[key]) {
+
+                    if (item.file instanceof File) {
+
+                        console.log("Compressing:", item.file.name)
+
+                        const compressedFile = await imageCompression(
+                            item.file,
+                            {
+                                maxSizeMB: 0.25,
+                                maxWidthOrHeight: 1280,
+                                initialQuality: 0.6,
+                                useWebWorker: true,
+                            }
+                        )
+
+                        console.log(
+                            `Compressed ${item.file.size / 1024} KB → ${compressedFile.size / 1024} KB`
+                        )
+
+                        formData.append(
+                            key,
+                            compressedFile,
+                            compressedFile.name
+                        )
+                    }
+                }
+
+            } else {
+
+                // Skip null/undefined
+                if (data[key] !== null && data[key] !== undefined) {
+                    formData.append(key, data[key])
+                }
+            }
+        }
+
+        console.log("FORM DATA READY")
+
+        const response = await fetch(
+            baseurl + '/api/method/samaaja.api.post.add',
+            {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            }
+        )
+
+        console.log("RESPONSE RECEIVED", response)
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+        }
+
+        const result = await response.json()
+
+        console.log("RESULT", result)
+
+        return result
+
+    } catch (err) {
+
+        console.error("FETCH FAILED", err)
+
+        throw err
     }
-
-    const result = await response.json()
-    return result.message || result.data
 }
