@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.3",
+    "@capacitor/cli": "^8.3.3",
+    "@capacitor/core": "^8.3.3",
     "@vueuse/core": "^14.2.1",
     "browser-image-compression": "^2.0.2",
     "lucide-vue-next": "^1.0.0",
