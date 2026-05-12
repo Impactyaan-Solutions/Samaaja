@@ -1,5 +1,7 @@
-import { getAPIToken, getRequestOptions } from '../auth'
+import { getAPITokenFromStorage, getRequestOptions } from '../auth'
 import imageCompression from 'browser-image-compression'
+import { Capacitor } from '@capacitor/core'
+import { CapacitorCookies } from '@capacitor/core'
 
 // For local dev, use relative paths to hit the Vite proxy (fixes CORS/Cookies)
 // For production (Capacitor/Web), use the absolute URL
@@ -8,24 +10,12 @@ const baseurl = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL
 export const getFeed = async (limit = 10, offset = 0) => {
     const headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
     }
-    const requestOptions = getRequestOptions()
-    const response = await fetch(
-        `${baseurl}/api/method/samaaja.api.feed.get?limit=${limit}&offset=${offset}`,
-        { ...requestOptions, headers }
-    )
-    if (response.ok) {
-        const result = await response.json();
-        const feed = result.data
-        return feed
-    } else {
-        throw new Error('Failed to fetch feed')
-    }
+    const response = await callAPI(headers, `${baseurl}/api/method/samaaja.api.feed.get?limit=${limit}&offset=${offset}`, 'GET', null)
+    return response.data
 }
 export const getProfile = async (email) => {
-    const requestOptions = getRequestOptions()
-
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -34,38 +24,20 @@ export const getProfile = async (email) => {
     const params = new URLSearchParams({ user_email: email })
     const url = `${baseurl}/api/method/samaaja.api.user.user_profile?${params.toString()}`
 
-    const response = await fetch(url, {
-        headers,
-        ...requestOptions
-    })
+    const data = await callAPI(headers, url, 'GET', null)
 
-    if (response.ok) {
-        const result = await response.json()
-        // Returns the message object from Frappe
-        return result.data
-    } else {
-        throw new Error(`Profile fetch failed: ${response.statusText}`)
-    }
+    // Returns the message object from Frappe
+    return data.data
 }
 
 export const getLoggedUser = async () => {
-    const requestOptions = getRequestOptions()
     const headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        ...requestOptions.headers
+        'Content-Type': 'application/json'
     }
-    const response = await fetch(
-        baseurl + '/api/method/frappe.auth.get_logged_user',
-        { ...requestOptions, headers }
-    )
-    if (response.ok) {
-        const result = await response.json();
-        const data = result.message
-        return data
-    } else {
-        throw new Error('Failed to fetch user')
-    }
+    const data = await callAPI(headers, baseurl + '/api/method/frappe.auth.get_logged_user', 'GET', null)
+    return data.message
+
 }
 
 export const getGoogleSignInURL = async () => {
@@ -113,30 +85,17 @@ export const fetchImageAsBase64 = async (url) => {
 }
 
 export const getLeaderboard = async () => {
-    const requestOption = getRequestOptions()
-
     const headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        ...requestOption.headers
+        'Content-Type': 'application/json'
     }
 
     const url = `${baseurl}/api/method/samaaja.api.leaderboard.user_leaderboard`
 
-    const response = await fetch(url, {
-        ...requestOption,
-        headers
-    })
+    const data = await callAPI(headers, url, 'GET', null)
 
-    if (response.ok) {
-        const result = await response.json()
-        // Returning result.data to stay consistent with your other methods
-        return result.data
-        console.log("Leaderboard API Response:", result) // Debugging log
-    } else {
-        throw new Error(`Leaderboard fetch failed: ${response.statusText}`)
-
-    }
+    // Returning result.data to stay consistent with your other methods
+    return data.data
 }
 export const logout = async () => {
     const requestOptions = getRequestOptions();
@@ -157,25 +116,13 @@ export const logout = async () => {
 };
 
 export const completeProfile = async (data) => {
-    const requestOptions = getRequestOptions()
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
 
-    const response = await fetch(baseurl + '/api/method/samaaja.api.user.complete_user_profile', {
-        method: 'POST',
-        headers,
-        ...requestOptions,
-        body: JSON.stringify(data)
-    })
-
-    if (!response.ok) {
-        throw new Error(`Failed to complete profile: ${response.statusText}`)
-    }
-
-    const result = await response.json()
-    return result.message || result.data
+    const result = await callAPI(headers, baseurl + '/api/method/samaaja.api.user.complete_user_profile', 'POST', data)
+    return result.data
 }
 
 export const createAccount = async (data) => {
@@ -183,19 +130,8 @@ export const createAccount = async (data) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
-
-    const response = await fetch(baseurl + '/api/method/samaaja.api.user.create_user', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(data)
-    })
-
-    if (!response.ok) {
-        throw new Error(`Failed to complete profile: ${response.statusText}`)
-    }
-
-    const result = await response.json()
-    return result.message || result.data
+    const result = await callAPI(headers, baseurl + '/api/method/samaaja.api.user.create_user', 'POST', data)
+    return result.data
 }
 
 export const loginUsingOtp = async (data) => {
@@ -218,6 +154,31 @@ export const loginUsingOtp = async (data) => {
     if (!response.ok) {
         throw new Error(`Failed to verify otp and login: ${response.statusText}`)
     }
+
+    if (Capacitor.isNativePlatform()) {
+
+        const data = await response.json()
+
+        console.log("LOGIN RESPONSE", data.data)
+
+        // Store user auth tokens
+        localStorage.setItem(
+            'api_key',
+            data.data.api_key
+        )
+
+        localStorage.setItem(
+            'api_secret',
+            data.data.api_secret
+        )
+
+        localStorage.setItem(
+            'user',
+            data.data.user
+        )
+    }
+
+
     return true
 }
 
@@ -270,29 +231,11 @@ export const logAction = async (data) => {
         }
 
         console.log("FORM DATA READY")
+        const result = await callAPI({}, baseurl + '/api/method/samaaja.api.action.create', 'POST', formData, true)
+        return result.data
 
-        const response = await fetch(
-            baseurl + '/api/method/samaaja.api.action.create',
-            {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            }
-        )
-
-        console.log("RESPONSE RECEIVED", response)
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`)
-        }
-
-        const result = await response.json()
-
-        console.log("RESULT", result)
-
-        return result
-
-    } catch (err) {
+    }
+    catch (err) {
 
         console.error("FETCH FAILED", err)
 
@@ -350,32 +293,53 @@ export const addPost = async (data) => {
         }
 
         console.log("FORM DATA READY")
-
-        const response = await fetch(
-            baseurl + '/api/method/samaaja.api.post.add',
-            {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            }
-        )
-
-        console.log("RESPONSE RECEIVED", response)
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`)
-        }
-
-        const result = await response.json()
-
-        console.log("RESULT", result)
-
-        return result
+        const result = await callAPI({}, baseurl + '/api/method/samaaja.api.post.add', 'POST', formData, true)
+        return result.data
 
     } catch (err) {
 
         console.error("FETCH FAILED", err)
 
         throw err
+    }
+}
+
+
+const callAPI = async (headers, url, method, data = null, isFormData = false) => {
+
+    if (Capacitor.isNativePlatform()) {
+        headers = { ...headers, ...getAPITokenFromStorage() }
+    } else {
+        headers = { ...headers, ...getRequestOptions() }
+    }
+    console.log(headers)
+    let response
+    if (data != null) {
+        if (isFormData) {
+            response = await fetch(url, {
+                method: method,
+                headers: headers,
+                body: data
+            })
+        } else {
+            response = await fetch(url, {
+                method: method,
+                headers: headers,
+                body: JSON.stringify(data)
+            })
+        }
+    } else {
+        response = await fetch(url, {
+            method: method,
+            headers: headers
+        })
+    }
+
+    if (response.ok) {
+        const result = await response.json();
+        console.log("API Response:", result) // Debugging log
+        return result
+    } else {
+        throw new Error(`API call failed: ${response.statusText}`)
     }
 }

@@ -135,6 +135,14 @@ export const getRequestOptions = () => {
   }
 }
 
-export const getAPIToken = () => {
+export const getAPITokenFromEnv = () => {
   return `token ${API_KEY}:${API_SECRET}`
+}
+
+export const getAPITokenFromStorage = () => {
+  const api_key = localStorage.getItem('api_key')
+  const api_secret = localStorage.getItem('api_secret')
+  return {
+    'Authorization': `token ${api_key}:${api_secret}`
+  }
 }
