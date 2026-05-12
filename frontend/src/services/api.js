@@ -130,7 +130,7 @@ export const createAccount = async (data) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
-    const result = await callAPI(headers, baseurl + '/api/method/samaaja.api.user.create_user', 'POST', data)
+    const result = await callAPI(headers, baseurl + '/api/method/samaaja.api.user.create_user', 'POST', data, false, false)
     return result.data
 }
 
@@ -305,9 +305,9 @@ export const addPost = async (data) => {
 }
 
 
-const callAPI = async (headers, url, method, data = null, isFormData = false) => {
+const callAPI = async (headers, url, method, data = null, isFormData = false, addToken = true) => {
 
-    if (Capacitor.isNativePlatform()) {
+    if (Capacitor.isNativePlatform() && addToken) {
         headers = { ...headers, ...getAPITokenFromStorage() }
     } else {
         headers = { ...headers, ...getRequestOptions() }
