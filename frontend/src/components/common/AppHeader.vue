@@ -38,7 +38,7 @@ const handleLogout = async () => {
         <h2 class="font-bold text-gray-900 text-xl">{{ title }}</h2>
       </template>
       <template v-else>
-        <div class="flex items-center space-x-3">
+        <router-link to="/profile" class="flex items-center space-x-3">
           <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold overflow-hidden">
             <img v-if="authState.profile.image" :src="authState.profile.image" class="w-full h-full object-cover" />
             <span v-else>{{ authState.profile.fullName ? authState.profile.fullName.charAt(0) : '?' }}</span>
@@ -47,7 +47,7 @@ const handleLogout = async () => {
             <h2 class="font-bold text-gray-900 text-[15px]">{{ authState.profile.fullName }}</h2>
             <p class="text-[11px] text-gray-500">{{ authState.profile.category }}</p>
           </div>
-        </div>
+        </router-link>
       </template>
     </slot>
     

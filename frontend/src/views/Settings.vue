@@ -12,7 +12,7 @@ import {
   Loader2
 } from 'lucide-vue-next'
 import AppHeader from '@/components/common/AppHeader.vue'
-import { getProfile } from '@/services/api.js'
+import { getProfile, logout } from '@/services/api.js'
 import router from '../router'
 
 // Reactive states
@@ -56,9 +56,20 @@ onMounted(() => {
   fetchUserProfile()
 })
 
-const handleLogout = () => {
-  // Add your logout logic here (e.g., clear tokens and redirect)
-  console.log("Logging out...")
+const handleLogout = async () => {
+  try {
+    // Call the API service logout method
+    await logout()
+  } catch (error) {
+    console.error("Logout request failed, proceeding with local cleanup:", error)
+  } finally {
+    // Always clear local session data and redirect regardless of API status
+    localStorage.removeItem('user_email')
+    localStorage.removeItem('token') // Ensure this matches your auth token key
+    
+    // Redirect to login page
+    router.push('/login')
+  }
 }
 </script>
 
