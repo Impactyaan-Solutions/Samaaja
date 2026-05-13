@@ -1,6 +1,6 @@
-﻿import { reactive } from 'vue'
-import { getLoggedUser, getProfile, fetchImageAsBase64 } from '@/services/api';
-import { getUnreadCount } from '@/services/announcement_api';
+import { reactive } from 'vue'
+import { getLoggedUser, getProfile, fetchImageAsBase64 } from '@/services/api'
+import { getUnreadCount } from '@/services/announcement'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 const API_SECRET = import.meta.env.VITE_API_SECRET
@@ -10,6 +10,7 @@ export const authState = reactive({
   isLoggedIn: false,
   email: null,
   isInitialLoad: true,
+  unreadAlertsCount: 0,
   profile: {
     fullName: null,
     image: null,
@@ -77,6 +78,10 @@ export async function checkAuth() {
       authState.profile.mobileNumber = '9876543210';
       authState.profile.stats.actions = 10;
       authState.profile.stats.issuesReported = 5;
+
+      // Fetch unread count even in dev mode if possible (mocked or real)
+      authState.unreadAlertsCount = await getUnreadCount();
+
       // Cache the fresh data!
       saveCachedAuth()
       // Fetch the image in the background and cache the base64!
@@ -94,6 +99,10 @@ export async function checkAuth() {
     authState.email = data;
     authState.isLoggedIn = true;
     authState.isInitialLoad = false;
+
+    // Fetch unread count
+    authState.unreadAlertsCount = await getUnreadCount();
+
     const user_profile = await getProfile(data)
     if (user_profile) {
       authState.profile.fullName = user_profile.full_name
