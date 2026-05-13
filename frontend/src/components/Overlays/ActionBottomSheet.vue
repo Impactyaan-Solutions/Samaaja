@@ -1,33 +1,30 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Zap, X, MessageSquareText } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 
+const { t } = useI18n()
 const emit = defineEmits(['close'])
 const router = useRouter()
 
-const actions = [
+// Computed allows the list to update automatically when language changes
+const actions = computed(() => [
   {
-    title: 'Log your Action',
-    description: 'Capture completed work and inspire others.',
+    title: t('action_sheet.log_action.title'),
+    description: t('action_sheet.log_action.desc'),
     icon: Zap,
     colorClass: 'bg-green-100 text-green-600',
     path: '/log-action'
   },
   {
-    title: 'Add a Post',
-    description: 'Post an update to share with your community.',
+    title: t('action_sheet.add_post.title'),
+    description: t('action_sheet.add_post.desc'),
     icon: MessageSquareText,
     colorClass: 'bg-blue-100 text-blue-600',
     path: '/add-post'
-  },
-  /* {
-    title: 'Ask for Help',
-    description: 'Request volunteers, resources, or quick guidance.',
-    icon: Zap,
-    colorClass: 'bg-blue-100 text-blue-600',
-    path: '/log-action' // Redirecting here for demo
-  } */
-]
+  }
+])
 
 const handleAction = (path) => {
   emit('close')
@@ -37,15 +34,13 @@ const handleAction = (path) => {
 
 <template>
   <div class="absolute inset-0 z-50 flex items-end">
-    <!-- Backdrop -->
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="emit('close')"></div>
     
-    <!-- Sheet -->
     <div class="relative w-full max-w-md mx-auto bg-white rounded-t-3xl p-6 pb-12 shadow-2xl transition-transform animate-slideUp">
       <div class="flex justify-between items-center mb-6">
         <div>
-          <h3 class="text-xl font-bold text-gray-900">Choose an action</h3>
-          <p class="text-sm text-gray-500 mt-1">Start something meaningful for your community</p>
+          <h3 class="text-xl font-bold text-gray-900">{{ t('action_sheet.title') }}</h3>
+          <p class="text-sm text-gray-500 mt-1">{{ t('action_sheet.subtitle') }}</p>
         </div>
         <button @click="emit('close')" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
           <X class="w-5 h-5 text-gray-600" />

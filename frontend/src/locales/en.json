@@ -1,0 +1,182 @@
+{
+  "dashboard": {
+    "actions": "Actions",
+    "posts": "Posts",
+    "invested": "Invested",
+    "hours": "{h}h"
+  },
+  "feed": {
+    "title": "Community Feed",
+    "no_more_posts": "No more posts"
+  },
+  "profile": {
+    "settings": "Settings",
+    "logout": "Logout",
+    "impact_summary": "Impact Summary",
+    "actions": "Actions",
+    "hours": "Hours",
+    "posts": "Posts",
+    "badges_earned": "Badges Earned",
+    "no_badges": "No badges earned",
+    "syncing": "Syncing..."
+  },
+  "leaderboard": {
+    "org": "Organisation",
+    "global": "Global",
+    "search": "Search City or Country...",
+    "loading": "Loading leaderboard...",
+    "actions": "Actions"
+  },
+  "nav": {
+    "home": "Home",
+    "leaderboard": "Leaderboard",
+    "act": "Act",
+    "alerts": "Alerts",
+    "profile": "Profile"
+  },
+    "settings": {
+        "title": "App Settings",
+        "push_notifications": "Push Notifications",
+        "push_desc": "Activity and alerts",
+        "language": "Language",
+        "dark_mode": "Dark Mode",
+        "dark_mode_desc": "Reduce eye strain",
+        "support": "Support",
+        "help_center": "Help Center",
+        "privacy_policy": "Privacy Policy",
+        "logout": "Log Out"
+    },
+
+
+    "time_ago": {
+        "just_now": "Just now",
+        "minutes": "{n} minutes ago",
+        "hours": "{n} hours ago",
+        "days": "{n} days ago"
+    },
+  "add_post": {
+    "title": "Add a Post",
+    "title_label": "Title",
+    "title_placeholder": "Title of your post",
+    "desc_label": "Description",
+    "desc_placeholder": "What you would like to share with the community?",
+    "cat_label": "Category",
+    "cat_placeholder": "Select a category...",
+    "cat_water": "Water",
+    "cat_climate": "Climate",
+    "cat_civic": "Civic",
+    "cat_education": "Education",
+    "media_label": "Media (Optional)",
+    "media_hint": "(Adding photos improves trust)",
+    "add_media_text": "Add photos or videos",
+    "tap_hint": "Tap to browse from your device",
+    "submit": "Submit Post",
+    "success": "Post submitted successfully!"
+  },
+  "landing": {
+    "title": "Build Your Community. Take Action.",
+    "subtitle": "Join people in your area solving real issues and improving their community together.",
+    "signup": "Sign Up",
+    "login": "Login",
+    "section_title": "What you can do",
+    "features": {
+      "report": {
+        "title": "Report & Act",
+        "desc": "Raise local problems and track progress."
+      },
+      "connect": {
+        "title": "Connect",
+        "desc": "Post or join community discussions."
+      },
+      "recognised": {
+        "title": "Get Recognised",
+        "desc": "See your impact and leaderboard rank."
+      },
+      "help": {
+        "title": "Ask for Help",
+        "desc": "Get support from experts and community."
+      }
+    }
+  },
+  "log_action": {
+    "title": "Log Action",
+    "category_label": "Action Category",
+    "category_placeholder": "Select a category...",
+    "cat_water": "Water",
+    "cat_climate": "Climate",
+    "cat_civic": "Civic",
+    "cat_education": "Education",
+    "desc_label": "Description",
+    "desc_placeholder": "What impact did you make today?",
+    "hours_label": "Hours Invested",
+    "media_label": "Media (Optional)",
+    "media_hint": "(Adding photos improves trust)",
+    "add_media_text": "Add photos or videos",
+    "tap_hint": "Tap to browse from your device",
+    "submit": "Submit Action",
+    "success": "Action logged successfully!"
+  },
+  
+  "complete_profile": {
+    "title": "Complete Profile",
+    "subtitle": "Almost there! We just need a few more details to set up your account.",
+    "error_msg": "Failed to update profile. Please try again.",
+    "gender": "Gender",
+    "gender_placeholder": "Select Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "category": "Category",
+    "cat_placeholder": "Select Category",
+    "volunteer": "Volunteer",
+    "citizen": "Citizen",
+    "dob": "Date of Birth",
+    "mobile": "Mobile Number",
+    "mobile_placeholder": "e.g. 9876543210",
+    "bio": "Bio",
+    "bio_placeholder": "Tell us a bit about yourself and why you joined.",
+    "save_btn": "Saving Profile...",
+    "submit_btn": "Complete Registration"
+  },
+
+    "signup": {
+        "title": "Sign Up",
+        "subtitle": "Join the community to start making a real impact!",
+        "full_name": "Full Name",
+        "name_placeholder": "e.g. Rahul Poddar",
+        "dob": "Date of Birth",
+        "dob_placeholder": "DD/MM/YYYY",
+        "gender": "Gender",
+        "gender_select": "Select Gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "role": "Role",
+        "role_select": "Select Role",
+        "role_volunteer": "Volunteer",
+        "role_organizer": "Organizer",
+        "role_partner": "Partner",
+        "mobile": "Mobile Number",
+        "mobile_placeholder": "Mobile Number",
+        "bio": "Bio",
+        "bio_placeholder": "Short bio",
+        "create_account": "Create Account",
+        "or_signup": "Or sign up with"
+        },
+
+    "action_sheet": {
+        "title": "Choose an action",
+        "subtitle": "Start something meaningful for your community",
+        "log_action": { 
+        "title": "Log your Action", 
+        "desc": "Capture completed work and inspire others." 
+        },
+        "add_post": { 
+        "title": "Add a Post", 
+        "desc": "Post an update to share with your community." 
+        }
+    }
+
+
+
+}

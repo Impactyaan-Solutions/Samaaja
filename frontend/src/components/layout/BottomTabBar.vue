@@ -1,20 +1,23 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { Home, BarChart2, Zap, Bell, User } from 'lucide-vue-next'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
 const emit = defineEmits(['act'])
 
-const tabs = [
-  { name: 'Home', path: 'homepage', icon: Home },
-  { name: 'Leaderboard', path: '/leaderboard', icon: BarChart2 },
-  { name: 'Act', path: null, icon: Zap, isAction: true },
-  { name: 'Alerts', path: '/announcements', icon: Bell },
-  { name: 'Profile', path: '/profile', icon: User }
-]
+// We use computed so the names update automatically when locale changes
+const tabs = computed(() => [
+  { name: t('nav.home'), path: '/homepage', icon: Home },
+  { name: t('nav.leaderboard'), path: '/leaderboard', icon: BarChart2 },
+  { name: t('nav.act'), path: null, icon: Zap, isAction: true },
+  { name: t('nav.alerts'), path: '/announcements', icon: Bell },
+  { name: t('nav.profile'), path: '/profile', icon: User }
+])
 
 const go = (tab) => {
   if (tab.isAction) {

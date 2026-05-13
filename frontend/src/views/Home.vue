@@ -1,10 +1,13 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Plus, Edit3, HelpCircle, Loader2 } from 'lucide-vue-next'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n' // Import i18n
+import { Loader2 } from 'lucide-vue-next'
 import CommunityPost from '../components/common/CommunityPost.vue'
 import AppHeader from '@/components/common/AppHeader.vue'
 import { getFeed } from '@/services/api'
 import { authState } from '@/auth'
+
+const { t } = useI18n() // Initialize translation function
 
 let actions_taken = 0
 let posts_created = 0
@@ -14,14 +17,11 @@ if (authState.profile.stats){
   posts_created = authState.profile.stats.posts || 0
   hours_invested = authState.profile.stats.hours || 0
 }
-const posts = ref([])
 
+const posts = ref([])
 const limit = 10
 const offset = ref(0)
-
 const hasMore = ref(true)
-
-
 const startY = ref(0)
 const currentY = ref(0)
 const isRefreshing = ref(false)
@@ -50,7 +50,6 @@ const handleTouchMove = (e) => {
   const y = e.touches[0].clientY;
   const deltaY = y - startY.value;
   if (deltaY > 0) {
-    // Apply resistance
     currentY.value = deltaY * 0.4;
   } else {
     isPulling.value = false;
@@ -62,12 +61,8 @@ const handleTouchEnd = () => {
   if (currentY.value > 60) {
     isRefreshing.value = true;
     currentY.value = 50;
-    
-    // Simulate API refresh
     setTimeout(() => {
-      // Actually reset the posts array back to default 2 posts to simulate a true "fresh" pull
       posts.value = posts.value.slice(0, 2);
-      
       isRefreshing.value = false;
       currentY.value = 0;
     }, 1500);
@@ -83,20 +78,15 @@ let observer = null
 const loadMorePosts = async () => {
   await fetchPosts();
 }
+
 const fetchPosts = async () => {
   if (isLoadingMore.value || !hasMore.value) return
-
   isLoadingMore.value = true
-
   try {
     const response = await getFeed(limit, offset.value)
-
     const newPosts = response.posts || []
-
     posts.value.push(...newPosts)
-
     offset.value += limit
-
     hasMore.value = response.has_more
   } catch (err) {
     console.error(err)
@@ -106,19 +96,16 @@ const fetchPosts = async () => {
 }
 
 onMounted(async() => {
-  const feed = await fetchPosts();
-  if(feed){
-       posts.value=feed;
-   }
+  await fetchPosts();
   observer = new IntersectionObserver((entries) => {
     if (
       entries[0].isIntersecting &&
       hasMore.value &&
       !isLoadingMore.value
     ) {
-        loadMorePosts()
+      loadMorePosts()
     }
-  }, { rootMargin: '200px' }) // Trigger 200px before reaching the bottom
+  }, { rootMargin: '200px' })
   
   if (loadMoreSentinel.value) {
     observer.observe(loadMoreSentinel.value)
@@ -139,7 +126,6 @@ onUnmounted(() => {
     @touchmove.passive="handleTouchMove"
     @touchend="handleTouchEnd"
   >
-    <!-- Pull to Refresh Indicator -->
     <div 
       class="absolute left-0 right-0 flex justify-center pointer-events-none z-50 text-primary-600"
       :style="{ 
@@ -155,44 +141,25 @@ onUnmounted(() => {
 
     <AppHeader />
 
-    <!-- Stats Grid -->
     <div class="px-5 mt-5 grid grid-cols-3 gap-3">
       <div class="bg-primary-700 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
         <span class="text-2xl font-bold">{{ actions_taken }}</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">Actions</span>
+        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('dashboard.actions') }}</span>
       </div>
       <div class="bg-primary-600 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
         <span class="text-2xl font-bold">{{ posts_created }}</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">Posts</span>
+        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('dashboard.posts') }}</span>
       </div>
       <div class="bg-primary-500 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
-        <span class="text-2xl font-bold">{{ hours_invested }}h</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">Invested</span>
+        <span class="text-2xl font-bold">{{ t('dashboard.hours', { h: hours_invested }) }}</span>
+        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('dashboard.invested') }}</span>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-<!--     <div class="px-5 mt-4 grid grid-cols-3 gap-3">
-      <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
-        <Plus class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Action</span>
-      </button>
-      <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
-        <Edit3 class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Post</span>
-      </button>
-      <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
-        <HelpCircle class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Ask Help</span>
-      </button>
-    </div> -->
-
-    <!-- Feed -->
     <div class="px-5 mt-6">
-      <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">Community Feed</h3>
+      <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">{{ t('feed.title') }}</h3>
       <CommunityPost v-for="post in posts" :key="post.id" :post="post" />
       
-      <!-- Infinite Scroll Trigger Sentinel -->
       <div ref="loadMoreSentinel" class="py-8 flex justify-center items-center opacity-70">
         <Loader2 v-if="isLoadingMore" class="w-6 h-6 animate-spin text-primary-500" />
       </div>
@@ -200,7 +167,7 @@ onUnmounted(() => {
         v-if="!hasMore"
         class="text-center text-sm text-gray-400 py-6"
       >
-        No more posts
+        {{ t('feed.no_more_posts') }}
       </div>
     </div>
   </div>

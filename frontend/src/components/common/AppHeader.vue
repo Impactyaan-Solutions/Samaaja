@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n' // 1. Import useI18n
 import { Menu, Settings, LogOut } from 'lucide-vue-next'
 import { authState } from '@/auth'
 import { logout as apiLogout } from '@/services/api'
+
+const { t } = useI18n() // 2. Initialize translation
 
 defineProps({
   title: {
@@ -32,7 +35,6 @@ const handleLogout = async () => {
 
 <template>
   <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-[100] shadow-sm border-b border-gray-100 mb-1">
-    <!-- Left Section -->
     <slot name="left">
       <template v-if="title">
         <h2 class="font-bold text-gray-900 text-xl">{{ title }}</h2>
@@ -51,7 +53,6 @@ const handleLogout = async () => {
       </template>
     </slot>
     
-    <!-- Right Section (Hamburger + Dropdown) -->
     <slot name="right">
       <div class="relative">
         <button 
@@ -61,7 +62,6 @@ const handleLogout = async () => {
           <Menu class="w-5 h-5 text-gray-600" />
         </button>
 
-        <!-- Dropdown Menu -->
         <transition
           enter-active-class="transition duration-100 ease-out"
           enter-from-class="transform scale-95 opacity-0"
@@ -81,7 +81,7 @@ const handleLogout = async () => {
                 class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors"
               >
                 <Settings class="w-4 h-4 text-gray-500" />
-                <span class="text-sm font-medium">Settings</span>
+                <span class="text-sm font-medium">{{ t('profile.settings') }}</span>
               </router-link>
               
               <div class="border-t border-gray-100 mx-2"></div>
@@ -91,7 +91,7 @@ const handleLogout = async () => {
                 class="flex items-center space-x-3 px-4 py-3 hover:bg-red-50 text-red-600 transition-colors text-left"
               >
                 <LogOut class="w-4 h-4" />
-                <span class="text-sm font-medium">Logout</span>
+                <span class="text-sm font-medium">{{ t('profile.logout') }}</span>
               </button>
             </div>
           </div>
@@ -99,7 +99,6 @@ const handleLogout = async () => {
       </div>
     </slot>
 
-    <!-- Global Backdrop -->
     <div 
       v-if="isMenuOpen" 
       @click="isMenuOpen = false" 
