@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { Bell, CheckCircle } from 'lucide-vue-next'
 import AppHeader from '@/components/common/AppHeader.vue'
 
@@ -55,3 +55,4 @@ const announcements = [
     </div>
   </div>
 </template>
+
