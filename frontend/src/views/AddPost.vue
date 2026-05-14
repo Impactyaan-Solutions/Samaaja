@@ -38,19 +38,24 @@ const handleMediaClick = () => {
 const handleFileChange = (event) => {
   const files = Array.from(event.target.files || [])
   processFiles(files)
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
 }
 
 
 const processFiles = (files) => {
-  const mappedFiles = files.map((file) => ({
+  if (files.length === 0) return;
+  const file = files[0];
+  const mappedFile = {
     file,
     type: file.type,
     preview: file.type.startsWith('image/')
       ? URL.createObjectURL(file)
       : null,
-  }))
+  };
 
-  uploadedFiles.value.push(...mappedFiles)
+  uploadedFiles.value = [mappedFile];
 }
 
 const removeFile = (index) => {
@@ -152,7 +157,6 @@ const removeFile = (index) => {
           <input
             ref="fileInput"
             type="file"
-            multiple
             accept="image/*"
             class="hidden"
             @change="handleFileChange"
@@ -160,6 +164,7 @@ const removeFile = (index) => {
 
           <!-- Upload Box -->
           <div
+            v-if="uploadedFiles.length === 0"
             class="border-2 border-dashed rounded-2xl p-1 flex flex-col items-center justify-center transition-colors cursor-pointer group"
             :class="'border-gray-300 bg-gray-50 hover:bg-gray-100'"
             @click="handleMediaClick"
@@ -171,7 +176,7 @@ const removeFile = (index) => {
             </div>
 
             <span class="font-bold text-gray-900 text-sm">  
-              Add photos or videos
+              Add a photo or video
             </span>
 
             <span class="text-sm text-gray-500 mt-1">
