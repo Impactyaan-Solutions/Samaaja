@@ -2,7 +2,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { MoreHorizontal, MessageSquare, Heart, Share2, Award } from 'lucide-vue-next'
 import { getTimeSinceCreation } from '@/utils/utils'
-defineProps({
+import { likePost } from '@/services/api'
+import { authState } from '@/auth'
+const props = defineProps({
   post: {
     type: Object,
     required: true
@@ -14,6 +16,15 @@ const containerRef = ref(null)
 const savedHeight = ref(0)
 let observer = null
 
+const handleLikePost = async (post_id) => {
+  try {
+    await likePost(post_id, authState.email)
+    props.post.like_count++
+  }
+  catch (err) {
+    console.error("FETCH FAILED", err)
+  }
+}
 onMounted(() => {
   observer = new IntersectionObserver((entries) => {
     const entry = entries[0]
@@ -92,7 +103,7 @@ onUnmounted(() => {
     <!-- Actions Footer -->
     <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
       <div class="flex items-center space-x-6">
-        <button class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
+        <button @click = "handleLikePost(post.name)" class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
           <Heart class="w-5 h-5" />
           <span class="text-xs font-semibold">{{ post.like_count }}</span>
         </button>

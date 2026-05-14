@@ -304,7 +304,20 @@ export const addPost = async (data) => {
     }
 }
 
-
+export const likePost = async (post_id, user_id) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        const result = await callAPI(headers, baseurl + '/api/method/samaaja.api.post.like', 'POST', { post_id, user_id })
+        return result.data
+    }
+    catch (err) {
+        console.error("FETCH FAILED", err)
+        throw err
+    }
+}
 const callAPI = async (headers, url, method, data = null, isFormData = false, addToken = true) => {
 
     if (Capacitor.isNativePlatform() && addToken) {
