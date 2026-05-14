@@ -54,7 +54,7 @@ const handleSubmit = async () => {
     await createAccount(data)
     router.push('/login')
   } catch(err){
-    errorMessage.value = err.response.data.message;
+    errorMessage.value = err.message;
   } finally{
     isSubmitting.value = false;
   }
@@ -96,7 +96,9 @@ const goBack = () => {
           Join the community to start making a real impact!
         </p>
       </div>
-
+      <div v-if="errorMessage" class="mb-6 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-medium">
+        {{ errorMessage }}
+      </div>
       <!-- Signup Form -->
       <form @submit.prevent="handleSubmit" class="space-y-2">
         <div class="space-y-1">

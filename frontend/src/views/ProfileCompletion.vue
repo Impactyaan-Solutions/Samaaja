@@ -51,8 +51,8 @@ const submitForm = async () => {
     router.push({ name: 'home' });
     
   } catch (error) {
-    console.error("Profile update failed:", error);
-    errorMessage.value = "Failed to update profile. Please try again or check your backend API configuration.";
+    console.error(error);
+    errorMessage.value = error.message;
   } finally {
     isSubmitting.value = false;
   }

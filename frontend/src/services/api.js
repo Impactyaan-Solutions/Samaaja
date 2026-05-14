@@ -337,9 +337,9 @@ const callAPI = async (headers, url, method, data = null, isFormData = false) =>
 
     if (response.ok) {
         const result = await response.json();
-        console.log("API Response:", result) // Debugging log
         return result
     } else {
-        throw new Error(`API call failed: ${response.statusText}`)
+        const data = await response.json()
+        throw new Error(data.message)
     }
 }
