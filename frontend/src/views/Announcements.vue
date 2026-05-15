@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { ArrowRightCircle, Loader2 } from "lucide-vue-next"
-import { getActiveAnnouncements, recordInteraction } from "../services/announcement"
+import { getActiveAnnouncements, recordInteraction } from "@/services/api"
 import { authState } from "@/auth"
 
 const announcements = ref([])

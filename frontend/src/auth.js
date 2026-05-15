@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { getLoggedUser, getProfile, fetchImageAsBase64 } from '@/services/api'
-import { getUnreadCount } from '@/services/announcement'
+import { getUnreadCount } from '@/services/api'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 const API_SECRET = import.meta.env.VITE_API_SECRET
