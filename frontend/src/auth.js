@@ -1,6 +1,5 @@
 import { reactive } from 'vue'
 import { getLoggedUser, getProfile, fetchImageAsBase64 } from '@/services/api'
-import { getUnreadCount } from '@/services/api'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 const API_SECRET = import.meta.env.VITE_API_SECRET
@@ -80,7 +79,7 @@ export async function checkAuth() {
       authState.profile.stats.issuesReported = 5;
 
       // Fetch unread count even in dev mode if possible (mocked or real)
-      authState.unreadAlertsCount = await getUnreadCount();
+      // unread count is computed locally from localStorage after announcements load
 
       // Cache the fresh data!
       saveCachedAuth()

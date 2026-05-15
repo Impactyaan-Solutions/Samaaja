@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { ArrowRightCircle, Loader2 } from "lucide-vue-next"
-import { getActiveAnnouncements, recordInteraction } from "@/services/api"
+import { getActiveAnnouncements, recordInteraction, getLocalUnreadCount } from "@/services/api"
 import { authState } from "@/auth"
 import AppHeader from "@/components/common/AppHeader.vue"
 
@@ -12,17 +12,12 @@ const error = ref(null)
 onMounted(async () => {
   try {
     announcements.value = await getActiveAnnouncements()
+    authState.unreadAlertsCount = getLocalUnreadCount(announcements.value)
 
-    // Track viewed announcements to decrement counter locally
     for (const a of announcements.value) {
-      const res = await recordInteraction(a.name, "View")
-      if (res && res.data && res.data.status === "success") {
-        // Decrement the local unread count if it was unread
-        if (authState.unreadAlertsCount > 0) {
-          authState.unreadAlertsCount--
-        }
-      }
+      await recordInteraction(a.name, "View")
     }
+    authState.unreadAlertsCount = 0
   } catch (e) {
     error.value = e.message
   } finally {
