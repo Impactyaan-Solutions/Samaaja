@@ -136,10 +136,11 @@ const removeFile = (index) => {
               Select a category...
             </option>
 
-            <option value="Water">Water</option>
-            <option value="Climate">Climate</option>
-            <option value="Civic">Civic</option>
+            <option value="Agriculture & Livelihood">Agriculture & Livelihood</option>
+            <option value="Health & Nutrition">Health & Nutrition</option>
             <option value="Education">Education</option>
+            <option value="Civic Action & Governance">Civic Action & Governance</option>
+            <option value="Sports & Fitness">Sports & Fitness</option>
           </select>
         </div>
 

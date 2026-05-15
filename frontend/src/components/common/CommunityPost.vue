@@ -11,6 +11,14 @@ const props = defineProps({
   }
 })
 
+const tagColors = [
+  'bg-blue-50 text-blue-600',
+  'bg-green-50 text-green-600',
+  'bg-purple-50 text-purple-600',
+  'bg-red-50 text-red-600',
+  'bg-yellow-50 text-yellow-700',
+]
+
 const isVisible = ref(true)
 const containerRef = ref(null)
 const savedHeight = ref(0)
@@ -59,7 +67,7 @@ onUnmounted(() => {
     <div v-show="isVisible">
     <!-- Header -->
     <div class="p-4 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
+      <router-link :to="{ name: 'profile', query: { user_email: post.user } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
         <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
           <img v-if="post.user_profile?.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover"/>
           <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
@@ -73,7 +81,7 @@ onUnmounted(() => {
           </div>
           <p class="text-xs text-gray-500">{{ post.user_profile?.user_category || '' }}</p>
         </div>
-      </div>
+      </router-link>
       <div class="flex items-center space-x-2">
         <span class="text-xs text-gray-400 font-medium">{{ getTimeSinceCreation(post.creation) }}</span>
       </div>
@@ -94,8 +102,18 @@ onUnmounted(() => {
 
       <!-- Tags -->
       <div class="flex items-center space-x-2 mb-2">
-        <span class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold tracking-wide uppercase">
-          {{ post.tag }}
+        <span
+          v-for="(tag, index) in post.tag
+            ?.split(',')
+            .map(t => t.trim())
+            .filter(Boolean)"
+          :key="tag"
+          :class="[
+            'px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide uppercase',
+            tagColors[index % tagColors.length]
+          ]"
+        >
+          {{ tag }}
         </span>
       </div>
     </div>

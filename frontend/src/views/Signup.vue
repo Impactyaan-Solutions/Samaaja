@@ -156,9 +156,8 @@ const goBack = () => {
             v-model="formData.category"
             class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
           >
-            <option>Volunteer</option>
-            <option>Organizer</option>
-            <option>Partner</option>
+            <option>Citizen</option>
+            <option>NGO Partner</option>
           </select>
         </div>
 

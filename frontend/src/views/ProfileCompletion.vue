@@ -97,8 +97,8 @@ const submitForm = async () => {
             <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
             <select v-model="formData.category" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
               <option value="" disabled>Select Category</option>
-              <option value="Volunteer">Volunteer</option>
               <option value="Citizen">Citizen</option>
+              <option value="NGO Partner">NGO Partner</option>
             </select>
           </div>
         </div>

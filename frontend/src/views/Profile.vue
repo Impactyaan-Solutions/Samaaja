@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { 
   ChevronDown, 
   Leaf, 
@@ -10,6 +11,7 @@ import {
 } from 'lucide-vue-next'
 import AppHeader from '@/components/common/AppHeader.vue'
 import { authState } from '@/auth'
+import { getProfile } from '@/services/api'
 
 // --- Menu Logic ---
 const isMenuOpen = ref(false)
@@ -31,22 +33,73 @@ const goToSettings = () => {
 }
 
 // --- Original User Logic ---
-const user = computed(() => ({
-  name: authState.profile.fullName,
-  role: authState.profile.category,
-  bio: authState.profile.bio, 
-  image: authState.profile.imageBase64 || authState.profile.image,
-  stats: {
-    actions: authState.profile.stats.actions,
-    issuesResolved: authState.profile.stats.issuesReported || 0,
-    posts: authState.profile.stats.posts || 0,
-    hours: authState.profile.stats.hours || 0
-  },
-  interests:authState.profile.interests,
-  badges:authState.profile.badges
-}))
+const route = useRoute()
+const externalProfile = ref(null)
+const isExternalLoading = ref(false)
 
-const isLoading = computed(() => authState.isInitialLoad)
+const loadExternalProfile = async (email) => {
+  isExternalLoading.value = true
+  try {
+    const data = await getProfile(email)
+    externalProfile.value = data
+  } catch (err) {
+    console.error("Failed to load user profile", err)
+    externalProfile.value = null
+  } finally {
+    isExternalLoading.value = false
+  }
+}
+
+onMounted(() => {
+  if (route.query.user_email) {
+    loadExternalProfile(route.query.user_email)
+  }
+})
+
+watch(() => route.query.user_email, (newEmail) => {
+  if (newEmail) {
+    loadExternalProfile(newEmail)
+  } else {
+    externalProfile.value = null
+  }
+})
+
+const user = computed(() => {
+  if (externalProfile.value) {
+    const p = externalProfile.value
+    return {
+      name: p.full_name,
+      role: p.user_category,
+      bio: p.bio,
+      image: p.user_image,
+      stats: {
+        actions: p.action_count || 0,
+        issuesResolved: p.issues_reported || 0,
+        posts: p.posts || 0,
+        hours: p.hours_invested || 0
+      },
+      interests: p.interests,
+      badges: p.badges
+    }
+  }
+
+  return {
+    name: authState.profile.fullName,
+    role: authState.profile.category,
+    bio: authState.profile.bio, 
+    image: authState.profile.imageBase64 || authState.profile.image,
+    stats: {
+      actions: authState.profile.stats.actions,
+      issuesResolved: authState.profile.stats.issuesReported || 0,
+      posts: authState.profile.stats.posts || 0,
+      hours: authState.profile.stats.hours || 0
+    },
+    interests: authState.profile.interests,
+    badges: authState.profile.badges
+  }
+})
+
+const isLoading = computed(() => authState.isInitialLoad || isExternalLoading.value)
 </script>
 
 <template>

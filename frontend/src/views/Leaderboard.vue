@@ -22,7 +22,8 @@ onMounted(async () => {
       avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),
       verified: false, 
       email: item.user,
-      isCurrentUser: false 
+      isCurrentUser: false,
+      email:item.name
     }))
   } catch (error) {
     console.error("Error loading leaderboard:", error)
@@ -80,6 +81,7 @@ onMounted(async () => {
         class="bg-white p-4 rounded-2xl flex items-center justify-between border shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-shadow"
         :class="user.isCurrentUser ? 'border-primary-200 shadow-primary-100' : 'border-gray-100'"
       >
+         <router-link :to="{ name: 'profile', query: { user_email: user.email } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
         <div class="flex items-center space-x-4">
           <span class="w-5 text-center font-bold text-gray-400 text-sm" :class="{'text-yellow-500': user.rank === 1, 'text-gray-400': user.rank === 2, 'text-amber-600': user.rank === 3}">
             {{ user.rank }}
@@ -96,7 +98,7 @@ onMounted(async () => {
             <p class="text-xs text-gray-500 mt-0.5">{{ user.role }}</p>
           </div>
         </div>
-        
+        </router-link>  
         <div class="bg-blue-50/70 border border-blue-50 text-primary-600 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
           <span class="font-bold text-sm leading-none">{{ user.actions }}</span>
           <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">Actions</span>

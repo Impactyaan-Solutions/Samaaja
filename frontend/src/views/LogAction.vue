@@ -10,7 +10,7 @@ const fileInput = ref(null)
 const uploadedFiles = ref([])
 
 
-
+const type = ref('')
 const category = ref('')
 const description = ref('')
 const hours_invested = ref('')
@@ -19,6 +19,7 @@ const submitAction = async (e) => {
   try {
     e.preventDefault()
     const response = await logAction({
+      type: type.value,
       category: category.value,
       description: description.value,
       hours_invested: hours_invested.value,
@@ -92,7 +93,27 @@ const removeFile = (index) => {
 
     <div class="px-5 pt-2 pb-12">
       <form class="space-y-6">
-        <!-- Action Category -->
+        <!-- Action Type -->
+         <div>
+            <label class="block text-sm font-bold text-gray-900 mb-2">
+            Action Type
+            <span class="text-red-500">*</span>
+          </label>
+            <select
+            v-model="type"
+            class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
+          >
+            <option value="" disabled selected>
+              Select a type...
+            </option>
+            <option value="On-Ground Action">On-Ground Action</option>
+            <option value="Data & Reporting">Data & Reporting</option>
+            <option value="Training & Mentoring">Training & Mentoring</option>
+            <option value="Events & Activities">Events & Activities</option>
+            <option value="Outreach & Awareness">Outreach & Awareness</option>
+            <option value="Community Engagement">Community Engagement</option>
+          </select>
+         </div>
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
             Action Category
@@ -107,10 +128,11 @@ const removeFile = (index) => {
               Select a category...
             </option>
 
-            <option value="Water">Water</option>
-            <option value="Climate">Climate</option>
-            <option value="Civic">Civic</option>
+            <option value="Agriculture & Livelihood">Agriculture & Livelihood</option>
+            <option value="Health & Nutrition">Health & Nutrition</option>
             <option value="Education">Education</option>
+            <option value="Civic Action & Governance">Civic Action & Governance</option>
+            <option value="Sports & Fitness">Sports & Fitness</option>
           </select>
         </div>
 
