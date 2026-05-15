@@ -246,15 +246,15 @@ export const logAction = async (data) => {
 
 export const getActiveAnnouncements = async () => {
     const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-    const result = await callAPI(headers, `${baseurl}/api/method/samaaja_announcements.samaaja_announcements.api.get_active_announcements`, 'GET', null)
-    return result.message
+    const result = await callAPI(headers, `${baseurl}/api/method/samaaja.api.announcements.get_active_announcements`, 'GET', null)
+    return result.data
 }
 
 export const getUnreadCount = async () => {
     try {
         const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-        const result = await callAPI(headers, `${baseurl}/api/method/samaaja_announcements.samaaja_announcements.api.get_unread_count`, 'GET', null)
-        return result.message
+        const result = await callAPI(headers, `${baseurl}/api/method/samaaja.api.announcements.get_unread_count`, 'GET', null)
+        return result.data
     } catch {
         return 0
     }
@@ -263,7 +263,7 @@ export const getUnreadCount = async () => {
 export const recordInteraction = async (announcement, type, contactId = null) => {
     return await callAPI(
         {},
-        `${baseurl}/api/method/samaaja_announcements.samaaja_announcements.api.record_interaction`,
+        `${baseurl}/api/method/samaaja.api.announcements.record_interaction`,
         'POST',
         new URLSearchParams({ announcement, interaction_type: type, contact_id: contactId || '' }),
         true

@@ -16,7 +16,7 @@ onMounted(async () => {
     // Track viewed announcements to decrement counter locally
     for (const a of announcements.value) {
       const res = await recordInteraction(a.name, "View")
-      if (res && res.message && res.message.status === "success") {
+      if (res && res.data && res.data.status === "success") {
         // Decrement the local unread count if it was unread
         if (authState.unreadAlertsCount > 0) {
           authState.unreadAlertsCount--
