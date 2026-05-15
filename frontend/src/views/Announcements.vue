@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue"
 import { ArrowRightCircle, Loader2 } from "lucide-vue-next"
 import { getActiveAnnouncements, recordInteraction } from "@/services/api"
 import { authState } from "@/auth"
+import AppHeader from "@/components/common/AppHeader.vue"
 
 const announcements = ref([])
 const loading = ref(true)
@@ -45,9 +46,7 @@ const formatDate = (timeStr) => {
 
 <template>
   <div class="min-h-full bg-gray-50/50 pb-6 text-gray-800">
-    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm border-b border-gray-100">
-      <h2 class="font-bold text-gray-900 text-xl">Announcements</h2>
-    </header>
+    <AppHeader />
 
     <div v-if="loading" class="px-5 mt-10 text-center text-gray-500 flex flex-col items-center">
       <Loader2 class="w-8 h-8 animate-spin text-primary-500 mb-2" />
