@@ -244,6 +244,42 @@ export const logAction = async (data) => {
 }
 
 
+const SEEN_ANNOUNCEMENTS_KEY = 'samaaja_seen_announcements'
+
+const getSeenAnnouncements = () => {
+    try { return JSON.parse(localStorage.getItem(SEEN_ANNOUNCEMENTS_KEY) || '[]') } catch { return [] }
+}
+
+const markAnnouncementSeen = (name) => {
+    const seen = getSeenAnnouncements()
+    if (!seen.includes(name)) {
+        seen.push(name)
+        localStorage.setItem(SEEN_ANNOUNCEMENTS_KEY, JSON.stringify(seen))
+    }
+}
+
+export const getActiveAnnouncements = async () => {
+    const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+    const result = await callAPI(headers, `${baseurl}/api/method/samaaja.api.announcements.get_active_announcements`, 'GET', null)
+    return result.data
+}
+
+export const getLocalUnreadCount = (announcements) => {
+    const seen = getSeenAnnouncements()
+    return announcements.filter(a => !seen.includes(a.name)).length
+}
+
+export const recordInteraction = async (announcement, type, contactId = null) => {
+    if (type === 'View') markAnnouncementSeen(announcement)
+    return await callAPI(
+        {},
+        `${baseurl}/api/method/samaaja.api.announcements.record_interaction`,
+        'POST',
+        new URLSearchParams({ announcement, interaction_type: type, contact_id: contactId || '' }),
+        true
+    )
+}
+
 export const addPost = async (data) => {
     try {
         console.log("ORIGINAL DATA", data)
