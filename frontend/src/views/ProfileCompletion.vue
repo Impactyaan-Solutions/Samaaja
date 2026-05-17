@@ -1,12 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { completeProfile } from '@/services/api';
 import { checkAuth, authState } from '@/auth';
 import { User, Calendar, Phone, BookOpen, Tag } from 'lucide-vue-next';
 
-const { t } = useI18n();
 const router = useRouter();
 
 const formData = ref({
@@ -35,6 +33,8 @@ const submitForm = async () => {
   errorMessage.value = '';
 
   try {
+    // Call the backend update API
+    console.log(authState.email)
     await completeProfile({
       user_gender: formData.value.gender,
       user_bio: formData.value.bio,
@@ -44,12 +44,15 @@ const submitForm = async () => {
       user_email: authState.email
     });
 
+    // Refresh the local authState cache to pull down the newly saved data
     await checkAuth();
+
+    // The router guard will automatically allow us into the home page now
     router.push({ name: 'home' });
     
   } catch (error) {
-    console.error("Profile update failed:", error);
-    errorMessage.value = t('complete_profile.error_msg');
+    console.error(error);
+    errorMessage.value = error.message;
   } finally {
     isSubmitting.value = false;
   }
@@ -61,9 +64,9 @@ const submitForm = async () => {
     <div class="bg-white w-full max-w-md min-h-screen px-6 py-10 flex flex-col">
       
       <div class="mb-2">
-        <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">{{ t('complete_profile.title') }}</h2>
+        <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Complete Profile</h2>
         <p class="text-gray-500 text-sm leading-relaxed">
-          {{ t('complete_profile.subtitle') }}
+          Almost there! We just need a few more details to set up your account.
         </p>
       </div>
 
@@ -73,33 +76,36 @@ const submitForm = async () => {
 
       <form @submit.prevent="submitForm" class="flex-1 flex flex-col space-y-5">
         
+        <!-- Gender -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('complete_profile.gender') }}</label>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Gender</label>
           <div class="relative flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
             <span class="pl-4 text-gray-400"><User :size="14" /></span>
             <select v-model="formData.gender" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
-              <option value="" disabled>{{ t('complete_profile.gender_placeholder') }}</option>
-              <option value="Male">{{ t('complete_profile.male') }}</option>
-              <option value="Female">{{ t('complete_profile.female') }}</option>
-              <option value="Other">{{ t('complete_profile.other') }}</option>
+              <option value="" disabled>Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
             </select>
           </div>
         </div>
 
+        <!-- Category -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('complete_profile.category') }}</label>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Category</label>
           <div class="relative flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
             <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
             <select v-model="formData.category" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
-              <option value="" disabled>{{ t('complete_profile.cat_placeholder') }}</option>
-              <option value="Volunteer">{{ t('complete_profile.volunteer') }}</option>
-              <option value="Citizen">{{ t('complete_profile.citizen') }}</option>
+              <option value="" disabled>Select Category</option>
+              <option value="Citizen">Citizen</option>
+              <option value="NGO Partner">NGO Partner</option>
             </select>
           </div>
         </div>
 
+        <!-- Date of Birth -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('complete_profile.dob') }}</label>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Date of Birth</label>
           <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
             <span class="pl-4 text-gray-400"><Calendar :size="14" /></span>
             <input 
@@ -111,34 +117,37 @@ const submitForm = async () => {
           </div>
         </div>
 
+        <!-- Mobile Number -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('complete_profile.mobile') }}</label>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Mobile Number</label>
           <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
             <span class="pl-4 text-gray-400"><Phone :size="14" /></span>
             <input 
               v-model="formData.mobileNumber"
               type="tel" 
               required
-              :placeholder="t('complete_profile.mobile_placeholder')"
+              placeholder="e.g. 9876543210"
               class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent"
             />
           </div>
         </div>
 
+        <!-- Bio -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('complete_profile.bio') }}</label>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Bio</label>
           <div class="flex border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
             <span class="pl-4 pt-3.5 text-gray-400"><BookOpen :size="14" /></span>
             <textarea 
               v-model="formData.bio"
               required
-              :placeholder="t('complete_profile.bio_placeholder')"
+              placeholder="Tell us a bit about yourself and why you joined."
               rows="3"
               class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent resize-none"
             ></textarea>
           </div>
         </div>
 
+        <!-- Submit Button -->
         <button
           type="submit"
           :disabled="!isFormValid || isSubmitting"
@@ -149,10 +158,15 @@ const submitForm = async () => {
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          {{ isSubmitting ? t('complete_profile.save_btn') : t('complete_profile.submit_btn') }}
+          {{ isSubmitting ? 'Saving Profile...' : 'Complete Registration' }}
         </button>
 
       </form>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Remove standard select arrow to rely on clean styling if desired */
+/* select { -webkit-appearance: none; -moz-appearance: none; appearance: none; } */
+</style>
