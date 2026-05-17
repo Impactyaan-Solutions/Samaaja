@@ -16,6 +16,10 @@ const description = ref('')
 
 const submitPost = async (e) => {
   try {
+    if(!title.value || !category.value || !description.value){
+      alert("Please fill all the fields")
+      return;
+    }
     e.preventDefault()
     const response = await addPost({
       title: title.value,

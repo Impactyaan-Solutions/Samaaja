@@ -89,9 +89,6 @@ onUnmounted(() => {
 
     <!-- Content -->
     <div class="px-4 pb-3">
-      <p class="text-gray-800 text-sm leading-relaxed mb-3">
-        {{ post.title }}
-      </p>
       <p v-if = "post.description" class="text-gray-800 text-sm leading-relaxed mb-3">
         {{ post.description }}
       </p>

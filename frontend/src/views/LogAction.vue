@@ -17,6 +17,10 @@ const hours_invested = ref('')
 
 const submitAction = async (e) => {
   try {
+    if(!type.value || !category.value || !description.value || !hours_invested.value){
+      alert("Please fill all the fields")
+      return;
+    }
     e.preventDefault()
     const response = await logAction({
       type: type.value,
