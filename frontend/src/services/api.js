@@ -250,13 +250,13 @@ const getSeenAnnouncements = () => {
     try { return JSON.parse(localStorage.getItem(SEEN_ANNOUNCEMENTS_KEY) || '[]') } catch { return [] }
 }
 
-const markAnnouncementSeen = (name) => {
+/* const markAnnouncementSeen = (name) => {
     const seen = getSeenAnnouncements()
     if (!seen.includes(name)) {
         seen.push(name)
         localStorage.setItem(SEEN_ANNOUNCEMENTS_KEY, JSON.stringify(seen))
     }
-}
+} */
 
 export const getActiveAnnouncements = async () => {
     const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
@@ -264,8 +264,12 @@ export const getActiveAnnouncements = async () => {
     return result.data
 }
 
-export const getLocalUnreadCount = (announcements) => {
+/* export const getLocalUnreadCount = async () => {
+    const announcements = await getActiveAnnouncements()
     const seen = getSeenAnnouncements()
+    if (seen.length === 0) {
+        return announcements.length
+    }
     return announcements.filter(a => !seen.includes(a.name)).length
 }
 
@@ -278,7 +282,7 @@ export const recordInteraction = async (announcement, type, contactId = null) =>
         new URLSearchParams({ announcement, interaction_type: type, contact_id: contactId || '' }),
         true
     )
-}
+} */
 
 export const addPost = async (data) => {
     try {

@@ -99,9 +99,6 @@ export async function checkAuth() {
     authState.isLoggedIn = true;
     authState.isInitialLoad = false;
 
-    // Fetch unread count
-    authState.unreadAlertsCount = await getUnreadCount();
-
     const user_profile = await getProfile(data)
     if (user_profile) {
       authState.profile.fullName = user_profile.full_name

@@ -12,7 +12,7 @@ const tabs = [
   { name: 'Home', path: '/homepage', icon: Home },
   { name: 'Leaderboard', path: '/leaderboard', icon: BarChart2 },
   { name: 'Act', path: null, icon: Zap, isAction: true },
-  { name: 'Alerts', path: '/announcements', icon: Bell },
+  { name: 'Announcements', path: '/announcements', icon: Bell },
   { name: 'Profile', path: '/profile', icon: User }
 ]
 
@@ -48,14 +48,6 @@ const isActive = (path) => {
             class="w-6 h-6 mb-1"
             :class="isActive(tab.path) ? 'text-primary-600' : 'text-gray-400'"
           />
-
-          <!-- Unread badge for Alerts -->
-          <div
-            v-if="tab.path === '/announcements' && authState.unreadAlertsCount > 0"
-            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white"
-          >
-            {{ authState.unreadAlertsCount > 9 ? '9+' : authState.unreadAlertsCount }}
-          </div>
         </div>
 
         <span

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { ArrowRightCircle, Loader2 } from "lucide-vue-next"
-import { getActiveAnnouncements, recordInteraction, getLocalUnreadCount } from "@/services/api"
+import { getActiveAnnouncements } from "@/services/api"
 import { authState } from "@/auth"
 import AppHeader from "@/components/common/AppHeader.vue"
 
@@ -12,12 +12,6 @@ const error = ref(null)
 onMounted(async () => {
   try {
     announcements.value = await getActiveAnnouncements()
-    authState.unreadAlertsCount = getLocalUnreadCount(announcements.value)
-
-    for (const a of announcements.value) {
-      await recordInteraction(a.name, "View")
-    }
-    authState.unreadAlertsCount = 0
   } catch (e) {
     error.value = e.message
   } finally {
@@ -83,11 +77,6 @@ const formatDate = (timeStr) => {
               <span v-if="item.valid_to" class="text-gray-400">-</span>
               <span v-if="item.valid_to">{{ formatDate(item.valid_to) }}</span>
             </div>
-          </div>
-
-          <!-- Action Button -->
-          <div class="flex-shrink-0 mt-1">
-            <ArrowRightCircle class="w-8 h-8 text-primary-600 hover:text-primary-700" />
           </div>
         </div>
       </div>
