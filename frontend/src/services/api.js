@@ -52,7 +52,6 @@ export const getGoogleSignInURL = async () => {
         console.error("Server Error Output:", errorText);
         throw new Error(`Server error: ${response.status}`);
     }
-
     const result = await response.json();
     return result.message
 }
@@ -394,5 +393,49 @@ const callAPI = async (headers, url, method, data = null, isFormData = false, ad
     } else {
         const data = await response.json()
         throw new Error(data.message)
+    }
+}
+export const createComment = async (post_id, comment_text) => {
+    try {
+        const headers = {   
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        const result = await callAPI(
+            headers,
+            baseurl + '/api/method/samaaja.api.comment.create',
+            'POST',
+            {
+                post_id,
+                comment_text
+            }
+        )
+
+        return result.data
+    } catch (err) {
+        console.error("CREATE COMMENT FAILED", err)
+        throw err
+    }
+}
+
+export const getComments = async (post_id) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.comment.get?post_id=${post_id}`,
+            'GET',
+            null
+        )
+
+        return result.data
+    } catch (err) {
+        console.error("GET COMMENTS FAILED", err)
+        throw err
     }
 }
