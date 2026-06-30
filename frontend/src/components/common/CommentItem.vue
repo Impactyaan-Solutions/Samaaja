@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['edit', 'delete'])
-console.log("email",authState)
+
 const isOwner = props.comment.user_id === authState.email
 </script>
 

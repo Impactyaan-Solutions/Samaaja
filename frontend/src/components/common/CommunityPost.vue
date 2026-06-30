@@ -41,7 +41,6 @@ const handleLikePost = async (post_id) => {
 
 
 const openComments = () => {
-console.log("dfb")
   showComments.value = true
 }
 

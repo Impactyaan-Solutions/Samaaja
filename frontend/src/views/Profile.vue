@@ -265,7 +265,7 @@ const isLoading = computed(() => authState.isInitialLoad || isExternalLoading.va
   <div v-else class="h-screen flex items-center justify-center bg-white">
     <div class="flex flex-col items-center space-y-4">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <p class="text-gray-500 font-medium tracking-wide">hbhj</p>
+        <p class="text-gray-500 font-medium tracking-wide">hbhjs</p>
     </div>
   </div>
 </template>
