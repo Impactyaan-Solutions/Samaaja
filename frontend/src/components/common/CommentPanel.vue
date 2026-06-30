@@ -25,7 +25,6 @@ const fetchComments = async () => {
   try {
     const response = await getComments(props.postId)
     comments.value = response.comments || []
-    console.log('Fetched comments:', comments.value)
   } catch (error) {
     console.error(error)
   }
