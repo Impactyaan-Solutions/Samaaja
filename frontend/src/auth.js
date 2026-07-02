@@ -62,7 +62,9 @@ const clearCachedAuth = () => {
 loadCachedAuth()
 
 export async function checkAuth() {
+   console.log("checkAuth() started");
   try {
+
     if (import.meta.env.DEV === true) {
       authState.isLoggedIn = true;
       authState.email = 'Administrator';
@@ -91,6 +93,7 @@ export async function checkAuth() {
           saveCachedAuth();
         }
       });
+      authState.isInitialLoad = false;
       return;
     }
 
@@ -98,7 +101,7 @@ export async function checkAuth() {
     authState.email = data;
     authState.isLoggedIn = true;
     authState.isInitialLoad = false;
-
+  
     const user_profile = await getProfile(data)
     if (user_profile) {
       authState.profile.fullName = user_profile.full_name

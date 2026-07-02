@@ -9,13 +9,21 @@ import {
   Settings, 
   LogOut // Added for the menu
 } from 'lucide-vue-next'
+import { Heart, MessageSquare } from 'lucide-vue-next'
 import AppHeader from '@/components/common/AppHeader.vue'
 import { authState } from '@/auth'
 import { getProfile } from '@/services/api'
-
+import { getUserProfilePosts, getUserProfileActions } from '@/services/api'
+import PostActionDialouge from '../components/common/PostActionDialouge.vue'
 // --- Menu Logic ---
 const isMenuOpen = ref(false)
-
+const userPosts = ref([])
+const userActions = ref([])
+const postsLoading = ref(false)
+const actionsLoading = ref(false)
+const activeTab = ref('actions')
+const postsError = ref("")
+const actionsError = ref("")
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
@@ -38,10 +46,12 @@ const externalProfile = ref(null)
 const isExternalLoading = ref(false)
 
 const loadExternalProfile = async (email) => {
+  console.log("Loading external profile for:", email)
   isExternalLoading.value = true
   try {
     const data = await getProfile(email)
     externalProfile.value = data
+    console.log("Loaded external profile:", data)
   } catch (err) {
     console.error("Failed to load user profile", err)
     externalProfile.value = null
@@ -51,17 +61,28 @@ const loadExternalProfile = async (email) => {
 }
 
 onMounted(() => {
+  fetchActions()
+  console.log("Mounted Profile.vue, checking for external profile...")
   if (route.query.user_email) {
     loadExternalProfile(route.query.user_email)
   }
+     
 })
-
+watch(
+  () => authState.isInitialLoad,
+  (val) => {
+    console.log("authState.isInitialLoad =", val)
+  },
+  { immediate: true }
+)
 watch(() => route.query.user_email, (newEmail) => {
   if (newEmail) {
     loadExternalProfile(newEmail)
+  
   } else {
     externalProfile.value = null
   }
+  
 })
 
 const user = computed(() => {
@@ -100,6 +121,84 @@ const user = computed(() => {
 })
 
 const isLoading = computed(() => authState.isInitialLoad || isExternalLoading.value)
+const fetchPosts = async () => {
+  postsLoading.value = true
+  postsError.value = ""
+
+  try {
+   const email = route.query.user_email || authCache.email
+    const data = await getUserProfilePosts(email)
+
+    userPosts.value = data.posts || []
+  } catch (err) {
+    console.error(err)
+    postsError.value = "Failed to load posts."
+  } finally {
+    postsLoading.value = false
+  }
+}
+const authCache = JSON.parse(
+  localStorage.getItem("samaaja_auth_cache") || "{}"
+);
+/// fetch actions 
+const fetchActions = async () => {
+  actionsLoading.value = true
+  actionsError.value = ""
+
+  try {
+  const email = route.query.user_email ||authCache.email
+  console.log("user email",email)
+    const data = await getUserProfileActions(email)
+    userActions.value = data.actions || []
+  } catch (err) {
+    console.error(err)
+    actionsError.value = "Failed to load actions."
+  } finally {
+    actionsLoading.value = false
+  }
+}
+watch(
+  () => route.query.user_email,
+  async (newEmail) => {
+    if (newEmail) {
+      await loadExternalProfile(newEmail)
+    } else {
+      externalProfile.value = null
+    }
+
+    if (activeTab.value === "actions") {
+      await fetchActions()
+    } else {
+      await fetchPosts()
+    }
+  }
+)
+
+
+
+const truncate = (text, length = 50) => {
+ 
+  return text.length > length ? text.slice(0, length) + "..." : text;
+};
+
+const selectedItem = ref(null)
+const isDialogOpen = ref(false)
+
+const isMobile = () => {
+  return window.innerWidth < 768
+}
+
+const openDialog = (item) => {
+  selectedItem.value = item
+  isDialogOpen.value = true
+}
+
+const closeDialog = () => {
+  isDialogOpen.value = false
+  selectedItem.value = null
+}
+
+
 </script>
 
 <template>
@@ -259,7 +358,118 @@ const isLoading = computed(() => authState.isInitialLoad || isExternalLoading.va
         no badges earned
       </div>
     </div>
+       <div class="px-5 mb-4">
+  <div class="flex bg-blue-100 rounded-lg p-1">
+    <button 
+      @click="activeTab = 'actions'"
+      :class="[
+        'flex-1 py-2 text-sm font-medium rounded-md transition-all',
+        activeTab === 'actions'
+          ? 'bg-white text-gray-900 shadow'
+          : 'text-gray-600'
+      ]"
+    >
+      Actions
+    </button>
+
+    <button
+      @click="activeTab = 'posts'"
+      :class="[
+        'flex-1 py-2 text-sm font-medium rounded-md transition-all',
+        activeTab === 'posts'
+          ? 'bg-white text-gray-900 shadow'
+          : 'text-gray-600'
+      ]"
+    >
+      Posts
+    </button>
   </div>
+   <div v-if="actionsLoading" class="text-center py-6">
+  Loading actions...
+</div>
+
+<div v-else-if="actionsError" class="text-center text-red-500 py-6">
+  {{ actionsError }}
+</div>
+
+<div v-else-if="userActions.length === 0" class="text-center text-gray-500 py-6">
+  No actions found.
+</div>
+
+ <div class="mt-4 space-y-4">
+  <!-- Actions -->
+  <div v-if="activeTab === 'actions'">
+    <div
+      v-for="action in userActions"
+      :key="action.id"
+      class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
+     @mouseenter="!isMobile() && openDialog(action)"
+  @click="isMobile() && openDialog(action)"
+      >
+      <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">
+        Action
+      </p>
+
+      <h3 class="font-bold text-gray-900">
+        {{ action.title }}
+      </h3>
+
+      <p class="text-sm text-gray-500 mt-2">
+        {{ truncate(action.description) }}
+      </p>
+      <div class="flex items-center gap-2 text-xs mt-3">
+        <span class="text-green-600 font-medium">
+          {{ action.status }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Posts -->
+  <div v-else>
+    <div
+      v-for="post in userPosts"
+      :key="post.id"
+      class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
+        @mouseenter="!isMobile() && openDialog(post)"
+  @click="isMobile() && openDialog(post)"
+      >
+      <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">
+        Post
+      </p>
+
+      <h3 class="font-bold text-gray-900">
+        {{ post.title }}
+      </h3>
+
+      <p class="text-sm text-gray-500 mt-2">
+        {{ truncate(post.description) }}
+      </p>
+
+      <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <button  class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
+          <Heart class="w-5 h-5" />
+          <span class="text-xs font-semibold">{{ post.like_count }}</span>
+        </button>
+        <button class="flex items-center space-x-1.5 text-gray-500 hover:text-primary-500 transition-colors">
+          <MessageSquare class="w-5 h-5" />
+          <span class="text-xs font-semibold">{{ post.comment_count }}</span>
+        </button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+    </div>
+    <PostActionDialouge
+  :show="isDialogOpen"
+  :item="selectedItem"
+  @close="closeDialog"
+/>
+  </div>
+<!-- dialoguebox -->
+
 
   <!-- Loading State -->
   <div v-else class="h-screen flex items-center justify-center bg-white">
