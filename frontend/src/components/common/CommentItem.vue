@@ -11,8 +11,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['edit', 'delete'])
-
-const isOwner = props.comment.user_id === authState.email
+const authCache = JSON.parse(localStorage.getItem("samaaja_auth_cache"));
+const userEmail = authCache?.email;
+const isOwner = props.comment.user_id === userEmail;
+// console.log('isOwner:', isOwner, 'userEmail:', userEmail, 'comment.user_id:', props.comment.user_id);
 </script>
 
 <template>
