@@ -2,7 +2,7 @@
 import { getTimeSinceCreation } from '@/utils/utils'
 import { authState } from '@/auth'
 import { Pencil, Trash2 } from 'lucide-vue-next'
-
+import { computed } from 'vue'
 const props = defineProps({
   comment: {
     type: Object,
@@ -12,9 +12,13 @@ const props = defineProps({
 
 const emit = defineEmits(['edit', 'delete'])
 const authCache = JSON.parse(localStorage.getItem("samaaja_auth_cache"));
-const userEmail = authCache?.email;
-const isOwner = props.comment.user_id === userEmail;
-// console.log('isOwner:', isOwner, 'userEmail:', userEmail, 'comment.user_id:', props.comment.user_id);
+
+let userEmail = authCache?.email;
+
+const isOwner = computed(() => {
+  return props.comment.user_id === authState.email
+})
+// console.log('isOwner:', isOwner, 'userEmail:', userEmail.value, 'comment.user_id:', props.comment.user_id);
 </script>
 
 <template>

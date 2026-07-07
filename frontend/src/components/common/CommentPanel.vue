@@ -20,13 +20,51 @@ const emit = defineEmits(['close', 'comment-added'])
 
 const comments = ref([])
 const commentText = ref('')
+const page = ref(1)
+const pageSize = 10
+const loading = ref(false)
+const hasMore = ref(true)
+const commentContainer = ref(null)
+console.log("auth",authState)
+// const userEmail = ref("")
+// userEmail.value = authCache?.email;
+// const isOwner = props.comment.user_id === userEmail.value;
+const fetchComments = async (reset = false) => {
+  if (loading.value || (!hasMore.value && !reset)) return
 
-const fetchComments = async () => {
+  loading.value = true
+
+  if (reset) {
+    page.value = 1
+    comments.value = []
+    hasMore.value = true
+  }
+
   try {
-    const response = await getComments(props.postId)
-    comments.value = response.comments || []
-  } catch (error) {
-    console.error(error)
+    const response = await getComments(
+      props.postId,
+      page.value,
+      pageSize
+    )
+
+    const newComments = response.comments || []
+
+    if (reset) {
+      comments.value = newComments
+    } else {
+      comments.value = [
+        ...newComments,
+        ...comments.value
+      ]
+    }
+
+    if (newComments.length < pageSize) {
+      hasMore.value = false
+    } else {
+      page.value++
+    }
+  } finally {
+    loading.value = false
   }
 }
 onMounted(() => {
@@ -46,6 +84,13 @@ const submitComment = async () => {
   }
 }
 
+
+const handleScroll = async (e) => {
+  const el = e.target
+  if (el.scrollTop <= 10) {
+    await fetchComments()
+  }
+}
 const handleEdit = (comment) => {
   // TODO: implement edit flow
   console.log('Edit comment:', comment)
@@ -76,25 +121,42 @@ defineExpose({ fetchComments })
           </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-4 py-3 space-y-4">
-          <p v-if="comments.length === 0" class="text-center text-sm text-gray-400 py-8">
-            No comments yet. Be the first!
-          </p>
+       
+<div
+  ref="commentContainer"
+  class="flex-1 overflow-y-auto px-4 py-3 space-y-4"
+  @scroll="handleScroll"
+>
+  <p
+    v-if="comments.length === 0"
+    class="text-center text-sm text-gray-400 py-8"
+  >
+    No comments yet. Be the first!
+  </p>
 
-          <CommentItem
-            v-else
-            v-for="comment in comments"
-            :key="comment.id"
-            :comment="comment"
-            @edit="handleEdit"
-            @delete="handleDelete"
-          />
-        </div>
+  <CommentItem
+    v-else
+    v-for="comment in comments"
+    :key="comment.id"
+    :comment="comment"
+    @edit="handleEdit"
+    @delete="handleDelete"
+  />
+</div>
+       
 
         <div class="px-4 py-3 border-t border-gray-100 flex items-center space-x-3 bg-white">
-          <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs shrink-0">
-            {{ authState.full_name?.charAt(0) || '?' }}
-          </div>
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs shrink-0 overflow-hidden">
+  <img
+    v-if="authState.profile?.image || authState.profile?.imageBase64"
+    :src="authState.profile.image || authState.profile.imageBase64"
+    alt="avatar"
+    class="w-full h-full object-cover"
+  />
+  <span v-else>
+    {{ authState.profile?.fullName?.charAt(0)?.toUpperCase()|| '?' }}
+  </span>
+</div>
           <input
             v-model="commentText"
             type="text"
@@ -110,7 +172,7 @@ defineExpose({ fetchComments })
             <Send class="w-4 h-4" />
           </button>
         </div>
-      </div>
+           </div>
     </Transition>
   </Teleport>
 </template>
