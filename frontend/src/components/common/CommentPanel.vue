@@ -75,10 +75,17 @@ const submitComment = async () => {
 
   try {
     const response = await createComment(props.postId, commentText.value.trim())
-    comments.value.push(response)
+     comments.value.push({
+      name: response.name,
+      comment_text: commentText.value.trim(),
+      user_id: authState.email,
+      creation: new Date().toISOString(),
+      full_name: authState.profile?.fullName,
+      user_image: authState.profile?.image
+    })
     commentText.value = ''
     emit('comment-added')
-    fetchComments()
+  // await  fetchComments()
   } catch (error) {
     console.error("Failed to submit comment:", error)
   }
