@@ -25,7 +25,7 @@ const pageSize = 10
 const loading = ref(false)
 const hasMore = ref(true)
 const commentContainer = ref(null)
-console.log("auth",authState)
+
 // const userEmail = ref("")
 // userEmail.value = authCache?.email;
 // const isOwner = props.comment.user_id === userEmail.value;
