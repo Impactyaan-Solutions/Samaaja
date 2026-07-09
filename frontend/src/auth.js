@@ -62,7 +62,7 @@ const clearCachedAuth = () => {
 loadCachedAuth()
 
 export async function checkAuth() {
-   console.log("checkAuth() started");
+ //  console.log("checkAuth() started");
   try {
 
     if (import.meta.env.DEV === true) {

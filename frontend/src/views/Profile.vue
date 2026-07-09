@@ -30,13 +30,13 @@
 
   const handleLogout = () => {
     // Replace with your actual logout logic (e.g., authState.logout())
-    console.log("Logging out...")
+ //   console.log("Logging out...")
     isMenuOpen.value = false
   }
 
   const goToSettings = () => {
     // Replace with your navigation logic (e.g., router.push('/settings'))
-    console.log("Navigating to settings...")
+   // console.log("Navigating to settings...")
     isMenuOpen.value = false
   }
 
@@ -46,14 +46,14 @@
   const isExternalLoading = ref(false)
 
   const loadExternalProfile = async (email) => {
-    console.log("Loading external profile for:", email)
+    
     isExternalLoading.value = true
     try {
       const data = await getProfile(email)
       externalProfile.value = data
-      console.log("Loaded external profile:", data)
+      
     } catch (err) {
-      console.error("Failed to load user profile", err)
+      
       externalProfile.value = null
     } finally {
       isExternalLoading.value = false
@@ -62,7 +62,7 @@
 
   onMounted(() => {
     fetchActions()
-    console.log("Mounted Profile.vue, checking for external profile...")
+   
     if (route.query.user_email) {
       loadExternalProfile(route.query.user_email)
     }
@@ -71,7 +71,7 @@
   watch(
     () => authState.isInitialLoad,
     (val) => {
-      console.log("authState.isInitialLoad =", val)
+  //    console.log("authState.isInitialLoad =")
     },
     { immediate: true }
   )
@@ -130,9 +130,9 @@
       const data = await getUserProfilePosts(email)
 
       userPosts.value = data.posts || []
-      console.log("Fetched posts:", userPosts.value)
+      
     } catch (err) {
-      console.error(err)
+     // console.error(err)
       postsError.value = "Failed to load posts."
     } finally {
       postsLoading.value = false
@@ -143,18 +143,18 @@
   );
   /// fetch actions 
   const fetchActions = async () => {
-    console.log("Fetching actions for user:", route.query.user_email || authCache.email)
+    //console.log("Fetching actions for user:", route.query.user_email || authCache.email)
     actionsLoading.value = true
     actionsError.value = ""
 
     try {
     const email = route.query.user_email ||authCache.email
-    console.log("user email",email)
+  //  console.log("user email",email)
       const data = await getUserProfileActions(email)
       userActions.value = data.actions || []
-      console.log("Fetched actions:", userActions.value)
+     // console.log("Fetched actions:", userActions.value)
     } catch (err) {
-      console.error(err)
+     // console.error(err)
       actionsError.value = "Failed to load actions."
     } finally {
       actionsLoading.value = false
@@ -395,7 +395,6 @@ watch(
     <div class="flex bg-blue-100 rounded-lg p-1">
       <button 
         @click="
-    console.log('Actions clicked');
     activeTab = 'actions';
   "
         :class="[
@@ -410,7 +409,7 @@ watch(
 
       <button
         @click="
-    console.log('Posts clicked');
+    //console.log('Posts clicked');
     activeTab = 'posts';
   "
         :class="[

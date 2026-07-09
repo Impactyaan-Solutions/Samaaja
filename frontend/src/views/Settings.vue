@@ -58,7 +58,7 @@ onMounted(() => {
 
 const handleLogout = () => {
   // Add your logout logic here (e.g., clear tokens and redirect)
-  console.log("Logging out...")
+ // console.log("Logging out...")
 }
 </script>
 
