@@ -438,4 +438,20 @@ export const getComments = async (post_id) => {
         console.error("GET COMMENTS FAILED", err)
         throw err
     }
+
+export const getUserProfilePosts = async (user,limit = 10, offset = 0) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+    const response = await callAPI(headers, `${baseurl}/api/method/samaaja.api.profile.get_posts?user=${user}&limit=${limit}&offset=${offset}`, 'GET', null)
+    return response.data
+}
+export const getUserProfileActions = async (user,limit = 10, offset = 0) => {
+     const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+    const response = await callAPI(headers, `${baseurl}/api/method/samaaja.api.profile.get_actions?user=${user}&limit=${limit}&offset=${offset}`, 'GET', null)
+    return response.data
 }
