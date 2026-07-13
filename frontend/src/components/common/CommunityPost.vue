@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { MoreHorizontal, MessageSquare, Heart, Share2, Award } from 'lucide-vue-next'
+import { MoreHorizontal, MessageSquare, Heart, Share2, Award, X, Send } from 'lucide-vue-next'
 import { getTimeSinceCreation } from '@/utils/utils'
-import { likePost } from '@/services/api'
+import { likePost, createComment, getComments } from '@/services/api'
 import { authState } from '@/auth'
+import CommentPanel from './CommentPanel.vue'
 const props = defineProps({
   post: {
     type: Object,
@@ -23,15 +24,28 @@ const isVisible = ref(true)
 const containerRef = ref(null)
 const savedHeight = ref(0)
 let observer = null
+const showComments = ref(false)
+const commentText = ref('')
+const comments = ref([])
+
+
 
 const handleLikePost = async (post_id) => {
   try {
     await likePost(post_id, authState.email)
     props.post.like_count++
-  }
-  catch (err) {
+  } catch (err) {
     console.error("FETCH FAILED", err)
   }
+}
+
+
+const openComments = () => {
+  showComments.value = true
+}
+
+const onCommentAdded = () => {
+  props.post.comment_count++
 }
 onMounted(() => {
   observer = new IntersectionObserver((entries) => {
@@ -58,76 +72,77 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div 
-    ref="containerRef" 
+  <div
+    ref="containerRef"
     class="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] mb-4 border border-gray-100"
     :style="{ minHeight: !isVisible && savedHeight ? `${savedHeight}px` : 'auto' }"
   >
     <!-- Hiding via CSS: When off-screen, it hides the DOM to reduce rendering load, but keeps nodes in memory to prevent image re-fetching -->
     <div v-show="isVisible">
-    <!-- Header -->
-    <div class="p-4 flex items-center justify-between">
-      <router-link :to="{ name: 'profile', query: { user_email: post.user } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-        <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
-          <img v-if="post.user_profile?.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover"/>
-          <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-            {{ post.user_profile?.full_name?.charAt(0) || '?' }}
+      <!-- Header -->
+      <div class="p-4 flex items-center justify-between">
+        <router-link :to="{ name: 'profile', query: { user_email: post.user } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+          <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+            <img v-if="post.user_profile?.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover" />
+            <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+              {{ post.user_profile?.full_name?.charAt(0) || '?' }}
+            </div>
           </div>
-        </div>
-        <div>
-          <div class="flex items-center space-x-1">
-            <h4 class="font-semibold text-gray-900 text-sm">{{ post.user_profile?.full_name || 'Unknown User' }}</h4>
-            <Award v-if="post.user_profile?.user_type" class="w-3.5 h-3.5 text-green-500" />
+          <div>
+            <div class="flex items-center space-x-1">
+              <h4 class="font-semibold text-gray-900 text-sm">{{ post.user_profile?.full_name || 'Unknown User' }}</h4>
+              <Award v-if="post.user_profile?.user_type" class="w-3.5 h-3.5 text-green-500" />
+            </div>
+            <p class="text-xs text-gray-500">{{ post.user_profile?.user_category || '' }}</p>
           </div>
-          <p class="text-xs text-gray-500">{{ post.user_profile?.user_category || '' }}</p>
+        </router-link>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs text-gray-400 font-medium">{{ getTimeSinceCreation(post.creation) }}</span>
         </div>
-      </router-link>
-      <div class="flex items-center space-x-2">
-        <span class="text-xs text-gray-400 font-medium">{{ getTimeSinceCreation(post.creation) }}</span>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div class="px-4 pb-3">
-      <p v-if = "post.description" class="text-gray-800 text-sm leading-relaxed mb-3">
-        {{ post.description }}
-      </p>
-      <!-- Media -->
-      <div v-if="post.media" class="rounded-xl overflow-hidden mb-3 max-h-64 bg-gray-100">
-        <img :src="post.media" class="w-full h-full object-cover" />
       </div>
 
-      <!-- Tags -->
-      <div class="flex items-center space-x-2 mb-2">
-        <span
-          v-for="(tag, index) in post.tag
-            ?.split(',')
-            .map(t => t.trim())
-            .filter(Boolean)"
-          :key="tag"
-          :class="[
-            'px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide uppercase',
-            tagColors[index % tagColors.length]
-          ]"
-        >
-          {{ tag }}
-        </span>
-      </div>
-    </div>
+      <!-- Content -->
+      <div class="px-4 pb-3">
+        <p v-if="post.description" class="text-gray-800 text-sm leading-relaxed mb-3">
+          {{ post.description }}
+        </p>
+        <!-- Media -->
+        <div v-if="post.media" class="rounded-xl overflow-hidden mb-3 max-h-64 bg-gray-100">
+          <img :src="post.media" class="w-full h-full object-cover" />
+        </div>
 
-    <!-- Actions Footer -->
-    <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
-      <div class="flex items-center space-x-6">
-        <button @click = "handleLikePost(post.name)" class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
-          <Heart class="w-5 h-5" />
-          <span class="text-xs font-semibold">{{ post.like_count }}</span>
-        </button>
-        <button class="flex items-center space-x-1.5 text-gray-500 hover:text-primary-500 transition-colors">
-          <MessageSquare class="w-5 h-5" />
-          <span class="text-xs font-semibold">{{ post.comment_count }}</span>
-        </button>
+        <!-- Tags -->
+        <div class="flex items-center space-x-2 mb-2">
+          <span
+            v-for="(tag, index) in post.tag?.split(',').map(t => t.trim()).filter(Boolean)"
+            :key="tag"
+            :class="['px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide uppercase', tagColors[index % tagColors.length]]"
+          >
+            {{ tag }}
+          </span>
+        </div>
       </div>
-    </div>
+
+      <!-- Actions Footer -->
+      <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+          <button @click="handleLikePost(post.name)" class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
+            <Heart class="w-5 h-5" />
+            <span class="text-xs font-semibold">{{ post.like_count }}</span>
+          </button>
+         <button @click="openComments" class="flex items-center space-x-1.5 text-gray-500 hover:text-primary-500 transition-colors">
+    <MessageSquare class="w-5 h-5" />
+    <span class="text-xs font-semibold">{{ post.comment_count }}</span>
+  </button>
+        </div>
+      </div>
     </div>
   </div>
-</template>
+  <CommentPanel
+    v-if="showComments"
+    :post-id="post.name"
+    :comment-count="post.comment_count"
+    @close="showComments = false"
+    @comment-added="onCommentAdded"
+  /> 
+</template> 
