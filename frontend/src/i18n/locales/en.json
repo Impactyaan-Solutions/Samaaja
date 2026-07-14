@@ -206,8 +206,5 @@
     "placeholder": "Write a comment...",
     "edit": "Edit",
     "delete": "Delete"
-  },
-  "postAction": {
-    "noDescription": "No description provided."
   }
 }

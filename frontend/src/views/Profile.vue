@@ -15,7 +15,6 @@
   import { authState } from '@/auth'
   import { getProfile } from '@/services/api'
   import { getUserProfilePosts, getUserProfileActions } from '@/services/api'
-  import PostActionDialouge from '../components/common/PostActionDialouge.vue'
 
   const { t } = useI18n()
   // --- Menu Logic ---
@@ -213,27 +212,9 @@ watch(
   { immediate: false } // onMounted already handles the initial load
 )
   const truncate = (text, length = 50) => {
-  
+
     return text.length > length ? text.slice(0, length) + "..." : text;
   };
-
-  const selectedItem = ref(null)
-  const isDialogOpen = ref(false)
-
-  const isMobile = () => {
-    return window.innerWidth < 768
-  }
-
-  const openDialog = (item) => {
-    selectedItem.value = item
-    isDialogOpen.value = true
-  }
-
-  const closeDialog = () => {
-    isDialogOpen.value = false
-    selectedItem.value = null
-  }
-
 
   </script>
 
@@ -437,8 +418,6 @@ watch(
         v-for="action in userActions"
         :key="action.id"
         class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
-        @mouseenter="!isMobile() && openDialog(action)"
-        @click="isMobile() && openDialog(action)"
       >
         <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">{{ t('profile.actionLabel') }}</p>
         <h3 class="font-bold text-gray-900">{{ action.title }}</h3>
@@ -460,8 +439,6 @@ watch(
         v-for="post in userPosts"
         :key="post.id"
         class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
-        @mouseenter="!isMobile() && openDialog(post)"
-        @click="isMobile() && openDialog(post)"
       >
         <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">{{ t('profile.postLabel') }}</p>
         <h3 class="font-bold text-gray-900">{{ post.title }}</h3>
@@ -483,11 +460,6 @@ watch(
   </div>
 </div>
 </div>
-      <PostActionDialouge
-    :show="isDialogOpen"
-    :item="selectedItem"
-    @close="closeDialog"
-  />
     </div>
 
 
