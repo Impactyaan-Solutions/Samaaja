@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Menu, Settings, LogOut } from 'lucide-vue-next'
 import { authState } from '@/auth'
 import { logout as apiLogout } from '@/services/api'
+
+const { t } = useI18n()
 
 defineProps({
   title: {
@@ -81,17 +84,17 @@ const handleLogout = async () => {
                 class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors"
               >
                 <Settings class="w-4 h-4 text-gray-500" />
-                <span class="text-sm font-medium">Settings</span>
+                <span class="text-sm font-medium">{{ t('menu.settings') }}</span>
               </router-link>
-              
+
               <div class="border-t border-gray-100 mx-2"></div>
-              
-              <button 
-                @click="handleLogout" 
+
+              <button
+                @click="handleLogout"
                 class="flex items-center space-x-3 px-4 py-3 hover:bg-red-50 text-red-600 transition-colors text-left"
               >
                 <LogOut class="w-4 h-4" />
-                <span class="text-sm font-medium">Logout</span>
+                <span class="text-sm font-medium">{{ t('menu.logout') }}</span>
               </button>
             </div>
           </div>

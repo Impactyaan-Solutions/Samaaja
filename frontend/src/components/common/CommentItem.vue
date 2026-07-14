@@ -3,6 +3,9 @@ import { getTimeSinceCreation } from '@/utils/utils'
 import { authState } from '@/auth'
 import { Pencil, Trash2 } from 'lucide-vue-next'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 const props = defineProps({
   comment: {
     type: Object,
@@ -53,14 +56,14 @@ const isOwner = computed(() => {
         <div v-if="isOwner" class="flex items-center gap-1.5">
           <button
             class="p-1 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
-            title="Edit"
+            :title="t('comments.edit')"
             @click="emit('edit', comment)"
           >
             <Pencil :size="13" />
           </button>
           <button
             class="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-            title="Delete"
+            :title="t('comments.delete')"
             @click="emit('delete', comment)"
           >
             <Trash2 :size="13" />

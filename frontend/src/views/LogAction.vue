@@ -2,9 +2,11 @@
 import { ref } from 'vue'
 import { ArrowLeft, Image as ImageIcon, X, Video } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { logAction } from '../services/api'
 import { checkAuth } from '../auth'
 const router = useRouter()
+const { t } = useI18n()
 
 const fileInput = ref(null)
 const uploadedFiles = ref([])
@@ -18,7 +20,7 @@ const hours_invested = ref('')
 const submitAction = async (e) => {
   try {
     if(!type.value || !category.value || !description.value || !hours_invested.value){
-      alert("Please fill all the fields")
+      alert(t('logAction.fillAllFields'))
       return;
     }
     e.preventDefault()
@@ -29,7 +31,7 @@ const submitAction = async (e) => {
       hours_invested: hours_invested.value,
       attachments: uploadedFiles.value
     })
-    alert("Action logged successfully!")
+    alert(t('logAction.actionLogged'))
     await checkAuth()
     router.push({ name: 'home' });
   } catch (error) {
@@ -89,7 +91,7 @@ const removeFile = (index) => {
       </button>
 
       <h2 class="font-bold text-lg text-gray-900 mx-auto -ml-2">
-        Log Action
+        {{ t('logAction.headerTitle') }}
       </h2>
 
       <div class="w-6"></div>
@@ -100,7 +102,7 @@ const removeFile = (index) => {
         <!-- Action Type -->
          <div>
             <label class="block text-sm font-bold text-gray-900 mb-2">
-            Action Type
+            {{ t('logAction.actionType') }}
             <span class="text-red-500">*</span>
           </label>
             <select
@@ -108,19 +110,19 @@ const removeFile = (index) => {
             class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
           >
             <option value="" disabled selected>
-              Select a type...
+              {{ t('logAction.selectType') }}
             </option>
-            <option value="On-Ground Action">On-Ground Action</option>
-            <option value="Data & Reporting">Data & Reporting</option>
-            <option value="Training & Mentoring">Training & Mentoring</option>
-            <option value="Events & Activities">Events & Activities</option>
-            <option value="Outreach & Awareness">Outreach & Awareness</option>
-            <option value="Community Engagement">Community Engagement</option>
+            <option value="On-Ground Action">{{ t('logAction.types.onGround') }}</option>
+            <option value="Data & Reporting">{{ t('logAction.types.dataReporting') }}</option>
+            <option value="Training & Mentoring">{{ t('logAction.types.trainingMentoring') }}</option>
+            <option value="Events & Activities">{{ t('logAction.types.eventsActivities') }}</option>
+            <option value="Outreach & Awareness">{{ t('logAction.types.outreachAwareness') }}</option>
+            <option value="Community Engagement">{{ t('logAction.types.communityEngagement') }}</option>
           </select>
          </div>
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Action Category
+            {{ t('logAction.actionCategory') }}
             <span class="text-red-500">*</span>
           </label>
 
@@ -129,35 +131,35 @@ const removeFile = (index) => {
             class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
           >
             <option value="" disabled selected>
-              Select a category...
+              {{ t('logAction.selectCategory') }}
             </option>
 
-            <option value="Agriculture & Livelihood">Agriculture & Livelihood</option>
-            <option value="Health & Nutrition">Health & Nutrition</option>
-            <option value="Education">Education</option>
-            <option value="Civic Action & Governance">Civic Action & Governance</option>
-            <option value="Sports & Fitness">Sports & Fitness</option>
+            <option value="Agriculture & Livelihood">{{ t('categories.agricultureLivelihood') }}</option>
+            <option value="Health & Nutrition">{{ t('categories.healthNutrition') }}</option>
+            <option value="Education">{{ t('categories.education') }}</option>
+            <option value="Civic Action & Governance">{{ t('categories.civicGovernance') }}</option>
+            <option value="Sports & Fitness">{{ t('categories.sportsFitness') }}</option>
           </select>
         </div>
 
         <!-- Description -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Description
+            {{ t('logAction.description') }}
             <span class="text-red-500">*</span>
           </label>
 
           <textarea
             rows="3"
             v-model="description"
-            placeholder="What impact did you make today?"
+            :placeholder="t('logAction.descriptionPlaceholder')"
             class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm resize-none"
           ></textarea>
         </div>
 
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Hours Invested
+            {{ t('logAction.hoursInvested') }}
             <span class="text-red-500">*</span>
           </label>
 
@@ -175,11 +177,11 @@ const removeFile = (index) => {
         <!-- Media -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-1">
-            Media (Optional)
+            {{ t('logAction.media') }}
           </label>
 
           <p class="text-xs text-gray-500 mb-3">
-            (Adding photos improves trust)
+            {{ t('logAction.mediaHint') }}
           </p>
 
           <!-- Hidden File Input -->
@@ -204,12 +206,12 @@ const removeFile = (index) => {
               <ImageIcon class="w-6 h-6 text-primary-500" />
             </div>
 
-            <span class="font-bold text-gray-900 text-sm">  
-              Add a photo or video
+            <span class="font-bold text-gray-900 text-sm">
+              {{ t('logAction.addPhotoVideo') }}
             </span>
 
             <span class="text-sm text-gray-500 mt-1">
-              Tap to browse from your device
+              {{ t('logAction.tapToBrowse') }}
             </span>
           </div>
 
@@ -259,7 +261,7 @@ const removeFile = (index) => {
           type="button"
           class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl p-4 shadow-lg shadow-primary-500/30 transition-colors uppercase tracking-wider text-sm"
         >
-          Submit Action
+          {{ t('logAction.submit') }}
         </button>
       </form>
     </div>

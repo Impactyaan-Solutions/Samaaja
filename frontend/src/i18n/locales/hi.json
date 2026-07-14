@@ -1,0 +1,213 @@
+{
+  "settings": {
+    "appSettings": "ऐप सेटिंग्स",
+    "pushNotifications": "पुश नोटिफिकेशन",
+    "pushNotificationsDesc": "गतिविधि और अलर्ट",
+    "language": "भाषा",
+    "darkMode": "डार्क मोड",
+    "darkModeDesc": "आंखों का तनाव कम करें",
+    "support": "सहायता",
+    "helpCenter": "सहायता केंद्र",
+    "privacyPolicy": "गोपनीयता नीति",
+    "logOut": "लॉग आउट"
+  },
+  "languagePicker": {
+    "title": "भाषा चुनें",
+    "subtitle": "ऐप में इस्तेमाल करने के लिए भाषा चुनें"
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी"
+  },
+  "common": {
+    "unknownUser": "अज्ञात उपयोगकर्ता"
+  },
+  "nav": {
+    "home": "होम",
+    "leaderboard": "लीडरबोर्ड",
+    "act": "कार्य",
+    "announcements": "घोषणाएँ",
+    "profile": "प्रोफ़ाइल"
+  },
+  "menu": {
+    "settings": "सेटिंग्स",
+    "logout": "लॉग आउट"
+  },
+  "actionSheet": {
+    "title": "एक कार्य चुनें",
+    "subtitle": "अपने समुदाय के लिए कुछ सार्थक शुरू करें",
+    "logAction": "अपना कार्य दर्ज करें",
+    "logActionDesc": "पूर्ण किए गए कार्य को दर्ज करें और दूसरों को प्रेरित करें।",
+    "addPost": "पोस्ट जोड़ें",
+    "addPostDesc": "अपने समुदाय के साथ साझा करने के लिए एक अपडेट पोस्ट करें।"
+  },
+  "landing": {
+    "tagline": "अपना समुदाय बनाएं। कार्रवाई करें।",
+    "subtitle": "अपने क्षेत्र के लोगों से जुड़ें जो वास्तविक समस्याओं को हल कर रहे हैं और मिलकर अपने समुदाय को बेहतर बना रहे हैं।",
+    "signUp": "साइन अप करें",
+    "login": "लॉग इन करें",
+    "whatYouCanDo": "आप क्या कर सकते हैं",
+    "features": {
+      "reportAct": { "title": "रिपोर्ट करें और कार्रवाई करें", "description": "स्थानीय समस्याओं को उठाएं और प्रगति को ट्रैक करें।" },
+      "connect": { "title": "जुड़ें", "description": "सामुदायिक चर्चाओं में पोस्ट करें या शामिल हों।" },
+      "getRecognised": { "title": "पहचान पाएं", "description": "अपना प्रभाव और लीडरबोर्ड रैंक देखें।" },
+      "askForHelp": { "title": "सहायता माँगें", "description": "विशेषज्ञों और समुदाय से सहायता प्राप्त करें।" }
+    }
+  },
+  "login": {
+    "title": "लॉग इन करें",
+    "subtitle": "सत्यापन कोड प्राप्त करने और सुरक्षित रूप से लॉग इन करने के लिए अपना मोबाइल नंबर दर्ज करें।",
+    "mobileNumberPlaceholder": "मोबाइल नंबर",
+    "otpLabel": "ओटीपी",
+    "sendOtp": "ओटीपी भेजें",
+    "loginButton": "लॉग इन करें",
+    "orContinueWith": "या इसके साथ जारी रखें",
+    "google": "गूगल",
+    "agreementPrefix": "लॉग इन करके, आप हमारी",
+    "and": "और",
+    "termsOfService": "सेवा की शर्तों",
+    "privacyPolicy": "गोपनीयता नीति",
+    "invalidMobile": "कृपया एक मान्य 10-अंकीय मोबाइल नंबर दर्ज करें",
+    "otpSent": "ओटीपी सफलतापूर्वक भेजा गया। लॉगिन के लिए 1111 का उपयोग करें",
+    "invalidOtp": "कृपया एक मान्य 4-अंकीय ओटीपी दर्ज करें",
+    "connectionFailed": "कनेक्शन विफल: {error}"
+  },
+  "signup": {
+    "title": "साइन अप करें",
+    "subtitle": "वास्तविक प्रभाव डालना शुरू करने के लिए समुदाय से जुड़ें!",
+    "fullName": "पूरा नाम",
+    "fullNamePlaceholder": "जैसे राहुल पोद्दार",
+    "dob": "जन्म तिथि",
+    "dobPlaceholder": "दिन/महीना/वर्ष",
+    "gender": "लिंग",
+    "genderFemale": "महिला",
+    "genderMale": "पुरुष",
+    "genderOther": "अन्य",
+    "role": "भूमिका",
+    "roleCitizen": "नागरिक",
+    "roleNgoPartner": "एनजीओ पार्टनर",
+    "mobileNumber": "मोबाइल नंबर",
+    "bio": "बायो",
+    "bioPlaceholder": "संक्षिप्त बायो",
+    "createAccount": "खाता बनाएं",
+    "orSignUpWith": "या इसके साथ साइन अप करें",
+    "google": "गूगल",
+    "fillRequiredFields": "कृपया सभी आवश्यक फ़ील्ड भरें।",
+    "connectionFailed": "कनेक्शन विफल: {error}"
+  },
+  "profileCompletion": {
+    "title": "प्रोफ़ाइल पूर्ण करें",
+    "subtitle": "लगभग हो गया! आपका खाता सेट करने के लिए हमें बस कुछ और विवरण चाहिए।",
+    "gender": "लिंग",
+    "selectGender": "लिंग चुनें",
+    "genderMale": "पुरुष",
+    "genderFemale": "महिला",
+    "genderOther": "अन्य",
+    "category": "श्रेणी",
+    "selectCategory": "श्रेणी चुनें",
+    "categoryCitizen": "नागरिक",
+    "categoryNgoPartner": "एनजीओ पार्टनर",
+    "dob": "जन्म तिथि",
+    "mobileNumber": "मोबाइल नंबर",
+    "mobileNumberPlaceholder": "जैसे 9876543210",
+    "bio": "बायो",
+    "bioPlaceholder": "अपने बारे में और आप क्यों जुड़े, थोड़ा बताएं।",
+    "savingProfile": "प्रोफ़ाइल सहेजी जा रही है...",
+    "completeRegistration": "पंजीकरण पूर्ण करें"
+  },
+  "home": {
+    "actions": "कार्य",
+    "posts": "पोस्ट",
+    "invested": "निवेशित",
+    "communityFeed": "सामुदायिक फ़ीड",
+    "noMorePosts": "कोई और पोस्ट नहीं"
+  },
+  "announcements": {
+    "loading": "घोषणाएं लोड हो रही हैं...",
+    "noActive": "कोई सक्रिय घोषणा नहीं है।"
+  },
+  "leaderboard": {
+    "organisation": "संगठन",
+    "global": "वैश्विक",
+    "searchPlaceholder": "शहर या देश खोजें...",
+    "loading": "लीडरबोर्ड लोड हो रहा है...",
+    "actions": "कार्य"
+  },
+  "profile": {
+    "impactSummary": "प्रभाव सारांश",
+    "actions": "कार्य",
+    "hours": "घंटे",
+    "posts": "पोस्ट",
+    "badgesEarned": "अर्जित बैज",
+    "noBadges": "कोई बैज अर्जित नहीं किया",
+    "actionsTab": "कार्य",
+    "postsTab": "पोस्ट",
+    "loadingActions": "कार्य लोड हो रहे हैं...",
+    "loadingPosts": "पोस्ट लोड हो रहे हैं...",
+    "noActionsFound": "कोई कार्य नहीं मिला।",
+    "noPostsFound": "कोई पोस्ट नहीं मिली।",
+    "actionLabel": "कार्य",
+    "postLabel": "पोस्ट",
+    "failedToLoadActions": "कार्य लोड करने में विफल।",
+    "failedToLoadPosts": "पोस्ट लोड करने में विफल।",
+    "loading": "लोड हो रहा है..."
+  },
+  "addPost": {
+    "headerTitle": "पोस्ट जोड़ें",
+    "titleLabel": "शीर्षक",
+    "titlePlaceholder": "अपनी पोस्ट का शीर्षक",
+    "description": "विवरण",
+    "descriptionPlaceholder": "आप समुदाय के साथ क्या साझा करना चाहेंगे?",
+    "category": "श्रेणी",
+    "selectCategory": "एक श्रेणी चुनें...",
+    "media": "मीडिया (वैकल्पिक)",
+    "mediaHint": "(फ़ोटो जोड़ने से विश्वास बढ़ता है)",
+    "addPhotoVideo": "फ़ोटो या वीडियो जोड़ें",
+    "tapToBrowse": "अपने डिवाइस से ब्राउज़ करने के लिए टैप करें",
+    "submit": "पोस्ट सबमिट करें",
+    "fillAllFields": "कृपया सभी फ़ील्ड भरें",
+    "postSubmitted": "पोस्ट सफलतापूर्वक सबमिट हो गई!"
+  },
+  "logAction": {
+    "headerTitle": "कार्य दर्ज करें",
+    "actionType": "कार्य प्रकार",
+    "selectType": "एक प्रकार चुनें...",
+    "types": {
+      "onGround": "ऑन-ग्राउंड कार्य",
+      "dataReporting": "डेटा और रिपोर्टिंग",
+      "trainingMentoring": "प्रशिक्षण और मार्गदर्शन",
+      "eventsActivities": "कार्यक्रम और गतिविधियाँ",
+      "outreachAwareness": "जागरूकता और आउटरीच",
+      "communityEngagement": "सामुदायिक सहभागिता"
+    },
+    "actionCategory": "कार्य श्रेणी",
+    "selectCategory": "एक श्रेणी चुनें...",
+    "description": "विवरण",
+    "descriptionPlaceholder": "आपने आज क्या प्रभाव डाला?",
+    "hoursInvested": "निवेशित घंटे",
+    "media": "मीडिया (वैकल्पिक)",
+    "mediaHint": "(फ़ोटो जोड़ने से विश्वास बढ़ता है)",
+    "addPhotoVideo": "फ़ोटो या वीडियो जोड़ें",
+    "tapToBrowse": "अपने डिवाइस से ब्राउज़ करने के लिए टैप करें",
+    "submit": "कार्य सबमिट करें",
+    "fillAllFields": "कृपया सभी फ़ील्ड भरें",
+    "actionLogged": "कार्य सफलतापूर्वक दर्ज किया गया!"
+  },
+  "categories": {
+    "agricultureLivelihood": "कृषि और आजीविका",
+    "healthNutrition": "स्वास्थ्य और पोषण",
+    "education": "शिक्षा",
+    "civicGovernance": "नागरिक कार्रवाई और शासन",
+    "sportsFitness": "खेल और फिटनेस"
+  },
+  "comments": {
+    "title": "टिप्पणियाँ",
+    "empty": "अभी तक कोई टिप्पणी नहीं। सबसे पहले आप बनें!",
+    "placeholder": "एक टिप्पणी लिखें...",
+    "edit": "संपादित करें",
+    "delete": "हटाएं"
+  },
+  "postAction": {
+    "noDescription": "कोई विवरण उपलब्ध नहीं है।"
+  }
+}

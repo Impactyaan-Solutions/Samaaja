@@ -1,8 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Search, Filter, Award } from 'lucide-vue-next'
 import { getLeaderboard } from '@/services/api' // Adjust path if necessary
 import AppHeader from '@/components/common/AppHeader.vue'
+
+const { t } = useI18n()
 
 const scope = ref('organisation')
 const list = ref([])
@@ -45,22 +48,22 @@ onMounted(async () => {
           class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all"
           :class="scope === 'organisation' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500'"
         >
-          Organisation
+          {{ t('leaderboard.organisation') }}
         </button>
-        <button 
+        <button
           @click="scope = 'global'"
           class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all"
           :class="scope === 'global' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500'"
         >
-          Global
+          {{ t('leaderboard.global') }}
         </button>
       </div>
 
       <div class="relative flex items-center">
         <Search class="absolute left-4 w-5 h-5 text-gray-400" />
-        <input 
-          type="text" 
-          placeholder="Search City or Country..." 
+        <input
+          type="text"
+          :placeholder="t('leaderboard.searchPlaceholder')"
           class="w-full bg-white border border-gray-200 rounded-2xl py-3.5 pl-11 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow shadow-sm"
         />
         <button class="absolute right-4 text-gray-400 hover:text-gray-600">
@@ -71,7 +74,7 @@ onMounted(async () => {
 
     <!-- Loading State -->
     <div v-if="isLoading" class="px-5 mt-10 text-center text-gray-400">
-      <p class="text-sm">Loading leaderboard...</p>
+      <p class="text-sm">{{ t('leaderboard.loading') }}</p>
     </div>
 
     <!-- List -->
@@ -101,7 +104,7 @@ onMounted(async () => {
         </router-link>  
         <div class="bg-blue-50/70 border border-blue-50 text-primary-600 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
           <span class="font-bold text-sm leading-none">{{ user.actions }}</span>
-          <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">Actions</span>
+          <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">{{ t('leaderboard.actions') }}</span>
         </div>
       </div>
     </div>

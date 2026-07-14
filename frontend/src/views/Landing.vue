@@ -1,42 +1,46 @@
 <script setup>
-import { 
-  ClipboardCheck, 
-  Users, 
-  Medal, 
-  LifeBuoy, 
-  Globe 
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import {
+  ClipboardCheck,
+  Users,
+  Medal,
+  LifeBuoy,
+  Globe
 } from 'lucide-vue-next';
 
-const features = [
+const { t, locale } = useI18n();
+
+const features = computed(() => [
   {
-    title: 'Report & Act',
-    description: 'Raise local problems and track progress.',
+    title: t('landing.features.reportAct.title'),
+    description: t('landing.features.reportAct.description'),
     icon: ClipboardCheck,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
   },
   {
-    title: 'Connect',
-    description: 'Post or join community discussions.',
+    title: t('landing.features.connect.title'),
+    description: t('landing.features.connect.description'),
     icon: Users,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
   },
   {
-    title: 'Get Recognised',
-    description: 'See your impact and leaderboard rank.',
+    title: t('landing.features.getRecognised.title'),
+    description: t('landing.features.getRecognised.description'),
     icon: Medal,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
   },
   {
-    title: 'Ask for Help',
-    description: 'Get support from experts and community.',
+    title: t('landing.features.askForHelp.title'),
+    description: t('landing.features.askForHelp.description'),
     icon: LifeBuoy,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
   }
-];
+]);
 </script>
 
 <template>
@@ -51,35 +55,35 @@ const features = [
         </div>
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
-          EN
+          {{ locale }}
         </button>
       </header>
 
       <section class="space-y-2 mb-2">
         <h2 class="text-4xl font-extrabold text-slate-900 leading-tight">
-          Build Your Community. Take Action.
+          {{ t('landing.tagline') }}
         </h2>
         <p class="text-slate-500 text-lg leading-relaxed">
-          Join people in your area solving real issues and improving their community together.
+          {{ t('landing.subtitle') }}
         </p>
       </section>
 
       <section class="flex flex-col gap-3 mb-6">
         <a href="/signup">
           <button class="w-full py-4 bg-blue-600 hover:bg-blue-700 transition-colors text-white font-bold rounded-xl shadow-md">
-            Sign Up
+            {{ t('landing.signUp') }}
           </button>
         </a>
         <a href="/login">
           <button class="w-full py-4 bg-blue-50 hover:bg-blue-100 transition-colors text-blue-800 font-bold rounded-xl">
-            Login
+            {{ t('landing.login') }}
           </button>
         </a>
       </section>
 
       <section class="pb-8">
         <h3 class="text-xs font-black text-slate-400 tracking-widest uppercase mb-6">
-          What you can do
+          {{ t('landing.whatYouCanDo') }}
         </h3>
 
         <div class="space-y-5">

@@ -2,9 +2,11 @@
 import { ref } from 'vue'
 import { ArrowLeft, Image as ImageIcon, X, Video } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { addPost } from '../services/api'
 import { checkAuth } from '../auth'
 const router = useRouter()
+const { t } = useI18n()
 
 const fileInput = ref(null)
 const uploadedFiles = ref([])
@@ -17,7 +19,7 @@ const description = ref('')
 const submitPost = async (e) => {
   try {
     if(!title.value || !category.value || !description.value){
-      alert("Please fill all the fields")
+      alert(t('addPost.fillAllFields'))
       return;
     }
     e.preventDefault()
@@ -27,7 +29,7 @@ const submitPost = async (e) => {
       description: description.value,
       attachments: uploadedFiles.value
     })
-    alert("Post submitted successfully!")
+    alert(t('addPost.postSubmitted'))
     await checkAuth()
     router.push({ name: 'home' });
   } catch (error) {
@@ -87,7 +89,7 @@ const removeFile = (index) => {
       </button>
 
       <h2 class="font-bold text-lg text-gray-900 mx-auto -ml-2">
-        Add a Post
+        {{ t('addPost.headerTitle') }}
       </h2>
 
       <div class="w-6"></div>
@@ -99,13 +101,13 @@ const removeFile = (index) => {
         <!-- Description -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Title
+            {{ t('addPost.titleLabel') }}
             <span class="text-red-500">*</span>
           </label>
 
           <input
             v-model="title"
-            placeholder="Title of your post"
+            :placeholder="t('addPost.titlePlaceholder')"
             class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm resize-none"
           ></input>
         </div>
@@ -113,14 +115,14 @@ const removeFile = (index) => {
         <!-- Description -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Description
+            {{ t('addPost.description') }}
             <span class="text-red-500">*</span>
           </label>
 
           <textarea
             rows="3"
             v-model="description"
-            placeholder="What you would like to share with the community?"
+            :placeholder="t('addPost.descriptionPlaceholder')"
             class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm resize-none"
           ></textarea>
         </div>
@@ -128,7 +130,7 @@ const removeFile = (index) => {
         <!-- Action Category -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-2">
-            Category
+            {{ t('addPost.category') }}
             <span class="text-red-500">*</span>
           </label>
 
@@ -137,25 +139,25 @@ const removeFile = (index) => {
             class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
           >
             <option value="" disabled selected>
-              Select a category...
+              {{ t('addPost.selectCategory') }}
             </option>
 
-            <option value="Agriculture & Livelihood">Agriculture & Livelihood</option>
-            <option value="Health & Nutrition">Health & Nutrition</option>
-            <option value="Education">Education</option>
-            <option value="Civic Action & Governance">Civic Action & Governance</option>
-            <option value="Sports & Fitness">Sports & Fitness</option>
+            <option value="Agriculture & Livelihood">{{ t('categories.agricultureLivelihood') }}</option>
+            <option value="Health & Nutrition">{{ t('categories.healthNutrition') }}</option>
+            <option value="Education">{{ t('categories.education') }}</option>
+            <option value="Civic Action & Governance">{{ t('categories.civicGovernance') }}</option>
+            <option value="Sports & Fitness">{{ t('categories.sportsFitness') }}</option>
           </select>
         </div>
 
         <!-- Media -->
         <div>
           <label class="block text-sm font-bold text-gray-900 mb-1">
-            Media (Optional)
+            {{ t('addPost.media') }}
           </label>
 
           <p class="text-xs text-gray-500 mb-3">
-            (Adding photos improves trust)
+            {{ t('addPost.mediaHint') }}
           </p>
 
           <!-- Hidden File Input -->
@@ -180,12 +182,12 @@ const removeFile = (index) => {
               <ImageIcon class="w-6 h-6 text-primary-500" />
             </div>
 
-            <span class="font-bold text-gray-900 text-sm">  
-              Add a photo or video
+            <span class="font-bold text-gray-900 text-sm">
+              {{ t('addPost.addPhotoVideo') }}
             </span>
 
             <span class="text-sm text-gray-500 mt-1">
-              Tap to browse from your device
+              {{ t('addPost.tapToBrowse') }}
             </span>
           </div>
 
@@ -235,7 +237,7 @@ const removeFile = (index) => {
           type="button"
           class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl p-4 shadow-lg shadow-primary-500/30 transition-colors uppercase tracking-wider text-sm"
         >
-          Submit Post
+          {{ t('addPost.submit') }}
         </button>
       </form>
     </div>

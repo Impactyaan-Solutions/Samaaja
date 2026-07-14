@@ -1,0 +1,213 @@
+{
+  "settings": {
+    "appSettings": "App Settings",
+    "pushNotifications": "Push Notifications",
+    "pushNotificationsDesc": "Activity and alerts",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Reduce eye strain",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "privacyPolicy": "Privacy Policy",
+    "logOut": "Log Out"
+  },
+  "languagePicker": {
+    "title": "Choose language",
+    "subtitle": "Select the language you'd like to use across the app"
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी"
+  },
+  "common": {
+    "unknownUser": "Unknown User"
+  },
+  "nav": {
+    "home": "Home",
+    "leaderboard": "Leaderboard",
+    "act": "Act",
+    "announcements": "Announcements",
+    "profile": "Profile"
+  },
+  "menu": {
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "actionSheet": {
+    "title": "Choose an action",
+    "subtitle": "Start something meaningful for your community",
+    "logAction": "Log your Action",
+    "logActionDesc": "Capture completed work and inspire others.",
+    "addPost": "Add a Post",
+    "addPostDesc": "Post an update to share with your community."
+  },
+  "landing": {
+    "tagline": "Build Your Community. Take Action.",
+    "subtitle": "Join people in your area solving real issues and improving their community together.",
+    "signUp": "Sign Up",
+    "login": "Login",
+    "whatYouCanDo": "What you can do",
+    "features": {
+      "reportAct": { "title": "Report & Act", "description": "Raise local problems and track progress." },
+      "connect": { "title": "Connect", "description": "Post or join community discussions." },
+      "getRecognised": { "title": "Get Recognised", "description": "See your impact and leaderboard rank." },
+      "askForHelp": { "title": "Ask for Help", "description": "Get support from experts and community." }
+    }
+  },
+  "login": {
+    "title": "Log In",
+    "subtitle": "Enter your mobile number to get a verification code and securely log in.",
+    "mobileNumberPlaceholder": "Mobile Number",
+    "otpLabel": "OTP",
+    "sendOtp": "Send OTP",
+    "loginButton": "Login",
+    "orContinueWith": "OR CONTINUE WITH",
+    "google": "Google",
+    "agreementPrefix": "By logging in, you agree to our",
+    "and": "and",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "invalidMobile": "Please enter a valid 10-digit mobile number",
+    "otpSent": "OTP Sent Successfully. Use 1111 to login",
+    "invalidOtp": "Please enter a valid 4-digit OTP",
+    "connectionFailed": "Connection failed: {error}"
+  },
+  "signup": {
+    "title": "Sign Up",
+    "subtitle": "Join the community to start making a real impact!",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "e.g. Rahul Poddar",
+    "dob": "Date of Birth",
+    "dobPlaceholder": "DD/MM/YYYY",
+    "gender": "Gender",
+    "genderFemale": "Female",
+    "genderMale": "Male",
+    "genderOther": "Other",
+    "role": "Role",
+    "roleCitizen": "Citizen",
+    "roleNgoPartner": "NGO Partner",
+    "mobileNumber": "Mobile Number",
+    "bio": "Bio",
+    "bioPlaceholder": "Short bio",
+    "createAccount": "Create Account",
+    "orSignUpWith": "Or sign up with",
+    "google": "Google",
+    "fillRequiredFields": "Please fill in all the required fields.",
+    "connectionFailed": "Connection failed: {error}"
+  },
+  "profileCompletion": {
+    "title": "Complete Profile",
+    "subtitle": "Almost there! We just need a few more details to set up your account.",
+    "gender": "Gender",
+    "selectGender": "Select Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other",
+    "category": "Category",
+    "selectCategory": "Select Category",
+    "categoryCitizen": "Citizen",
+    "categoryNgoPartner": "NGO Partner",
+    "dob": "Date of Birth",
+    "mobileNumber": "Mobile Number",
+    "mobileNumberPlaceholder": "e.g. 9876543210",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us a bit about yourself and why you joined.",
+    "savingProfile": "Saving Profile...",
+    "completeRegistration": "Complete Registration"
+  },
+  "home": {
+    "actions": "Actions",
+    "posts": "Posts",
+    "invested": "Invested",
+    "communityFeed": "Community Feed",
+    "noMorePosts": "No more posts"
+  },
+  "announcements": {
+    "loading": "Loading announcements...",
+    "noActive": "No active announcements."
+  },
+  "leaderboard": {
+    "organisation": "Organisation",
+    "global": "Global",
+    "searchPlaceholder": "Search City or Country...",
+    "loading": "Loading leaderboard...",
+    "actions": "Actions"
+  },
+  "profile": {
+    "impactSummary": "Impact Summary",
+    "actions": "Actions",
+    "hours": "Hours",
+    "posts": "Posts",
+    "badgesEarned": "Badges Earned",
+    "noBadges": "No badges earned",
+    "actionsTab": "Actions",
+    "postsTab": "Posts",
+    "loadingActions": "Loading actions...",
+    "loadingPosts": "Loading posts...",
+    "noActionsFound": "No actions found.",
+    "noPostsFound": "No posts found.",
+    "actionLabel": "Action",
+    "postLabel": "Post",
+    "failedToLoadActions": "Failed to load actions.",
+    "failedToLoadPosts": "Failed to load posts.",
+    "loading": "Loading..."
+  },
+  "addPost": {
+    "headerTitle": "Add a Post",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Title of your post",
+    "description": "Description",
+    "descriptionPlaceholder": "What you would like to share with the community?",
+    "category": "Category",
+    "selectCategory": "Select a category...",
+    "media": "Media (Optional)",
+    "mediaHint": "(Adding photos improves trust)",
+    "addPhotoVideo": "Add a photo or video",
+    "tapToBrowse": "Tap to browse from your device",
+    "submit": "Submit Post",
+    "fillAllFields": "Please fill all the fields",
+    "postSubmitted": "Post submitted successfully!"
+  },
+  "logAction": {
+    "headerTitle": "Log Action",
+    "actionType": "Action Type",
+    "selectType": "Select a type...",
+    "types": {
+      "onGround": "On-Ground Action",
+      "dataReporting": "Data & Reporting",
+      "trainingMentoring": "Training & Mentoring",
+      "eventsActivities": "Events & Activities",
+      "outreachAwareness": "Outreach & Awareness",
+      "communityEngagement": "Community Engagement"
+    },
+    "actionCategory": "Action Category",
+    "selectCategory": "Select a category...",
+    "description": "Description",
+    "descriptionPlaceholder": "What impact did you make today?",
+    "hoursInvested": "Hours Invested",
+    "media": "Media (Optional)",
+    "mediaHint": "(Adding photos improves trust)",
+    "addPhotoVideo": "Add a photo or video",
+    "tapToBrowse": "Tap to browse from your device",
+    "submit": "Submit Action",
+    "fillAllFields": "Please fill all the fields",
+    "actionLogged": "Action logged successfully!"
+  },
+  "categories": {
+    "agricultureLivelihood": "Agriculture & Livelihood",
+    "healthNutrition": "Health & Nutrition",
+    "education": "Education",
+    "civicGovernance": "Civic Action & Governance",
+    "sportsFitness": "Sports & Fitness"
+  },
+  "comments": {
+    "title": "Comments",
+    "empty": "No comments yet. Be the first!",
+    "placeholder": "Write a comment...",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "postAction": {
+    "noDescription": "No description provided."
+  }
+}

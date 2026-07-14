@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   show: Boolean,
   item: Object // Expecting { type: 'ACTION' | 'POST', title: '...', description: '...', meta: '...' }
@@ -27,7 +31,7 @@ const emit = defineEmits(["close"])
           <hr class="border-slate-100 my-4" />
 
           <p class="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed">
-            {{ item?.description || 'No description provided.' }}
+            {{ item?.description || t('postAction.noDescription') }}
           </p>
         </div>
 

@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue"
+import { useI18n } from "vue-i18n"
 import { ArrowRightCircle, Loader2 } from "lucide-vue-next"
 import { getActiveAnnouncements } from "@/services/api"
 import { authState } from "@/auth"
 import AppHeader from "@/components/common/AppHeader.vue"
+
+const { t, locale } = useI18n()
 
 const announcements = ref([])
 const loading = ref(true)
@@ -29,7 +32,7 @@ const handleInteraction = (item) => {
 const formatDate = (timeStr) => {
   if (!timeStr) return ""
   const date = new Date(timeStr)
-  return date.toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" })
+  return date.toLocaleDateString(locale.value === 'hi' ? 'hi-IN' : 'en-US', { day: "2-digit", month: "short", year: "numeric" })
 }
 </script>
 
@@ -39,7 +42,7 @@ const formatDate = (timeStr) => {
 
     <div v-if="loading" class="px-5 mt-10 text-center text-gray-500 flex flex-col items-center">
       <Loader2 class="w-8 h-8 animate-spin text-primary-500 mb-2" />
-      <span>Loading announcements...</span>
+      <span>{{ t('announcements.loading') }}</span>
     </div>
 
     <div v-else-if="error" class="px-5 mt-10 text-center text-red-500">
@@ -47,7 +50,7 @@ const formatDate = (timeStr) => {
     </div>
 
     <div v-else-if="announcements.length === 0" class="px-5 mt-10 text-center text-gray-500">
-      No active announcements.
+      {{ t('announcements.noActive') }}
     </div>
 
     <div v-else class="px-5 mt-4 space-y-4">

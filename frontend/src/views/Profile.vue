@@ -1,12 +1,13 @@
   <script setup>
   import { ref, computed, onMounted, watch } from 'vue'
   import { useRoute } from 'vue-router'
-  import { 
-    ChevronDown, 
-    Leaf, 
-    Droplets, 
-    BookOpen, 
-    Settings, 
+  import { useI18n } from 'vue-i18n'
+  import {
+    ChevronDown,
+    Leaf,
+    Droplets,
+    BookOpen,
+    Settings,
     LogOut // Added for the menu
   } from 'lucide-vue-next'
   import { Heart, MessageSquare } from 'lucide-vue-next'
@@ -15,6 +16,8 @@
   import { getProfile } from '@/services/api'
   import { getUserProfilePosts, getUserProfileActions } from '@/services/api'
   import PostActionDialouge from '../components/common/PostActionDialouge.vue'
+
+  const { t } = useI18n()
   // --- Menu Logic ---
   const isMenuOpen = ref(false)
   const userPosts = ref([])
@@ -133,7 +136,7 @@
       
     } catch (err) {
      // console.error(err)
-      postsError.value = "Failed to load posts."
+      postsError.value = t('profile.failedToLoadPosts')
     } finally {
       postsLoading.value = false
     }
@@ -155,7 +158,7 @@
      // console.log("Fetched actions:", userActions.value)
     } catch (err) {
      // console.error(err)
-      actionsError.value = "Failed to load actions."
+      actionsError.value = t('profile.failedToLoadActions')
     } finally {
       actionsLoading.value = false
     }
@@ -260,18 +263,18 @@ watch(
               class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors"
             >
               <Settings class="w-4 h-4 text-gray-500" />
-              <span class="text-sm font-medium">Settings</span>
+              <span class="text-sm font-medium">{{ t('menu.settings') }}</span>
             </button>
-            
+
             <div class="border-t border-gray-100 mx-2"></div>
-            
+
             <!-- Logout Tab -->
-            <button 
-              @click="handleLogout" 
+            <button
+              @click="handleLogout"
               class="flex items-center space-x-3 px-4 py-3 hover:bg-red-50 text-red-600 transition-colors"
             >
               <LogOut class="w-4 h-4" />
-              <span class="text-sm font-medium">Logout</span>
+              <span class="text-sm font-medium">{{ t('menu.logout') }}</span>
             </button>
           </div>
         </div>
@@ -356,21 +359,21 @@ watch(
       <div class="px-5 mb-5">
         <div class="flex items-center space-x-2 mb-4">
           <span class="text-xl">🌟</span>
-          <h3 class="font-bold text-gray-900 text-lg">Impact Summary</h3>
+          <h3 class="font-bold text-gray-900 text-lg">{{ t('profile.impactSummary') }}</h3>
         </div>
-        
+
         <div class="grid grid-cols-3 gap-3">
           <div class="bg-white border border-gray-100 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
             <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.actions }}</span>
-            <span class="text-[11px] text-gray-500 font-medium leading-tight">Actions</span>
+            <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ t('profile.actions') }}</span>
           </div>
           <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
             <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.hours }}</span>
-            <span class="text-[11px] text-gray-500 font-medium leading-tight">Hours</span>
+            <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ t('profile.hours') }}</span>
           </div>
           <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
             <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.posts }}</span>
-            <span class="text-[11px] text-gray-500 font-medium leading-tight">Posts</span>
+            <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ t('profile.posts') }}</span>
           </div>
         </div>
       </div>
@@ -379,7 +382,7 @@ watch(
       <div class="px-5 mb-20">
         <div class="flex items-center space-x-2 mb-4">
           <span class="text-xl">🥇</span>
-          <h3 class="font-bold text-gray-900 text-lg">Badges Earned</h3>
+          <h3 class="font-bold text-gray-900 text-lg">{{ t('profile.badgesEarned') }}</h3>
         </div>
         <div v-if="user.badges" class="grid grid-cols-3 gap-3">
           <div v-for="(badge, index) in user.badges" :key="index" class="flex flex-col justify-center items-center text-center">
@@ -388,7 +391,7 @@ watch(
           </div>
         </div>
         <div v-else class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm italic text-gray-400 text-sm text-center">
-          no badges earned
+          {{ t('profile.noBadges') }}
         </div>
       </div>
         <div class="px-5 mb-4">
@@ -404,7 +407,7 @@ watch(
             : 'text-gray-600'
         ]"
       >
-        Actions
+        {{ t('profile.actionsTab') }}
       </button>
 
       <button
@@ -419,16 +422,16 @@ watch(
             : 'text-gray-600'
         ]"
       >
-        Posts
+        {{ t('profile.postsTab') }}
       </button>
     </div>
    
   <div class="mt-4 space-y-4">
   <!-- Actions tab -->
   <div v-if="activeTab === 'actions'">
-    <div v-if="actionsLoading" class="text-center py-6">Loading actions...</div>
+    <div v-if="actionsLoading" class="text-center py-6">{{ t('profile.loadingActions') }}</div>
     <div v-else-if="actionsError" class="text-center text-red-500 py-6">{{ actionsError }}</div>
-    <div v-else-if="userActions.length === 0" class="text-center text-gray-500 py-6">No actions found.</div>
+    <div v-else-if="userActions.length === 0" class="text-center text-gray-500 py-6">{{ t('profile.noActionsFound') }}</div>
     <div v-else>
       <div
         v-for="action in userActions"
@@ -437,7 +440,7 @@ watch(
         @mouseenter="!isMobile() && openDialog(action)"
         @click="isMobile() && openDialog(action)"
       >
-        <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">Action</p>
+        <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">{{ t('profile.actionLabel') }}</p>
         <h3 class="font-bold text-gray-900">{{ action.title }}</h3>
         <p class="text-sm text-gray-500 mt-2">{{ truncate(action.description) }}</p>
         <div class="flex items-center gap-2 text-xs mt-3">
@@ -449,9 +452,9 @@ watch(
 
     <!-- Posts -->
    <div v-else>
-    <div v-if="postsLoading" class="text-center py-6">Loading posts...</div>
+    <div v-if="postsLoading" class="text-center py-6">{{ t('profile.loadingPosts') }}</div>
     <div v-else-if="postsError" class="text-center text-red-500 py-6">{{ postsError }}</div>
-    <div v-else-if="userPosts.length === 0" class="text-center text-gray-500 py-6">No posts found.</div>
+    <div v-else-if="userPosts.length === 0" class="text-center text-gray-500 py-6">{{ t('profile.noPostsFound') }}</div>
     <div v-else>
       <div
         v-for="post in userPosts"
@@ -460,7 +463,7 @@ watch(
         @mouseenter="!isMobile() && openDialog(post)"
         @click="isMobile() && openDialog(post)"
       >
-        <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">Post</p>
+        <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">{{ t('profile.postLabel') }}</p>
         <h3 class="font-bold text-gray-900">{{ post.title }}</h3>
         <p class="text-sm text-gray-500 mt-2">{{ truncate(post.description) }}</p>
         <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
@@ -493,7 +496,7 @@ watch(
     <div v-else class="h-screen flex items-center justify-center bg-white">
       <div class="flex flex-col items-center space-y-4">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p class="text-gray-500 font-medium tracking-wide">fallback_syncing_status</p>
+          <p class="text-gray-500 font-medium tracking-wide">{{ t('profile.loading') }}</p>
       </div>
     </div>
   </template>

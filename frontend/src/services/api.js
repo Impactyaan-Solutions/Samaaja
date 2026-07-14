@@ -438,6 +438,7 @@ export const getComments = async (post_id) => {
         console.error("GET COMMENTS FAILED", err)
         throw err
     }
+}
 
 export const getUserProfilePosts = async (user,limit = 10, offset = 0) => {
     const headers = {

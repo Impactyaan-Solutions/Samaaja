@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { X, Send } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
 import { authState } from '@/auth'
 import { createComment, getComments } from '@/services/api'
 import CommentItem from './CommentItem.vue'
 import { onMounted } from 'vue'
+
+const { t } = useI18n()
 const props = defineProps({
   postId: {
     type: String,
@@ -121,7 +124,7 @@ defineExpose({ fetchComments })
       <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm z-50 bg-white rounded-t-2xl shadow-2xl max-h-[70vh] flex flex-col">
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
           <h3 class="font-semibold text-gray-900 text-sm">
-            Comments <span class="text-gray-400 font-normal">({{ commentCount }})</span>
+            {{ t('comments.title') }} <span class="text-gray-400 font-normal">({{ commentCount }})</span>
           </h3>
           <button @click="emit('close')" class="p-1 rounded-full hover:bg-gray-100 transition-colors">
             <X class="w-5 h-5 text-gray-500" />
@@ -138,7 +141,7 @@ defineExpose({ fetchComments })
     v-if="comments.length === 0"
     class="text-center text-sm text-gray-400 py-8"
   >
-    No comments yet. Be the first!
+    {{ t('comments.empty') }}
   </p>
 
   <CommentItem
@@ -167,7 +170,7 @@ defineExpose({ fetchComments })
           <input
             v-model="commentText"
             type="text"
-            placeholder="Write a comment..."
+            :placeholder="t('comments.placeholder')"
             class="flex-1 bg-gray-50 rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200 border border-gray-100"
             @keyup.enter="submitComment"
           />

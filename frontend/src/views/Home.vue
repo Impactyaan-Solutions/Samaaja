@@ -1,10 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Plus, Edit3, HelpCircle, Loader2 } from 'lucide-vue-next'
 import CommunityPost from '../components/common/CommunityPost.vue'
 import AppHeader from '@/components/common/AppHeader.vue'
 import { getFeed } from '@/services/api'
 import { authState } from '@/auth'
+
+const { t } = useI18n()
 
 let actions_taken = 0
 let posts_created = 0
@@ -158,15 +161,15 @@ onUnmounted(() => {
     <div class="px-5 mt-5 grid grid-cols-3 gap-3">
       <div class="bg-primary-700 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
         <span class="text-2xl font-bold">{{ actions_taken }}</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">Actions</span>
+        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('home.actions') }}</span>
       </div>
       <div class="bg-primary-600 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
         <span class="text-2xl font-bold">{{ posts_created }}</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">Posts</span>
+        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('home.posts') }}</span>
       </div>
       <div class="bg-primary-500 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
         <span class="text-2xl font-bold">{{ hours_invested }}h</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">Invested</span>
+        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('home.invested') }}</span>
       </div>
     </div>
 
@@ -188,7 +191,7 @@ onUnmounted(() => {
 
     <!-- Feed -->
     <div class="px-5 mt-6">
-      <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">Community Feed</h3>
+      <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">{{ t('home.communityFeed') }}</h3>
       <CommunityPost v-for="post in posts" :key="post.id" :post="post" />
       
       <!-- Infinite Scroll Trigger Sentinel -->
@@ -199,7 +202,7 @@ onUnmounted(() => {
         v-if="!hasMore"
         class="text-center text-sm text-gray-400 py-6"
       >
-        No more posts
+        {{ t('home.noMorePosts') }}
       </div>
     </div>
   </div>

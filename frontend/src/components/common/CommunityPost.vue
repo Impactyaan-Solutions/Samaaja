@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, MessageSquare, Heart, Share2, Award, X, Send } from 'lucide-vue-next'
 import { getTimeSinceCreation } from '@/utils/utils'
 import { likePost, createComment, getComments } from '@/services/api'
 import { authState } from '@/auth'
 import CommentPanel from './CommentPanel.vue'
+
+const { t } = useI18n()
 const props = defineProps({
   post: {
     type: Object,
@@ -90,7 +93,7 @@ onUnmounted(() => {
           </div>
           <div>
             <div class="flex items-center space-x-1">
-              <h4 class="font-semibold text-gray-900 text-sm">{{ post.user_profile?.full_name || 'Unknown User' }}</h4>
+              <h4 class="font-semibold text-gray-900 text-sm">{{ post.user_profile?.full_name || t('common.unknownUser') }}</h4>
               <Award v-if="post.user_profile?.user_type" class="w-3.5 h-3.5 text-green-500" />
             </div>
             <p class="text-xs text-gray-500">{{ post.user_profile?.user_category || '' }}</p>
