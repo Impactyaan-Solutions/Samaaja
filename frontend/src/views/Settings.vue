@@ -144,7 +144,9 @@ const handleLogout = () => {
     <!-- Support Section -->
     <div class="px-5 mt-8">
       <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">{{ t('settings.support') }}</h3>
+      
       <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+        <!--
         <button class="w-full px-4 py-4 flex items-center justify-between border-b border-gray-50 hover:bg-gray-50 transition-colors">
           <div class="flex items-center space-x-3">
             <HelpCircle class="w-5 h-5 text-gray-400" />
@@ -159,6 +161,7 @@ const handleLogout = () => {
           </div>
           <ChevronRight class="w-4 h-4 text-gray-300" />
         </button>
+        -->
         <button
           @click="handleLogout"
           class="w-full px-4 py-4 flex items-center space-x-3 text-red-500 hover:bg-red-50 transition-colors"
