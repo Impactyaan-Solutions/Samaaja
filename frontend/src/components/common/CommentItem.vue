@@ -52,7 +52,7 @@ const isOwner = computed(() => {
           </div>
         </div>
 
-        <!-- Edit / Delete icons — only for owner -->
+        <!-- Edit / Delete icons — only for owner 
         <div v-if="isOwner" class="flex items-center gap-1.5">
           <button
             class="p-1 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
@@ -68,7 +68,7 @@ const isOwner = computed(() => {
           >
             <Trash2 :size="13" />
           </button>
-        </div>
+        </div>-->
       </div>
 
       <p class="text-gray-700 leading-relaxed text-xs">{{ comment.comment_text }}</p>
