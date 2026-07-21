@@ -116,7 +116,7 @@ const handleLogout = () => {
           <ChevronRight class="w-5 h-5 text-gray-300" />
         </button>
 
-        <!-- Dark Mode Toggle -->
+        <!-- Dark Mode Toggle
         <div class="bg-white border border-gray-100 p-4 rounded-2xl flex items-center justify-between shadow-sm">
           <div class="flex items-center space-x-3">
             <div class="p-2 bg-purple-50 text-purple-500 rounded-xl">
@@ -137,7 +137,7 @@ const handleLogout = () => {
               :class="darkMode ? 'translate-x-5' : 'translate-x-0'"
             ></div>
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
 
