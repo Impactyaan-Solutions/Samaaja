@@ -3,7 +3,8 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, MessageSquare, Heart, Share2, Award, X, Send } from 'lucide-vue-next'
 import { getTimeSinceCreation } from '@/utils/utils'
-import { likePost, createComment, getComments } from '@/services/api'
+// Added unlikePost to the import list below
+import { likePost, unlikePost,createComment, getComments  } from '@/services/api'
 import { authState } from '@/auth'
 import CommentPanel from './CommentPanel.vue'
 
@@ -27,16 +28,35 @@ const isVisible = ref(true)
 const containerRef = ref(null)
 const savedHeight = ref(0)
 let observer = null
+const isLiked = ref(false)
+
 const showComments = ref(false)
 const commentText = ref('')
 const comments = ref([])
 
 
 
-const handleLikePost = async (post_id) => {
+const handleLikeToggle = async () => {
+  const userEmail = authState.email || localStorage.getItem('user')
+  
+  if (!userEmail) {
+    console.error("No user email found")
+    return
+  }
+
   try {
-    await likePost(post_id, authState.email)
-    props.post.like_count++
+    if (isLiked.value) {
+      // If already liked, call unlike API
+      await unlikePost(props.post.name, userEmail)
+      props.post.like_count--
+    } else {
+      // If not liked, call like API
+      await likePost(props.post.name, userEmail)
+      props.post.like_count++
+    }
+    
+    isLiked.value = !isLiked.value
+    
   } catch (err) {
     console.error("FETCH FAILED", err)
   }
@@ -129,13 +149,13 @@ onUnmounted(() => {
       <!-- Actions Footer -->
       <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
         <div class="flex items-center space-x-6">
-          <button @click="handleLikePost(post.name)" class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
+          <button @click="handleLikeToggle" class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
             <Heart class="w-5 h-5" />
             <span class="text-xs font-semibold">{{ post.like_count }}</span>
           </button>
          <button @click="openComments" class="flex items-center space-x-1.5 text-gray-500 hover:text-primary-500 transition-colors">
-    <MessageSquare class="w-5 h-5" />
-    <span class="text-xs font-semibold">{{ post.comment_count }}</span>
+            <MessageSquare class="w-5 h-5" />
+            <span class="text-xs font-semibold">{{ post.comment_count }}</span>
   </button>
         </div>
       </div>
@@ -148,4 +168,4 @@ onUnmounted(() => {
     @close="showComments = false"
     @comment-added="onCommentAdded"
   /> 
-</template> 
+</template>

@@ -15,6 +15,22 @@ export const getFeed = async (limit = 10, offset = 0) => {
     const response = await callAPI(headers, `${baseurl}/api/method/samaaja.api.feed.get?limit=${limit}&offset=${offset}`, 'GET', null)
     return response.data
 }
+
+export const unlikePost = async (post_id, user_id) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        const result = await callAPI(headers, baseurl + '/api/method/samaaja.api.post.unlike', 'POST', { post_id, user_id })
+        return result.data
+    }
+    catch (err) {
+        console.error("FETCH FAILED", err)
+        throw err
+    }
+}
+
 export const getProfile = async (email) => {
     const headers = {
         'Accept': 'application/json',
