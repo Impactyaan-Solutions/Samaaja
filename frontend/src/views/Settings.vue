@@ -76,7 +76,7 @@ const handleLogout = () => {
       <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">{{ t('settings.appSettings') }}</h3>
 
       <div class="space-y-3">
-        <!-- Notification Toggle -->
+        <!-- Notification Toggle 
         <div class="bg-white border border-gray-100 p-4 rounded-2xl flex items-center justify-between shadow-sm">
           <div class="flex items-center space-x-3">
             <div class="p-2 bg-blue-50 text-blue-500 rounded-xl">
@@ -97,7 +97,7 @@ const handleLogout = () => {
               :class="notifications ? 'translate-x-5' : 'translate-x-0'"
             ></div>
           </button>
-        </div>
+        </div>-->
 
         <!-- Language Selection -->
         <button
