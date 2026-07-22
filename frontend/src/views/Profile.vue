@@ -445,11 +445,11 @@ watch(
         <p class="text-sm text-gray-500 mt-2">{{ truncate(post.description) }}</p>
         <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
           <div class="flex items-center space-x-6">
-            <button class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
+            <button class="flex items-center space-x-1.5 text-gray-500  transition-colors">
               <Heart class="w-5 h-5" />
               <span class="text-xs font-semibold">{{ post.like_count }}</span>
             </button>
-            <button class="flex items-center space-x-1.5 text-gray-500 hover:text-primary-500 transition-colors">
+            <button class="flex items-center space-x-1.5 text-gray-500 transition-colors">
               <MessageSquare class="w-5 h-5" />
               <span class="text-xs font-semibold">{{ post.comment_count }}</span>
             </button>
