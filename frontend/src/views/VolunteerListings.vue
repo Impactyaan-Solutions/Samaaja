@@ -98,7 +98,7 @@ const handleInterest = async (item) => {
 
 <template>
   <div class="min-h-full bg-gray-50/50 pb-8 text-gray-800">
-    <AppHeader title="Volunteer Opportunities" />
+    <AppHeader />
 
     <div class="px-5 mt-4">
       <div class="relative">
