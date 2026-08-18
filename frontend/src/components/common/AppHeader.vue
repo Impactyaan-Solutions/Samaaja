@@ -54,9 +54,17 @@ const handleLogout = async () => {
       </template>
     </slot>
     
-    <!-- Right Section (Hamburger + Dropdown) -->
+    <!-- Right Section (Bell + Hamburger + Dropdown) -->
     <slot name="right">
-      <div class="relative">
+      <div class="flex items-center gap-2">
+        <router-link
+          to="/announcements"
+          class="w-9 h-9 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100 active:scale-95 transition-all"
+          aria-label="Announcements"
+        >
+          <Bell class="w-5 h-5 text-gray-600" />
+        </router-link>
+
         <button 
           @click="toggleMenu" 
           class="w-9 h-9 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100 active:scale-95 transition-all"
