@@ -285,7 +285,7 @@ export const getVolunteerListings = async () => {
 
         const result = await callAPI(
             headers,
-            `${baseurl}/api/method/samaaja.api.volunteer.get_listings`,
+            `${baseurl}/api/resource/Volunteer%20Opportunity?fields=["*"]`,
             'GET',
             null
         )
