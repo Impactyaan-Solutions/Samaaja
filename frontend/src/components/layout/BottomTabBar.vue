@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Home, BarChart2, Zap, Bell, User } from 'lucide-vue-next'
+import { Home, BarChart2, Zap, HandHeart, User } from 'lucide-vue-next'
 import { authState } from '@/auth'
 
 const route = useRoute()
@@ -15,7 +15,7 @@ const tabs = computed(() => [
   { name: t('nav.home'), path: '/homepage', icon: Home },
   { name: t('nav.leaderboard'), path: '/leaderboard', icon: BarChart2 },
   { name: t('nav.act'), path: null, icon: Zap, isAction: true },
-  { name: t('nav.announcements'), path: '/announcements', icon: Bell },
+  { name: t('nav.volunteer'), path: '/volunteer-listings', icon: HandHeart },
   { name: t('nav.profile'), path: '/profile', icon: User }
 ])
 

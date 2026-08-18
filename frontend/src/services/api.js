@@ -279,6 +279,42 @@ export const getActiveAnnouncements = async () => {
     return result.data
 }
 
+export const getVolunteerListings = async () => {
+    try {
+        const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.volunteer.get_listings`,
+            'GET',
+            null
+        )
+
+        if (Array.isArray(result.data)) return result.data
+        if (Array.isArray(result?.message?.data)) return result.message.data
+        if (Array.isArray(result?.data?.data)) return result.data.data
+
+        return []
+    } catch (error) {
+        console.warn('Volunteer listings endpoint not available. Falling back to demo data.', error)
+
+        return [
+        ]
+    }
+}
+
+export const createVolunteerInterest = async ({ user, volunteer_opportunity }) => {
+    const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+    const url = `${baseurl}/api/resource/Volunteer%20Interest`
+
+    const result = await callAPI(headers, url, 'POST', {
+        user,
+        volunteer_opportunity
+    })
+
+    return result.data || result
+}
+
 /* export const getLocalUnreadCount = async () => {
     const announcements = await getActiveAnnouncements()
     const seen = getSeenAnnouncements()

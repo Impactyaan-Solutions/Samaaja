@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Menu, Settings, LogOut } from 'lucide-vue-next'
+import { Menu, Settings, LogOut, Bell, HandHeart } from 'lucide-vue-next'
 import { authState } from '@/auth'
 import { logout as apiLogout } from '@/services/api'
 
@@ -78,9 +78,18 @@ const handleLogout = async () => {
             class="absolute right-0 top-12 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 z-[110] overflow-hidden"
           >
             <div class="flex flex-col py-1">
-              <router-link 
+              <router-link
+                to="/announcements"
+                @click="isMenuOpen = false"
+                class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors"
+              >
+                <Bell class="w-4 h-4 text-gray-500" />
+                <span class="text-sm font-medium">{{ t('nav.announcements') }}</span>
+              </router-link>
+
+              <router-link
                 to="/settings"
-                @click="isMenuOpen = false" 
+                @click="isMenuOpen = false"
                 class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors"
               >
                 <Settings class="w-4 h-4 text-gray-500" />

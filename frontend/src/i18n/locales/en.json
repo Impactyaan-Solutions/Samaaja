@@ -27,7 +27,8 @@
     "leaderboard": "Leaderboard",
     "act": "Act",
     "announcements": "Announcements",
-    "profile": "Profile"
+    "profile": "Profile",
+    "volunteer": "Volunteer"
   },
   "menu": {
     "settings": "Settings",
@@ -39,7 +40,9 @@
     "logAction": "Log your Action",
     "logActionDesc": "Capture completed work and inspire others.",
     "addPost": "Add a Post",
-    "addPostDesc": "Post an update to share with your community."
+    "addPostDesc": "Post an update to share with your community.",
+    "volunteerListings": "Volunteer Opportunities",
+    "volunteerListingsDesc": "Discover roles to support your community."
   },
   "landing": {
     "tagline": "Build Your Community. Take Action.",
