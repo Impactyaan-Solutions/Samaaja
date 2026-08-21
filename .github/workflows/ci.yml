@@ -78,6 +78,8 @@ jobs:
           bench new-site --db-root-password root --admin-password admin test_site
           bench --site test_site install-app samaaja
           bench build
+          # Fails the build if a Vue screen and a Frappe page claim the same address.
+          bench --site test_site execute samaaja.utils.route_check.check_conflicts
         env:
           CI: 'Yes'
 

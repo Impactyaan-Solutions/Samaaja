@@ -6,3 +6,8 @@ tags
 samaaja/docs/current
 node_modules/
 *.bundle.*
+
+# Produced by `bench build` - never commit these.
+samaaja/public/frontend/
+samaaja/www/index.html
+samaaja/vue_routes.json

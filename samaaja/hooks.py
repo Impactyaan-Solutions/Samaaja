@@ -7,6 +7,11 @@ app_description = "Samaaja is an open source software solution for rapidly build
 app_email = "ankit@impactyaan.com"
 app_license = "MIT"
 
+# Energy Points was removed from Frappe core in v16 and lives in its own app.
+# Samaaja adds custom fields onto Energy Point records, so `eps` must already
+# be installed before this app is. Listing it here makes bench do that for us.
+required_apps = ["eps"]
+
 # Includes in <head>
 # ------------------
 
@@ -64,7 +69,16 @@ web_include_js = ""
 # ------------
 
 # before_install = "samaaja.install.before_install"
-# after_migrate  = "samaaja.setup.samaaja_setup.setup_samaaja"
+
+# Runs once, right after `bench install-app samaaja`. Creates the settings,
+# website configuration and reference records the app cannot work without.
+after_install = "samaaja.setup.samaaja_setup.after_install"
+
+# Runs on every `bench migrate`, i.e. on every deploy. Only creates dropdown
+# records that are missing, so it is cheap and safe to repeat. This is why it
+# can live here while the old setup_samaaja (which also seeded demo users and
+# crashed on missing doctypes) had to stay commented out.
+after_migrate = "samaaja.utils.temp_sync_options.sync_options"
 
 # Uninstallation
 # ------------
@@ -192,24 +206,20 @@ scheduler_events = {
 # 	"samaaja.auth.validate"
 # ]
 
-page_renderer = [
-    "samaaja.page_renderers.ProfilePage",
-]
+# Decides, for every incoming address, whether the Vue app or Frappe answers.
+# Frappe has no resolver of its own, so ours simply takes over. See
+# samaaja/utils/spa_router.py for the rules it applies.
+website_path_resolver = ["samaaja.utils.spa_router.resolve_spa_path"]
 
-""" website_redirects = [
-    {"source": "/update-profile/", "target": "/edit-profile/"},
-] """
-
-website_route_rules = [
-    {"from_route": "/user-profile/<username>", "to_route": "user-profile"},
-    {"from_route": "/campaign/<route>", "to_route": "campaign"}
-]
-
-has_website_permission = {
-    "Events": "samaaja.samaaja.doctype.events.events.has_website_permission"
-}
-
-profile_url_prefix = "/users/"
+# Removed with the legacy Jinja pages:
+#   page_renderer          -> samaaja/page_renderers.py is gone; keeping this
+#                             line would crash every page load.
+#   website_route_rules    -> pointed at www/user-profile and www/campaign,
+#                             both deleted. Vue serves those screens now.
+#   has_website_permission -> the Events doctype has no web view, so this was
+#                             never called.
+#   profile_url_prefix     -> for Frappe's own /users/ profile pages, which we
+#                             no longer expose.
 
 
 doc_events = {
@@ -239,7 +249,15 @@ doc_events = {
     },
     "Energy Point Log": {
         "before_insert": "samaaja.doc_events.energy_point_log.before_insert"
-    }
+    },
+    # Stops an admin creating a Web Page or Web Form at an address the Vue app
+    # already owns - it would save fine and then never be reachable.
+    "Web Page": {
+        "validate": "samaaja.utils.route_check.validate_route_not_claimed"
+    },
+    "Web Form": {
+        "validate": "samaaja.utils.route_check.validate_route_not_claimed"
+    },
 }
 
 fixtures = ["Client Script"]
