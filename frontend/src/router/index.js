@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { authState, checkAuth, isProfileComplete } from '../auth' // Ensure this import exists!
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/'),
   routes: [
     {
       path: '/',
@@ -43,8 +43,11 @@ const router = createRouter({
       component: () => import('../views/VolunteerListings.vue')
     },
     {
-      path: '/profile',
-      name: 'profile',
+      // Renamed from /profile: Frappe already uses that address for the
+      // logged-in user's own account page. We leave it to Frappe rather
+      // than fight over it.
+      path: '/account',
+      name: 'account',
       component: () => import('../views/Profile.vue')
     },
     {

@@ -16,7 +16,7 @@ const tabs = computed(() => [
   { name: t('nav.leaderboard'), path: '/leaderboard', icon: BarChart2 },
   { name: t('nav.act'), path: null, icon: Zap, isAction: true },
   { name: t('nav.volunteer'), path: '/volunteer-listings', icon: HandHeart },
-  { name: t('nav.profile'), path: '/profile', icon: User }
+  { name: t('nav.profile'), path: '/account', icon: User }
 ])
 
 const go = (tab) => {

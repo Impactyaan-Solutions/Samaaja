@@ -3,9 +3,20 @@ import imageCompression from 'browser-image-compression'
 import { Capacitor } from '@capacitor/core'
 import { CapacitorCookies } from '@capacitor/core'
 
-// For local dev, use relative paths to hit the Vite proxy (fixes CORS/Cookies)
-// For production (Capacitor/Web), use the absolute URL
-const baseurl = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL
+// The app is served by the same Frappe site it talks to, so every request
+// is relative.
+//
+// ANDROID BUILD: this must not stay empty on a phone. A native app has no
+// "same site" to call, so it needs the full server address instead:
+//
+//     const baseurl = Capacitor.isNativePlatform()
+//       ? import.meta.env.VITE_API_BASE_URL
+//       : ''
+//
+// That is one of three changes the mobile build needs - see the Android
+// notes in Step 2 for the vite.config.js build mode and the allow_cors
+// setting on the server.
+const baseurl = ''
 
 export const getFeed = async (limit = 10, offset = 0) => {
     const headers = {

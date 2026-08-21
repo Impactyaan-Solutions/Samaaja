@@ -104,7 +104,7 @@ onUnmounted(() => {
     <div v-show="isVisible">
       <!-- Header -->
       <div class="p-4 flex items-center justify-between">
-        <router-link :to="{ name: 'profile', query: { user_email: post.user } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+        <router-link :to="{ name: 'account', query: { user_email: post.user } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
           <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
             <img v-if="post.user_profile?.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover" />
             <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
