@@ -28,9 +28,32 @@ def _assert_wsgi_assumptions():
             )
 
 
+def _ensure_request_context():
+    """Give Frappe a stand-in request so its page scanner can run from the CLI.
+
+    get_pages() calls get_base_template(page_info.route) for every www page,
+    and that function starts with:
+
+        if not path:
+            path = frappe.local.request.path
+
+    Our www/index.html serves the site root, so its route is the empty string -
+    which is falsy - and Frappe reaches for the current HTTP request. In a
+    `bench execute` there is no request, so it raises AttributeError.
+
+    Only .path is ever read, so a plain dict is enough. This affects the command
+    line only; during a real request frappe.local.request already exists.
+    """
+    try:
+        frappe.local.request
+    except AttributeError:
+        frappe.local.request = frappe._dict(path="/")
+
+
 def frappe_route_universe() -> dict[str, str]:
     """Every address Frappe could answer, and where it comes from."""
     _assert_wsgi_assumptions()
+    _ensure_request_context()
 
     universe = {s: "framework (handled before app routing)" for s in WSGI_RESERVED}
 
