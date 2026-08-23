@@ -420,12 +420,34 @@ export const likePost = async (post_id, user_id) => {
         throw err
     }
 }
+// Methods that change data. Frappe only demands a CSRF token for these;
+// GET and HEAD are waved through.
+const UNSAFE_METHODS = ['POST', 'PUT', 'DELETE', 'PATCH']
+
+// Now that the app is served by Frappe itself, the browser attaches the
+// session cookie to every request. Frappe therefore sees a real logged-in
+// session and requires a CSRF token on any write, or it answers 400
+// "Invalid Request".
+//
+// The token is put on the page by samaaja/www/index.html, which Frappe
+// renders through Jinja before serving it. It is per-session, which is why
+// that page must never be cached (see no_cache in www/index.py).
+//
+// This did not arise before the move: the app was on another origin, the
+// cookie was never sent, and Frappe skipped the check because the session
+// held no token.
+const csrfHeader = (method) => {
+    if (!UNSAFE_METHODS.includes(String(method).toUpperCase())) return {}
+    const token = typeof window !== 'undefined' && window.csrf_token
+    return token ? { 'X-Frappe-CSRF-Token': token } : {}
+}
+
 const callAPI = async (headers, url, method, data = null, isFormData = false, addToken = true) => {
 
     if (Capacitor.isNativePlatform() && addToken) {
         headers = { ...headers, ...getAPITokenFromStorage() }
     } else {
-        headers = { ...headers, ...getRequestOptions() }
+        headers = { ...headers, ...getRequestOptions(), ...csrfHeader(method) }
     }
     console.log(headers)
     let response

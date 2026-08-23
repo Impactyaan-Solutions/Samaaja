@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import { copyFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { emitRoutes } from './vite-plugins/emit-build-data.js'
 
 // This config builds the WEBSITE version only.
@@ -27,8 +27,23 @@ export default defineConfig(({ mode }) => {
       {
         name: 'copy-index-to-www',
         closeBundle() {
-          copyFileSync('../samaaja/public/frontend/index.html',
-                       '../samaaja/www/index.html')
+          let html = readFileSync('../samaaja/public/frontend/index.html', 'utf8')
+
+          // Hand the page's own CSRF token to the app.
+          //
+          // Frappe renders www/*.html through Jinja before serving, so the
+          // expression below is replaced with the real token per request.
+          // The app needs it because it is now served by the same site it
+          // calls: the session cookie travels with every request, so Frappe
+          // rejects writes that arrive without a matching token.
+          //
+          // It is injected here rather than written into index.html because
+          // Vite regenerates that file on every build.
+          const csrf = '<script>window.csrf_token = "{{ frappe.session.csrf_token }}";</scr' + 'ipt>'
+          html = html.replace('</head>', `  ${csrf}\n  </head>`)
+
+          writeFileSync('../samaaja/www/index.html', html)
+          console.log('[copy-index-to-www] wrote www/index.html with csrf token')
         }
       }
     ],
