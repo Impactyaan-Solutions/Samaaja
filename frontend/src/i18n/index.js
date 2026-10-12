@@ -3,6 +3,12 @@ import en from './locales/en.json'
 import hi from './locales/hi.json'
 
 export const SUPPORTED_LOCALES = ['en', 'hi']
+// Web Speech API needs a full BCP-47 tag (e.g. 'en-IN'), not the short
+// app locale codes above. Add an entry here whenever SUPPORTED_LOCALES gains a language.
+export const SPEECH_RECOGNITION_LOCALES = {
+  en: 'en-IN',
+  hi: 'hi-IN'
+}
 const STORAGE_KEY = 'app_locale'
 const DEFAULT_LOCALE = 'en'
 

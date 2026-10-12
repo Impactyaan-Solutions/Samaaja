@@ -1,16 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { ArrowLeft, Image as ImageIcon, X, Video } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { addPost } from '../services/api'
 import { checkAuth } from '../auth'
+import {
+  getMetadataOptions
+} from '@/services/api'
 const router = useRouter()
 const { t } = useI18n()
 
 const fileInput = ref(null)
 const uploadedFiles = ref([])
-
+const categories = ref([])
 
 const title = ref('')
 const category = ref('')
@@ -73,6 +76,22 @@ const removeFile = (index) => {
 
   uploadedFiles.value.splice(index, 1)
 }
+
+const fetchMetadataOptions = async () => {
+  try {
+    const [categoryOptions ] = await Promise.all([
+      getMetadataOptions('Action Category'),
+    ])
+    console.log('Fetched category options:', categoryOptions)
+    categories.value = categoryOptions
+  } catch (e) {
+    console.error('Failed to load category  options:', e)
+  }
+}
+
+onMounted(() => {
+  fetchMetadataOptions()
+})
 </script>
 
 <template>
@@ -135,19 +154,21 @@ const removeFile = (index) => {
           </label>
 
           <select
-            v-model="category"
-            class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
-          >
-            <option value="" disabled selected>
-              {{ t('addPost.selectCategory') }}
-            </option>
+          v-model="category"
+          class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
+        >
+          <option value="" disabled>
+            {{ t('addPost.selectCategory') }}
+          </option>
 
-            <option value="Agriculture & Livelihood">{{ t('categories.agricultureLivelihood') }}</option>
-            <option value="Health & Nutrition">{{ t('categories.healthNutrition') }}</option>
-            <option value="Education">{{ t('categories.education') }}</option>
-            <option value="Civic Action & Governance">{{ t('categories.civicGovernance') }}</option>
-            <option value="Sports & Fitness">{{ t('categories.sportsFitness') }}</option>
-          </select>
+          <option
+            v-for="cat in categories"
+            :key="cat"
+            :value="cat"
+          >
+            {{ cat }}
+          </option>
+        </select>
         </div>
 
         <!-- Media -->

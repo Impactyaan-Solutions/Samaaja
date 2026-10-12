@@ -1,15 +1,31 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed,watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import BottomTabBar from './components/layout/BottomTabBar.vue'
 import ActionBottomSheet from './components/Overlays/ActionBottomSheet.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t, locale } = useI18n()
 const route = useRoute()
 const showActionSheet = ref(false)
 
 const handleActClick = () => {
   showActionSheet.value = true
 }
+
+watch(
+  locale,
+  () => {
+    document.title = t('landing.appName')
+    document.documentElement.lang = locale.value
+
+    const favicon = document.getElementById('favicon')
+    if (favicon) {
+      favicon.href = t('landing.logo.src')
+    }
+  },
+  { immediate: true }
+)
 
 // Define the paths where you want absolutely 0 top/bottom padding
 // Update these paths if your router uses different URLs (e.g., '/landing')

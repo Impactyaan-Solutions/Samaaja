@@ -22,6 +22,8 @@ const genderOptions = computed(() => [
   { value: 'Other', label: t('signup.genderOther') }
 ]);
 
+const USE_MOBILE_NUMBER_AUTH = import.meta.env.VITE_USE_MOBILE_NUMBER_AUTH === 'true';
+
 const formData = ref({
   'name': '',
   'gender': '',
@@ -94,7 +96,7 @@ const goBack = () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">Samaaja</h1>
+        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
         <div class="w-5"></div> 
       </div>
 
@@ -108,7 +110,7 @@ const goBack = () => {
         {{ errorMessage }}
       </div>
       <!-- Signup Form -->
-      <form @submit.prevent="handleSubmit" class="space-y-2">
+      <form @submit.prevent="handleSubmit" class="space-y-2" v-if="USE_MOBILE_NUMBER_AUTH">
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">{{ t('signup.fullName') }} <span class="text-red-500">*</span></label>
           <div class="relative">
@@ -206,15 +208,22 @@ const goBack = () => {
       </form>
 
       <!-- Divider -->
-      <div class="relative my-4">
-        <div class="absolute inset-0 flex items-center">
+      <div class="relative my-4" v-if="USE_MOBILE_NUMBER_AUTH">
+        <div class="absolute inset-0 flex items-center" >
           <div class="w-full border-t border-gray-100"></div>
         </div>
         <div class="relative flex justify-center text-xs uppercase">
           <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">{{ t('signup.orSignUpWith') }}</span>
         </div>
       </div>
-
+      <div class="relative my-4" v-if="!USE_MOBILE_NUMBER_AUTH">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-100"></div>
+        </div>
+        <div class="relative flex justify-center text-xs uppercase">
+          <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">{{ t('signup.SignUpWith') }}</span>
+        </div>
+      </div>
       <!-- Social Signup -->
       <div class="pb-4">
         <button

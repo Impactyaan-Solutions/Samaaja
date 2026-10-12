@@ -541,3 +541,110 @@ export const getUserProfileActions = async (user,limit = 10, offset = 0) => {
     const response = await callAPI(headers, `${baseurl}/api/method/samaaja.api.profile.get_actions?user=${user}&limit=${limit}&offset=${offset}`, 'GET', null)
     return response.data
 }
+// --- Volunteer and metadata endpoints, ported from samaaja_frontend (fe/main).
+//     They go through callAPI above, so csrfHeader() adds X-Frappe-CSRF-Token
+//     on unsafe methods without any change here.
+
+export const getVolunteerOpportunity = async (volunteerId) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        const params = new URLSearchParams({
+            volunteer_id: volunteerId
+        })
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.volunteer.get?${params.toString()}`,
+            'GET',
+            null
+        )
+
+        if (result?.data?.opportunity) {
+            return result.data.opportunity
+        }
+
+        if (result?.message?.data?.opportunity) {
+            return result.message.data.opportunity
+        }
+
+        throw new Error('Volunteer opportunity data not found')
+    } catch (error) {
+        console.error('Failed to fetch volunteer opportunity:', error)
+        throw error
+    }
+}
+
+export const checkVolunteerApplication = async (volunteerId) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        const params = new URLSearchParams({
+            volunteer_opportunity: volunteerId
+        })
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.volunteer.check_application?${params.toString()}`,
+            'GET',
+            null
+        )
+
+        return result.data || result.message?.data || result
+    } catch (error) {
+        console.error('Failed to check volunteer application:', error)
+        throw error
+    }
+}
+
+export const applyForVolunteerOpportunity = async (applicationData) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.volunteer.apply`,
+            'POST',
+            applicationData
+        )
+
+        return result.data || result.message?.data || result
+    } catch (error) {
+        console.error('Failed to apply for volunteer opportunity:', error)
+        throw error
+    }
+}
+
+export const getMetadataOptions = async (doctype) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        const params = new URLSearchParams({
+            doctype
+        })
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.metadata.get_list?${params.toString()}`,
+            'GET',
+            null
+        )
+
+        return result?.data || result?.message?.data || []
+    } catch (error) {
+        console.error(`Failed to fetch metadata options for ${doctype}:`, error)
+        throw error
+    }
+}

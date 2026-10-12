@@ -50,8 +50,12 @@ const features = computed(() => [
       
       <header class="flex justify-between items-center mt-4 mb-2">
         <div class="flex items-center gap-2">
-          <img src="/samaaja.png" alt="Samaaja" class="w-12 h-12" />
-          <h1 class="text-2xl font-black text-blue-600">Samaaja</h1>
+         <img
+          :src="t('landing.logo.src')"
+          :alt="t('landing.logo.alt')"
+          class="w-12 h-12"
+        />
+          <h1 class="text-2xl font-black text-blue-600">{{ t('landing.appName') }}</h1>
         </div>
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
