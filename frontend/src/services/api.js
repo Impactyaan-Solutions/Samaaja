@@ -290,27 +290,57 @@ export const getActiveAnnouncements = async () => {
     return result.data
 }
 
-export const getVolunteerListings = async () => {
+export const getVolunteerListings = async (
+    filters = {},
+    limit = 10,
+    offset = 0
+) => {
     try {
-        const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        const params = new URLSearchParams({
+            filters: JSON.stringify(filters),
+            limit: String(limit),
+            offset: String(offset)
+        })
 
         const result = await callAPI(
             headers,
-            `${baseurl}/api/resource/Volunteer%20Opportunity?fields=["*"]`,
+            `${baseurl}/api/method/samaaja.api.volunteer.get_list?${params.toString()}`,
             'GET',
             null
         )
 
-        if (Array.isArray(result.data)) return result.data
-        if (Array.isArray(result?.message?.data)) return result.message.data
-        if (Array.isArray(result?.data?.data)) return result.data.data
+        if (Array.isArray(result?.data?.opportunities)) {
+            return {
+                opportunities: result.data.opportunities,
+                has_more: result.data.has_more,
+                limit: result.data.limit,
+                offset: result.data.offset
+            }
+        }
 
-        return []
+        if (Array.isArray(result?.message?.data?.opportunities)) {
+            return {
+                opportunities: result.message.data.opportunities,
+                has_more: result.message.data.has_more,
+                limit: result.message.data.limit,
+                offset: result.message.data.offset
+            }
+        }
+
+        return {
+            opportunities: [],
+            has_more: false,
+            limit,
+            offset
+        }
     } catch (error) {
-        console.warn('Volunteer listings endpoint not available. Falling back to demo data.', error)
-
-        return [
-        ]
+        console.warn('Failed to fetch volunteer listings.', error)
+        throw error
     }
 }
 
