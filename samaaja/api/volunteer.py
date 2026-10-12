@@ -60,14 +60,40 @@ def get(volunteer_id):
             status_code=500
         )
 
+@frappe.whitelist(methods=["GET"])
+def check_application(volunteer_opportunity):
+    try:
+        if frappe.session.user == "Guest":
+            return custom_response(
+                message="Authentication required",
+                status_code=401
+            )
+
+        return VolunteerManager.check_application(
+            user=frappe.session.user,
+            volunteer_opportunity=volunteer_opportunity,
+        ).to_custom_response()
+
+    except Exception:
+        frappe.log_error(
+            frappe.get_traceback(),
+            "Failed to check volunteer application"
+        )
+
+        return custom_response(
+            message="Failed to check volunteer application",
+            status_code=500
+        )
+
 
 @frappe.whitelist(methods=["POST"])
 def apply(
     volunteer_opportunity,
     age=None,
+    gender=None,
     preferred_available_days=None,
     why_do_you_want_to_volunteer=None,
-    privacy_consent=False,
+    privacy_consent=False
 ):
     try:
         if frappe.session.user == "Guest":
@@ -80,6 +106,7 @@ def apply(
             user=frappe.session.user,
             volunteer_opportunity=volunteer_opportunity,
             age=age,
+            gender=gender,
             preferred_available_days=preferred_available_days,
             why_do_you_want_to_volunteer=why_do_you_want_to_volunteer,
             privacy_consent=privacy_consent,

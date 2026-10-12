@@ -25,7 +25,6 @@ class VolunteerManager:
             offset = int(offset)
 
             VolunteerOpportunity = DocType("Volunteer Opportunity")
-            SkillChildTable = DocType("Skill Child Table")
             SamaajaLocation = DocType("Samaaja Location")
 
             query = (
@@ -66,6 +65,8 @@ class VolunteerManager:
                 )
 
             if skills:
+                SkillChildTable = DocType("Skill Child Table")
+
                 query = (
                     query
                     .join(SkillChildTable)
@@ -89,6 +90,34 @@ class VolunteerManager:
             )
 
             opportunities = query.run(as_dict=True)
+
+            opportunity_names = [opportunity["name"] for opportunity in opportunities]
+
+            if opportunity_names:
+                skill_rows = frappe.get_all(
+                    "Skill Child Table",
+                    filters={
+                        "parent": ["in", opportunity_names],
+                        "parenttype": "Volunteer Opportunity",
+                    },
+                    fields=["parent", "skill"],
+                )
+            else:
+                skill_rows = []
+
+            skills_by_opportunity = {}
+
+            for row in skill_rows:
+                skills_by_opportunity.setdefault(
+                    row["parent"],
+                    []
+                ).append(row["skill"])
+
+            for opportunity in opportunities:
+                opportunity["skills_needed"] = skills_by_opportunity.get(
+                    opportunity["name"],
+                    []
+                )
 
             return Result.success(
                 "Volunteer opportunities fetched successfully",
@@ -181,13 +210,59 @@ class VolunteerManager:
             )
 
     @staticmethod
+    def check_application(user, volunteer_opportunity) -> Result:
+        try:
+            if not volunteer_opportunity:
+                return Result.bad_request(
+                    "Volunteer opportunity is required"
+                )
+
+            if not frappe.db.exists(
+                "Volunteer Opportunity",
+                {
+                    "name": volunteer_opportunity,
+                    "status": "Active",
+                },
+            ):
+                return Result.not_found(
+                    "Volunteer opportunity not found"
+                )
+
+            already_applied = frappe.db.exists(
+                "Volunteer Application",
+                {
+                    "user": user,
+                    "volunteer_opportunity": volunteer_opportunity,
+                },
+            )
+
+            return Result.success(
+                "Application status fetched successfully",
+                data={
+                    "already_applied": bool(already_applied),
+                },
+            )
+
+        except Exception as e:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to check volunteer application"
+            )
+
+            return Result.failure(
+                "Failed to check volunteer application",
+                error_data=str(e),
+            )
+
+    @staticmethod
     def apply(
         user,
         volunteer_opportunity,
         age=None,
+        gender=None,
         preferred_available_days=None,
         why_do_you_want_to_volunteer=None,
-        privacy_consent=False,
+        privacy_consent=False
     ) -> Result:
         try:
             if not volunteer_opportunity:
@@ -247,6 +322,7 @@ class VolunteerManager:
             application.user = user
             application.volunteer_opportunity = volunteer_opportunity
             application.age = age
+            application.gender = gender
             application.preferred_available_days = (
                 preferred_available_days
             )
