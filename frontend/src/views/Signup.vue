@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter  } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
@@ -9,18 +9,15 @@ import {
   UserIcon
 } from 'lucide-vue-next';
 import router from '../router';
-import { createAccount } from '@/services/api';
+import { createAccount, getMetadataOptions } from '@/services/api';
 // Import the service that works in your Login component
 import { getGoogleSignInURL } from '@/services/api';
 
 // const router = useRouter();
 const { t } = useI18n();
 
-const genderOptions = computed(() => [
-  { value: 'Female', label: t('signup.genderFemale') },
-  { value: 'Male', label: t('signup.genderMale') },
-  { value: 'Other', label: t('signup.genderOther') }
-]);
+const genderOptions = ref([]);
+const roleOptions = ref([]);
 
 const USE_MOBILE_NUMBER_AUTH = import.meta.env.VITE_USE_MOBILE_NUMBER_AUTH === 'true';
 
@@ -35,6 +32,26 @@ const formData = ref({
 
 const isSubmitting = ref(false);
 const errorMessage = ref('');
+
+
+const fetchMetadataOptions = async () => {
+  try {
+    const [genders, roles] = await Promise.all([
+      getMetadataOptions('Gender'),
+      getMetadataOptions('User Category')
+    ]);
+
+    genderOptions.value = genders;
+    roleOptions.value = roles;
+  } catch (error) {
+    console.error('Failed to load metadata options:', error);
+    errorMessage.value = 'Failed to load signup options. Please refresh the page.';
+  }
+};
+
+onMounted(() => {
+  fetchMetadataOptions();
+});
 
 const isFormValid = computed(() => {
   return formData.value.gender && 
@@ -146,16 +163,16 @@ const goBack = () => {
             <button
               type="button"
               v-for="option in genderOptions"
-              :key="option.value"
-              @click="formData.gender = option.value"
+              :key="option"
+              @click="formData.gender = option"
               :class="[
                 'py-2 rounded-xl border text-sm font-medium transition-all',
-                formData.gender === option.value
+                formData.gender === option
                   ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100'
                   : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100'
               ]"
             >
-              {{ option.label }}
+              {{ option }}
             </button>
           </div>
         </div>
@@ -166,8 +183,14 @@ const goBack = () => {
             v-model="formData.category"
             class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
           >
-            <option value="Citizen">{{ t('signup.roleCitizen') }}</option>
-            <option value="NGO Partner">{{ t('signup.roleNgoPartner') }}</option>
+            <option value="" disabled>Select role</option>
+            <option
+              v-for="option in roleOptions"
+              :key="option"
+              :value="option"
+            >
+              {{ option }}
+            </option>
           </select>
         </div>
 
