@@ -302,21 +302,6 @@ class VolunteerManager:
                     "Privacy consent is required"
                 )
 
-            allowed_available_days = [
-                "Daily",
-                "Few times a week",
-                "Only on Weekends",
-                "Flexible",
-            ]
-
-            if (
-                preferred_available_days
-                and preferred_available_days not in allowed_available_days
-            ):
-                return Result.bad_request(
-                    "Invalid preferred available days"
-                )
-
             application = frappe.new_doc("Volunteer Application")
 
             application.user = user
