@@ -65,37 +65,37 @@ export async function checkAuth() {
  //  console.log("checkAuth() started");
   try {
 
-    if (import.meta.env.DEV === true) {
-      authState.isLoggedIn = true;
-      authState.email = 'Administrator';
-      authState.profile.fullName = 'Ankit Saxena';
-      authState.profile.image = 'https://dev.samaaja.impactyaan.com/files/recall.png';
-      authState.profile.category = 'Volunteer';
-      authState.profile.organization = 'Samaaja';
-      authState.profile.interests = 'Community, Volunteering, Social Work';
-      authState.profile.bio = 'Passionate about helping the community.';
-      authState.profile.gender = 'Male';
-      authState.profile.dob = '1990-01-01';
-      authState.profile.mobileNumber = '9876543210';
-      authState.profile.stats.actions = 10;
-      authState.profile.stats.issuesReported = 5;
+    // if (import.meta.env.DEV === true) {
+    //   authState.isLoggedIn = true;
+    //   authState.email = 'Administrator';
+    //   authState.profile.fullName = 'Ankit Saxena';
+    //   authState.profile.image = 'https://dev.samaaja.impactyaan.com/files/recall.png';
+    //   authState.profile.category = 'Volunteer';
+    //   authState.profile.organization = 'Samaaja';
+    //   authState.profile.interests = 'Community, Volunteering, Social Work';
+    //   authState.profile.bio = 'Passionate about helping the community.';
+    //   authState.profile.gender = 'Male';
+    //   authState.profile.dob = '1990-01-01';
+    //   authState.profile.mobileNumber = '9876543210';
+    //   authState.profile.stats.actions = 10;
+    //   authState.profile.stats.issuesReported = 5;
 
-      // Fetch unread count even in dev mode if possible (mocked or real)
-      // unread count is computed locally from localStorage after announcements load
+    //   // Fetch unread count even in dev mode if possible (mocked or real)
+    //   // unread count is computed locally from localStorage after announcements load
 
-      // Cache the fresh data!
-      saveCachedAuth()
-      // Fetch the image in the background and cache the base64!
-      await fetchImageAsBase64(authState.profile.image).then(base64 => {
-        //console.log("Image Base64: ", base64)
-        if (base64) {
-          authState.profile.imageBase64 = base64;
-          saveCachedAuth();
-        }
-      });
-      authState.isInitialLoad = false;
-      return;
-    }
+    //   // Cache the fresh data!
+    //   saveCachedAuth()
+    //   // Fetch the image in the background and cache the base64!
+    //   await fetchImageAsBase64(authState.profile.image).then(base64 => {
+    //     //console.log("Image Base64: ", base64)
+    //     if (base64) {
+    //       authState.profile.imageBase64 = base64;
+    //       saveCachedAuth();
+    //     }
+    //   });
+    //   authState.isInitialLoad = false;
+    //   return;
+    // }
 
     const data = await getLoggedUser();
     authState.email = data;

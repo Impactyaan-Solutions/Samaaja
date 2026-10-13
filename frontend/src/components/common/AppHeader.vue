@@ -23,12 +23,11 @@ const toggleMenu = () => {
 const handleLogout = async () => {
   try {
     await apiLogout()
+    isMenuOpen.value = false;
+    localStorage.clear(); 
+    window.location.href = '/login';
   } catch (error) {
     console.warn("Logout error:", error)
-  } finally {
-    isMenuOpen.value = false
-    localStorage.clear()
-    window.location.href = '/login'
   }
 }
 </script>

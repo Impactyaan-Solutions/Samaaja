@@ -126,19 +126,19 @@ export const getLeaderboard = async () => {
 export const logout = async () => {
     const requestOptions = getRequestOptions();
 
-    // Changing to GET often bypasses CSRF issues on logout
+    
     const response = await fetch(baseurl + '/api/method/logout', {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             ...requestOptions.headers
         },
         ...requestOptions
     });
-
-    // We don't strictly throw an error here because if the logout fails 
-    // on the server, we still want the user to be logged out locally.
-    return response.ok;
+     if (!response.ok) { 
+        throw new Error(`Logout failed with status: ${response.status}`); 
+    }
+    return true;
 };
 
 export const completeProfile = async (data) => {

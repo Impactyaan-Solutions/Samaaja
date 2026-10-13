@@ -360,7 +360,7 @@ watch(
       </div>
 
       <!-- Badges -->
-      <div class="px-5 mb-20">
+      <div class="px-5 mb-20" v-if="user.badges?.length">
         <div class="flex items-center space-x-2 mb-4">
           <span class="text-xl">🥇</span>
           <h3 class="font-bold text-gray-900 text-lg">{{ t('profile.badgesEarned') }}</h3>
