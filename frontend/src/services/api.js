@@ -67,8 +67,11 @@ export const getLoggedUser = async () => {
 
 }
 
-export const getGoogleSignInURL = async () => {
-    const response = await fetch(baseurl + '/api/method/samaaja.api.login.get_google_auth_url', {
+// What the login/signup screens should actually show: whatever Social Login
+// Keys are configured (empty list if none), and whether OTP is enabled
+// (phone+password is the default either way - see samaaja/api/login.py).
+export const getLoginOptions = async () => {
+    const response = await fetch(baseurl + '/api/method/samaaja.api.login.get_login_options', {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -204,6 +207,50 @@ export const loginUsingOtp = async (data) => {
         )
     }
 
+
+    return true
+}
+
+export const loginUsingPassword = async (data) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    const response = await fetch(baseurl + '/api/method/samaaja.api.login.login_using_password', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data)
+    })
+
+    if (response.status === 404) {
+        alert("User not found!")
+        return false
+    }
+    if (!response.ok) {
+        throw new Error(`Failed to verify password and login: ${response.statusText}`)
+    }
+
+    if (Capacitor.isNativePlatform()) {
+
+        const data = await response.json()
+
+        // Store user auth tokens
+        localStorage.setItem(
+            'api_key',
+            data.data.api_key
+        )
+
+        localStorage.setItem(
+            'api_secret',
+            data.data.api_secret
+        )
+
+        localStorage.setItem(
+            'user',
+            data.data.user
+        )
+    }
 
     return true
 }

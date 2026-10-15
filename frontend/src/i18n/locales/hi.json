@@ -60,7 +60,9 @@
   "login": {
     "title": "लॉग इन करें",
     "subtitle": "सत्यापन कोड प्राप्त करने और सुरक्षित रूप से लॉग इन करने के लिए अपना मोबाइल नंबर दर्ज करें।",
+    "passwordSubtitle": "लॉग इन करने के लिए अपना मोबाइल नंबर और पासवर्ड दर्ज करें।",
     "mobileNumberPlaceholder": "मोबाइल नंबर",
+    "passwordPlaceholder": "पासवर्ड",
     "otpLabel": "ओटीपी",
     "sendOtp": "ओटीपी भेजें",
     "loginButton": "लॉग इन करें",
@@ -74,6 +76,8 @@
     "invalidMobile": "कृपया एक मान्य 10-अंकीय मोबाइल नंबर दर्ज करें",
     "otpSent": "ओटीपी सफलतापूर्वक भेजा गया। लॉगिन के लिए 1111 का उपयोग करें",
     "invalidOtp": "कृपया एक मान्य 4-अंकीय ओटीपी दर्ज करें",
+    "passwordRequired": "कृपया अपना पासवर्ड दर्ज करें",
+    "loginFailed": "गलत मोबाइल नंबर या पासवर्ड",
     "connectionFailed": "कनेक्शन विफल: {error}",
     "adminLoginLink": "एडमिन लॉगिन"
   },
@@ -105,11 +109,17 @@
     "mobileNumber": "मोबाइल नंबर",
     "bio": "बायो",
     "bioPlaceholder": "संक्षिप्त बायो",
+    "password": "पासवर्ड",
+    "passwordPlaceholder": "पासवर्ड",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "confirmPasswordPlaceholder": "अपना पासवर्ड फिर से दर्ज करें",
     "createAccount": "खाता बनाएं",
     "orSignUpWith": "या इसके साथ साइन अप करें",
     "SignUpWith": "इसके साथ साइन अप करें",
     "google": "गूगल",
     "fillRequiredFields": "कृपया सभी आवश्यक फ़ील्ड भरें।",
+    "passwordRequired": "कृपया एक पासवर्ड दर्ज करें",
+    "passwordMismatch": "पासवर्ड मेल नहीं खाते",
     "connectionFailed": "कनेक्शन विफल: {error}"
   },
   "profileCompletion": {

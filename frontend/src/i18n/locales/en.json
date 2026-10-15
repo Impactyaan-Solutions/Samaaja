@@ -62,7 +62,9 @@
   "login": {
     "title": "Log In",
     "subtitle": "Enter your mobile number to get a verification code and securely log in.",
+    "passwordSubtitle": "Enter your mobile number and password to log in.",
     "mobileNumberPlaceholder": "Mobile Number",
+    "passwordPlaceholder": "Password",
     "otpLabel": "OTP",
     "sendOtp": "Send OTP",
     "loginButton": "Login",
@@ -76,6 +78,8 @@
     "invalidMobile": "Please enter a valid 10-digit mobile number",
     "otpSent": "OTP Sent Successfully. Use 1111 to login",
     "invalidOtp": "Please enter a valid 4-digit OTP",
+    "passwordRequired": "Please enter your password",
+    "loginFailed": "Incorrect mobile number or password",
     "connectionFailed": "Connection failed: {error}",
     "adminLoginLink": "Admin login"
   },
@@ -107,11 +111,17 @@
     "mobileNumber": "Mobile Number",
     "bio": "Bio",
     "bioPlaceholder": "Short bio",
+    "password": "Password",
+    "passwordPlaceholder": "Password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
     "createAccount": "Create Account",
     "orSignUpWith": "Or sign up with",
     "SignUpWith": "Sign up with",
     "google": "Google",
     "fillRequiredFields": "Please fill in all the required fields.",
+    "passwordRequired": "Please enter a password",
+    "passwordMismatch": "Passwords do not match",
     "connectionFailed": "Connection failed: {error}"
   },
   "profileCompletion": {

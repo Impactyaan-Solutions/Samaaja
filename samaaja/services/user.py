@@ -5,6 +5,7 @@ from frappe.utils import logger
 from samaaja.utils.utils import validate_mobile_no
 from datetime import datetime
 from frappe.auth import LoginManager
+from frappe.utils.password import check_password
 
 
 logger.set_log_level("DEBUG")
@@ -16,8 +17,8 @@ class UserManager:
     #mobile number should be unique...to do
 
     @staticmethod
-    def create(full_name:str,dob:str,gender:str,category:str,mobile_no:str,bio:str)->Result:
-        
+    def create(full_name:str,dob:str,gender:str,category:str,mobile_no:str,bio:str,password:str)->Result:
+
         try:
             if frappe.db.exists("User", {"mobile_no": mobile_no}):
                 return Result.bad_request("User already exists with this mobile number")
@@ -29,6 +30,7 @@ class UserManager:
             user.bio=bio
             user.mobile_no = mobile_no
             user.email=mobile_no+"@samaaja.com"
+            user.new_password = password
             user.flags.no_welcome_mail = True
             user.send_welcome_email = 0
             user.save(ignore_permissions=True)
@@ -241,11 +243,19 @@ class UserManager:
     @staticmethod
     def login_using_OTP(mobile_no: str, otp:str):
         try:
+            # Hiding the OTP option in the UI is not enough on its own - this
+            # endpoint is guest-callable and reachable directly regardless of
+            # what the UI shows, so the toggle has to be enforced here too.
+            if not frappe.db.get_single_value("Samaaja Settings", "enable_otp_login"):
+                return Result.bad_request(
+                    "OTP login is not enabled"
+                )
+
             if not otp == '1111':
                 return Result.bad_request(
                     "Invalid OTP"
                 )
-            
+
             user = frappe.get_value(
                 "User",
                 {"mobile_no":mobile_no},
@@ -256,6 +266,58 @@ class UserManager:
             if not user:
                 return Result.not_found(
                     "User not found"
+                )
+
+            login_manager = LoginManager()
+            login_manager.login_as(user)
+
+            user_doc = frappe.get_doc("User", user)
+            if not user_doc.api_key:
+                user_doc.api_key = frappe.generate_hash(length=15)
+
+            api_secret = frappe.generate_hash(length=15)
+
+            user_doc.api_secret = api_secret
+            user_doc.save(ignore_permissions=True)
+
+            return Result.success(
+                "User logged in successfully",
+                data={
+                    "user": user,
+                    "api_key": user_doc.api_key,
+                    "api_secret": api_secret
+                }
+            )
+        except Exception as e:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to log in user"
+            )
+            return Result.failure(
+                "Failed to log in user",
+                error_data=str(e)
+            )
+
+    @staticmethod
+    def login_using_password(mobile_no: str, password: str):
+        try:
+            user = frappe.get_value(
+                "User",
+                {"mobile_no":mobile_no},
+                [
+                    "name",
+                ]
+            )
+            if not user:
+                return Result.not_found(
+                    "User not found"
+                )
+
+            try:
+                check_password(user, password)
+            except frappe.AuthenticationError:
+                return Result.bad_request(
+                    "Invalid password"
                 )
 
             login_manager = LoginManager()
