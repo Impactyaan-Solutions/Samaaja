@@ -76,7 +76,19 @@
     "invalidMobile": "Please enter a valid 10-digit mobile number",
     "otpSent": "OTP Sent Successfully. Use 1111 to login",
     "invalidOtp": "Please enter a valid 4-digit OTP",
-    "connectionFailed": "Connection failed: {error}"
+    "connectionFailed": "Connection failed: {error}",
+    "adminLoginLink": "Admin login"
+  },
+  "adminLogin": {
+    "title": "Admin Login",
+    "subtitle": "Sign in with your admin email and password.",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "invalidCredentials": "Incorrect email or password.",
+    "missingFields": "Enter both email and password.",
+    "backToLogin": "Back to login"
   },
   "signup": {
     "title": "Sign Up",

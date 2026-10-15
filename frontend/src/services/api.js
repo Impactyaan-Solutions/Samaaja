@@ -208,6 +208,33 @@ export const loginUsingOtp = async (data) => {
     return true
 }
 
+// Admin login: the platform's own core session login (/api/method/login),
+// not a custom Samaaja endpoint. Used only by the separate admin login
+// screen - the Administrator account has no mobile number or Google
+// identity, so it
+// cannot use either of the sign-in methods above.
+export const loginWithEmailPassword = async (usr, pwd) => {
+    // Form-encoded, not JSON - this is the documented way to call this
+    // particular built-in endpoint (unlike the custom samaaja.api.* methods
+    // elsewhere in this file, which take JSON bodies).
+    const body = new URLSearchParams({ usr, pwd })
+
+    const response = await fetch(baseurl + '/api/method/login', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body
+    })
+
+    if (!response.ok) {
+        throw new Error('Invalid email or password')
+    }
+
+    return true
+}
+
 export const logAction = async (data) => {
     try {
         console.log("ORIGINAL DATA", data)

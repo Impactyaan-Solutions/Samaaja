@@ -74,7 +74,19 @@
     "invalidMobile": "कृपया एक मान्य 10-अंकीय मोबाइल नंबर दर्ज करें",
     "otpSent": "ओटीपी सफलतापूर्वक भेजा गया। लॉगिन के लिए 1111 का उपयोग करें",
     "invalidOtp": "कृपया एक मान्य 4-अंकीय ओटीपी दर्ज करें",
-    "connectionFailed": "कनेक्शन विफल: {error}"
+    "connectionFailed": "कनेक्शन विफल: {error}",
+    "adminLoginLink": "एडमिन लॉगिन"
+  },
+  "adminLogin": {
+    "title": "एडमिन लॉगिन",
+    "subtitle": "अपने एडमिन ईमेल और पासवर्ड से साइन इन करें।",
+    "emailPlaceholder": "ईमेल",
+    "passwordPlaceholder": "पासवर्ड",
+    "loginButton": "लॉग इन करें",
+    "loggingIn": "लॉग इन हो रहा है...",
+    "invalidCredentials": "गलत ईमेल या पासवर्ड।",
+    "missingFields": "ईमेल और पासवर्ड दोनों दर्ज करें।",
+    "backToLogin": "लॉगिन पर वापस जाएं"
   },
   "signup": {
     "title": "साइन अप करें",

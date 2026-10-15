@@ -169,7 +169,14 @@ const loginWithGoogle = async () => {
 
       </div>
 
-      <p class="mt-auto mb-6 text-center text-[10px] text-gray-400 leading-relaxed px-4">
+      <router-link
+        :to="{ name: 'admin-login' }"
+        class="mt-auto mb-2 text-center text-xs text-gray-400 hover:text-gray-600 hover:underline"
+      >
+        {{ t('login.adminLoginLink') }}
+      </router-link>
+
+      <p class="mb-6 text-center text-[10px] text-gray-400 leading-relaxed px-4">
         {{ t('login.agreementPrefix') }}
         <a href="#" class="text-blue-600 font-semibold hover:underline">{{ t('login.termsOfService') }}</a> {{ t('login.and') }}
         <a href="#" class="text-blue-600 font-semibold hover:underline">{{ t('login.privacyPolicy') }}</a>.
