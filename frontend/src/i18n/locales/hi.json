@@ -79,13 +79,13 @@
   },
   "adminLogin": {
     "title": "एडमिन लॉगिन",
-    "subtitle": "अपने एडमिन ईमेल और पासवर्ड से साइन इन करें।",
-    "emailPlaceholder": "ईमेल",
+    "subtitle": "अपने एडमिन यूज़रनेम और पासवर्ड से साइन इन करें।",
+    "usernamePlaceholder": "यूज़रनेम",
     "passwordPlaceholder": "पासवर्ड",
     "loginButton": "लॉग इन करें",
     "loggingIn": "लॉग इन हो रहा है...",
-    "invalidCredentials": "गलत ईमेल या पासवर्ड।",
-    "missingFields": "ईमेल और पासवर्ड दोनों दर्ज करें।",
+    "invalidCredentials": "गलत यूज़रनेम या पासवर्ड।",
+    "missingFields": "यूज़रनेम और पासवर्ड दोनों दर्ज करें।",
     "backToLogin": "लॉगिन पर वापस जाएं"
   },
   "signup": {

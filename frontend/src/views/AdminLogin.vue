@@ -2,10 +2,10 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowLeft } from 'lucide-vue-next';
-import { loginWithEmailPassword } from '@/services/api';
+import { loginWithUsernamePassword } from '@/services/api';
 
 const { t } = useI18n();
-const email = ref('');
+const username = ref('');
 const password = ref('');
 const isSubmitting = ref(false);
 const errorMessage = ref('');
@@ -17,14 +17,14 @@ const goBack = () => {
 const handleLogin = async () => {
   errorMessage.value = '';
 
-  if (!email.value || !password.value) {
+  if (!username.value || !password.value) {
     errorMessage.value = t('adminLogin.missingFields');
     return;
   }
 
   isSubmitting.value = true;
   try {
-    await loginWithEmailPassword(email.value, password.value);
+    await loginWithUsernamePassword(username.value, password.value);
     // A plain navigation, not a router push - /desk is the platform's own
     // server-rendered admin app, outside the Vue SPA entirely.
     window.location.href = '/desk';
@@ -60,10 +60,10 @@ const handleLogin = async () => {
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <input
-          v-model="email"
-          type="email"
+          v-model="username"
+          type="text"
           autocomplete="username"
-          :placeholder="t('adminLogin.emailPlaceholder')"
+          :placeholder="t('adminLogin.usernamePlaceholder')"
           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-gray-400"
         />
         <input

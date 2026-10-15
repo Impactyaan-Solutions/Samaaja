@@ -81,13 +81,13 @@
   },
   "adminLogin": {
     "title": "Admin Login",
-    "subtitle": "Sign in with your admin email and password.",
-    "emailPlaceholder": "Email",
+    "subtitle": "Sign in with your admin username and password.",
+    "usernamePlaceholder": "Username",
     "passwordPlaceholder": "Password",
     "loginButton": "Login",
     "loggingIn": "Logging in...",
-    "invalidCredentials": "Incorrect email or password.",
-    "missingFields": "Enter both email and password.",
+    "invalidCredentials": "Incorrect username or password.",
+    "missingFields": "Enter both username and password.",
     "backToLogin": "Back to login"
   },
   "signup": {

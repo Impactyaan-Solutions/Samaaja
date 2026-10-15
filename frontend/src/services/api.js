@@ -213,7 +213,7 @@ export const loginUsingOtp = async (data) => {
 // screen - the Administrator account has no mobile number or Google
 // identity, so it
 // cannot use either of the sign-in methods above.
-export const loginWithEmailPassword = async (usr, pwd) => {
+export const loginWithUsernamePassword = async (usr, pwd) => {
     // Form-encoded, not JSON - this is the documented way to call this
     // particular built-in endpoint (unlike the custom samaaja.api.* methods
     // elsewhere in this file, which take JSON bodies).
