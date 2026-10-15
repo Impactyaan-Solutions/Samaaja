@@ -11,3 +11,8 @@ node_modules/
 samaaja/public/frontend/
 samaaja/www/index.html
 samaaja/vue_routes.json
+
+# Local writeups and scratch docs (not part of repo docs)
+EVENTS_WRITEUP.md
+VOLUNTEER_PROJECTS_WRITEUP.md
+docs/claude docs/

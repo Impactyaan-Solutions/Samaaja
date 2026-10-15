@@ -159,7 +159,14 @@
     "postLabel": "Post",
     "failedToLoadActions": "Failed to load actions.",
     "failedToLoadPosts": "Failed to load posts.",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "shareProfile": "Share my profile",
+    "shareTitle": "Share your profile",
+    "shareSubtitle": "Let others see your impact on Samaaja",
+    "shareText": "Check out my Samaaja profile!",
+    "copyLink": "Copy",
+    "copied": "Copied",
+    "shareVia": "Share via..."
   },
   "addPost": {
     "headerTitle": "Add a Post",

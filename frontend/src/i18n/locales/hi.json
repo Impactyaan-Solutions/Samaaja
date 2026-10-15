@@ -157,7 +157,14 @@
     "postLabel": "पोस्ट",
     "failedToLoadActions": "कार्य लोड करने में विफल।",
     "failedToLoadPosts": "पोस्ट लोड करने में विफल।",
-    "loading": "लोड हो रहा है..."
+    "loading": "लोड हो रहा है...",
+    "shareProfile": "मेरी प्रोफ़ाइल साझा करें",
+    "shareTitle": "अपनी प्रोफ़ाइल साझा करें",
+    "shareSubtitle": "दूसरों को Samaaja पर अपना प्रभाव दिखाएं",
+    "shareText": "मेरी Samaaja प्रोफ़ाइल देखें!",
+    "copyLink": "कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "shareVia": "इसके ज़रिए साझा करें..."
   },
   "addPost": {
     "headerTitle": "पोस्ट जोड़ें",

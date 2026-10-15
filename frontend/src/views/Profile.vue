@@ -8,10 +8,12 @@
     Droplets,
     BookOpen,
     Settings,
-    LogOut // Added for the menu
+    LogOut, // Added for the menu
+    Share2
   } from 'lucide-vue-next'
   import { Heart, MessageSquare } from 'lucide-vue-next'
   import AppHeader from '@/components/common/AppHeader.vue'
+  import ShareProfileSheet from '@/components/Overlays/ShareProfileSheet.vue'
   import { authState } from '@/auth'
   import { getProfile } from '@/services/api'
   import { getUserProfilePosts, getUserProfileActions } from '@/services/api'
@@ -19,6 +21,7 @@
   const { t } = useI18n()
   // --- Menu Logic ---
   const isMenuOpen = ref(false)
+  const isShareOpen = ref(false)
   const userPosts = ref([])
   const userActions = ref([])
   const postsLoading = ref(false)
@@ -187,6 +190,13 @@ watch(activeTab,async(newTab)=>{
 // Helper: single source of truth for "whose profile are we viewing"
 const viewedEmail = computed(() => route.query.user_email || authCache.email)
 
+// "Share my profile" is only offered on the logged-in user's own page,
+// not while viewing someone else's profile via ?user_email=
+const isOwnProfile = computed(() => !route.query.user_email)
+const shareUrl = computed(
+  () => `${window.location.origin}/account?user_email=${encodeURIComponent(authCache.email || '')}`
+)
+
 watch(
   () => route.query.user_email,
   async (newEmail) => {
@@ -262,14 +272,31 @@ watch(
       </transition>
 
       <!-- Invisible Backdrop: Closes menu when clicking anywhere else -->
-      <div 
-        v-if="isMenuOpen" 
-        @click="isMenuOpen = false" 
+      <div
+        v-if="isMenuOpen"
+        @click="isMenuOpen = false"
         class="fixed inset-0 z-40"
       ></div>
 
+      <!-- Share my profile -->
+      <ShareProfileSheet
+        v-if="isShareOpen"
+        :share-url="shareUrl"
+        @close="isShareOpen = false"
+      />
+
       <!-- Original Profile Content -->
-      <div class="px-5 pb-2 rounded-2xl shadow-sm mb-5">
+      <div class="px-5 pb-2 rounded-2xl shadow-sm mb-5 relative">
+        <!-- Share my profile -->
+        <button
+          v-if="isOwnProfile"
+          @click="isShareOpen = true"
+          :aria-label="t('profile.shareProfile')"
+          class="absolute top-2 right-6 p-2.5 bg-white rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors z-10"
+        >
+          <Share2 class="w-4 h-4 text-gray-600" />
+        </button>
+
         <div class="flex flex-col items-center p-2 px-4 text-center">
           <!-- Avatar -->
           <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4">
