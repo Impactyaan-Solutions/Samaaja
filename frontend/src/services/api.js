@@ -533,6 +533,50 @@ export const createComment = async (post_id, comment_text) => {
         throw err
     }
 }
+export const updateComment = async (comment_id, comment_text) => {
+    try{
+        const headers ={
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        const result = await callAPI(
+            headers,
+            baseurl + 'api/method/samaaja.api.comment.update',
+            'POST',
+            {
+             comment_id,
+             comment_text
+            }
+
+        )
+        return result.data
+    }catch(err){
+         console.error("UPDATE COMMENT FAILED", err)
+        throw err
+    }
+}
+export const deleteComment = async(comment_id)=>{
+try{
+    const headers={
+          'Accept': 'application/json',
+            'Content-Type': 'application/json',
+    }
+     const result = await callAPI(
+            headers,
+            baseurl + 'api/method/samaaja.api.comment.delete',
+            'POST',
+            {
+             comment_id
+            }
+
+        )
+        return result.data
+
+}catch(err){
+ console.error("Failed to delete", err)
+        throw err
+}
+}
 
 export const getComments = async (post_id) => {
     try {
