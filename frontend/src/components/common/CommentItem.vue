@@ -18,10 +18,9 @@ const authCache = JSON.parse(localStorage.getItem("samaaja_auth_cache"));
 
 let userEmail = authCache?.email;
 
-const isOwner = computed(() => {
-  return props.comment.user_id === authState.email
-})
-// console.log('isOwner:', isOwner, 'userEmail:', userEmail.value, 'comment.user_id:', props.comment.user_id);
+const isOwner = props.comment.user_id === authState.email
+
+console.log("this is ",props.comment.user_id === authState.email);
 </script>
 
 <template>
@@ -52,7 +51,7 @@ const isOwner = computed(() => {
           </div>
         </div>
 
-        <!-- Edit / Delete icons — only for owner 
+        <!-- Edit / Delete icons — only for owner -->
         <div v-if="isOwner" class="flex items-center gap-1.5">
           <button
             class="p-1 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
@@ -68,7 +67,7 @@ const isOwner = computed(() => {
           >
             <Trash2 :size="13" />
           </button>
-        </div>-->
+        </div>
       </div>
 
       <p class="text-gray-700 leading-relaxed text-xs">{{ comment.comment_text }}</p>
