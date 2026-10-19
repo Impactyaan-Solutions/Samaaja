@@ -301,6 +301,17 @@ class UserManager:
     @staticmethod
     def login_using_password(mobile_no: str, password: str):
         try:
+            # Same reasoning as the OTP gate above: hiding the form in the
+            # UI isn't enough on its own, since this endpoint is guest-
+            # callable and reachable directly regardless of what shows.
+            # frappe.get_single() (not a raw DB read) so this still
+            # resolves to the field's schema default on sites that haven't
+            # saved Samaaja Settings since enable_phone_login was added.
+            if not frappe.get_single("Samaaja Settings").enable_phone_login:
+                return Result.bad_request(
+                    "Phone number login is not enabled"
+                )
+
             user = frappe.get_value(
                 "User",
                 {"mobile_no":mobile_no},

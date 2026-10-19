@@ -16,12 +16,13 @@ const router = useRouter();
 const goBack = () => {
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
 };
-const USE_MOBILE_NUMBER_AUTH = import.meta.env.VITE_USE_MOBILE_NUMBER_AUTH === 'true';
-
 // Phone + password is the default; OTP only shows if enabled in Samaaja
 // Settings (set via the setup wizard), and replaces password entirely when
 // it is - never both at once. Social buttons are whatever Social Login Key
 // records are actually configured, empty list means none render at all.
+// Phone login itself can be turned off entirely (social-only deployments) -
+// default true here so the form doesn't flash/hide while options load.
+const phoneLoginEnabled = ref(true);
 const otpEnabled = ref(false);
 const providers = ref([]);
 const errorMessage = ref('');
@@ -30,6 +31,7 @@ const isSubmitting = ref(false);
 onMounted(async () => {
   try {
     const options = await getLoginOptions();
+    phoneLoginEnabled.value = options.phone_login_enabled !== false;
     otpEnabled.value = !!options.otp_enabled;
     providers.value = options.providers || [];
   } catch (error) {
@@ -128,7 +130,7 @@ const loginWithProvider = (authUrl) => {
 
       <div class="mb-2">
         <h2 class="text-2xl font-extrabold text-gray-900 mb-1">{{ t('login.title') }}</h2>
-        <p class="text-gray-500 text-xs leading-relaxed" v-if="USE_MOBILE_NUMBER_AUTH">
+        <p class="text-gray-500 text-xs leading-relaxed" v-if="phoneLoginEnabled">
           {{ otpEnabled ? t('login.subtitle') : t('login.passwordSubtitle') }}
         </p>
       </div>
@@ -138,7 +140,7 @@ const loginWithProvider = (authUrl) => {
       </div>
 
       <!-- Phone + Password (default login method) -->
-      <form @submit.prevent="handlePasswordLogin" class="space-y-4" v-if="USE_MOBILE_NUMBER_AUTH && !otpEnabled">
+      <form @submit.prevent="handlePasswordLogin" class="space-y-4" v-if="phoneLoginEnabled && !otpEnabled">
         <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
           <span class="px-4 py-3 text-gray-900 font-semibold border-r border-gray-100 bg-gray-50/50">
             +91
@@ -170,7 +172,7 @@ const loginWithProvider = (authUrl) => {
       </form>
 
       <!-- Phone + OTP (only shown when enabled during setup) -->
-      <div class="space-y-4" v-if="USE_MOBILE_NUMBER_AUTH && otpEnabled">
+      <div class="space-y-4" v-if="phoneLoginEnabled && otpEnabled">
         <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
           <span class="px-4 py-3 text-gray-900 font-semibold border-r border-gray-100 bg-gray-50/50">
             +91
@@ -215,21 +217,12 @@ const loginWithProvider = (authUrl) => {
         </button>
       </div>
 
-      <div class="relative my-10 text-center" v-if="USE_MOBILE_NUMBER_AUTH && providers.length">
+      <div class="relative my-10 text-center" v-if="providers.length">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-gray-100"></div>
         </div>
         <span class="relative px-4 bg-white text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-          {{ t('login.orContinueWith') }}
-        </span>
-      </div>
-
-      <div class="relative my-4 text-center" v-if="!USE_MOBILE_NUMBER_AUTH && providers.length">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-100"></div>
-        </div>
-        <span class="relative px-4 bg-white text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-          {{ t('login.ContinueWith') }}
+          {{ phoneLoginEnabled ? t('login.orContinueWith') : t('login.ContinueWith') }}
         </span>
       </div>
 

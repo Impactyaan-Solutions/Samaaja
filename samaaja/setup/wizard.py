@@ -16,10 +16,9 @@ def get_setup_stages(args=None):
 def configure_authentication(args):
     args = frappe._dict(args or {})
 
-    frappe.db.set_single_value(
-        "Samaaja Settings", "enable_otp_login", 1 if args.get("enable_otp_login") else 0
-    )
-
+    # Social keys first: if the admin is disabling phone login in this same
+    # submission, Samaaja Settings' own validation (at least one sign-in
+    # method must stay enabled) needs to see what was just configured.
     for provider in PROVIDERS:
         key = frappe.scrub(provider)
         if not args.get(f"enable_{key}"):
@@ -31,6 +30,11 @@ def configure_authentication(args):
             continue
 
         _enable_social_login_key(provider, client_id, client_secret)
+
+    settings = frappe.get_single("Samaaja Settings")
+    settings.enable_phone_login = 1 if args.get("enable_phone_login", 1) else 0
+    settings.enable_otp_login = 1 if args.get("enable_otp_login") else 0
+    settings.save(ignore_permissions=True)
 
 def _enable_social_login_key(provider, client_id, client_secret):
     name = frappe.scrub(provider)

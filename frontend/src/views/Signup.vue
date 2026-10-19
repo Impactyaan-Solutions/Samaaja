@@ -20,8 +20,6 @@ const genderOptions = computed(() => [
   { value: 'Other', label: t('signup.genderOther') }
 ]);
 
-const USE_MOBILE_NUMBER_AUTH = import.meta.env.VITE_USE_MOBILE_NUMBER_AUTH === 'true';
-
 const formData = ref({
   'name': '',
   'gender': '',
@@ -36,11 +34,14 @@ const formData = ref({
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 const providers = ref([]);
+// Default true so the form doesn't flash/hide while options load.
+const phoneLoginEnabled = ref(true);
 
 onMounted(async () => {
   try {
     const options = await getLoginOptions();
     providers.value = options.providers || [];
+    phoneLoginEnabled.value = options.phone_login_enabled !== false;
   } catch (error) {
     console.error("Failed to load login options:", error);
   }
@@ -126,7 +127,7 @@ const goBack = () => {
         {{ errorMessage }}
       </div>
       <!-- Signup Form -->
-      <form @submit.prevent="handleSubmit" class="space-y-2" v-if="USE_MOBILE_NUMBER_AUTH">
+      <form @submit.prevent="handleSubmit" class="space-y-2" v-if="phoneLoginEnabled">
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">{{ t('signup.fullName') }} <span class="text-red-500">*</span></label>
           <div class="relative">
@@ -244,20 +245,12 @@ const goBack = () => {
       </form>
 
       <!-- Divider -->
-      <div class="relative my-4" v-if="USE_MOBILE_NUMBER_AUTH && providers.length">
+      <div class="relative my-4" v-if="providers.length">
         <div class="absolute inset-0 flex items-center" >
           <div class="w-full border-t border-gray-100"></div>
         </div>
         <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">{{ t('signup.orSignUpWith') }}</span>
-        </div>
-      </div>
-      <div class="relative my-4" v-if="!USE_MOBILE_NUMBER_AUTH && providers.length">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-100"></div>
-        </div>
-        <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">{{ t('signup.SignUpWith') }}</span>
+          <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">{{ phoneLoginEnabled ? t('signup.orSignUpWith') : t('signup.SignUpWith') }}</span>
         </div>
       </div>
       <!-- One button per configured Social Login Key - nothing renders if none are set up -->

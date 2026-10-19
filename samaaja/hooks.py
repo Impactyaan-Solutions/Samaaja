@@ -253,6 +253,9 @@ doc_events = {
     "User Metadata": {
         "validate": "samaaja.doc_events.user_metadata.on_save"
     },
+    "Samaaja Settings": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate"
+    },
     "Energy Point Log": {
         "before_insert": "samaaja.doc_events.energy_point_log.before_insert"
     },

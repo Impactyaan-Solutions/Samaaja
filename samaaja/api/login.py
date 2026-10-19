@@ -8,11 +8,16 @@ from samaaja.utils.custom_response import custom_response
 def get_login_options():
     """
     What the login screen should actually show, instead of assuming Google:
-    every enabled Social Login Key with a usable secret, plus whether OTP
-    login is turned on (samaaja_settings.enable_otp_login).
+    whether phone number login is enabled at all, whether OTP replaces
+    password when it is, and every enabled Social Login Key with a usable
+    secret. Uses frappe.get_single() rather than a raw DB read so a newly
+    added setting still resolves to its schema default on sites that
+    haven't saved Samaaja Settings since the field was added.
     """
+    settings = frappe.get_single("Samaaja Settings")
     return {
-        "otp_enabled": bool(frappe.db.get_single_value("Samaaja Settings", "enable_otp_login")),
+        "phone_login_enabled": bool(settings.enable_phone_login),
+        "otp_enabled": bool(settings.enable_otp_login),
         "providers": _get_social_providers(),
     }
 

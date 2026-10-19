@@ -10,13 +10,23 @@ samaaja.setup.slides_settings = [
 		name: "samaaja_authentication",
 		title: __("Samaaja sign-in"),
 		help: __(
-			"Phone number + password is on by default. Everything below is optional and can be changed later in Samaaja Settings and Social Login Key."
+			"Phone number + password is on by default. Everything below is optional and can be changed later in Samaaja Settings and Social Login Key. At least one sign-in method must stay enabled."
 		),
 		fields: [
+			{
+				fieldname: "enable_phone_login",
+				label: __("Enable phone number login"),
+				fieldtype: "Check",
+				default: 1,
+			},
 			{
 				fieldname: "enable_otp_login",
 				label: __("Use OTP instead of password"),
 				fieldtype: "Check",
+				depends_on: "eval:doc.enable_phone_login",
+				description: __(
+					"Not production-ready yet: the code is always 1111, for any phone number, with no real SMS sent. Anyone who knows a registered phone number can sign in as that user until a real SMS provider is wired in. Leave this off unless you understand that risk."
+				),
 			},
 			{
 				fieldname: "google_section",
