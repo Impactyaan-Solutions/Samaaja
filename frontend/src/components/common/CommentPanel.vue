@@ -3,8 +3,9 @@ import { ref } from 'vue'
 import { X, Send } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { authState } from '@/auth'
-import { createComment, getComments } from '@/services/api'
+import { createComment, getComments , deleteComment} from '@/services/api'
 import CommentItem from './CommentItem.vue'
+
 import { onMounted } from 'vue'
 
 const { t } = useI18n()
@@ -19,7 +20,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close', 'comment-added'])
+const emit = defineEmits(['close', 'comment-added' , 'comment-deleted'])
 
 const comments = ref([])
 const commentText = ref('')
@@ -105,11 +106,34 @@ const handleEdit = (comment) => {
   // TODO: implement edit flow
   console.log('Edit comment:', comment)
 }
-
-const handleDelete = (comment) => {
-  // TODO: implement delete flow + remove from comments.value
-  console.log('Delete comment:', comment)
+const handleCommentUpdated = (updatedComment) => {
+  const index = comments.value.findIndex(
+    comment => comment.name === updatedComment.name
+  )
+  if (index !== -1) {
+    comments.value[index] = {
+      ...comments.value[index],
+      comment_text: updatedComment.comment_text
+    }
+  }
 }
+
+const handleDelete = async (comment) => {
+console.log("this",comment.name)
+  try {
+
+    await deleteComment(comment.name)
+
+    comments.value = comments.value.filter(
+      item => item.name !== comment.name
+    )
+
+    emit('comment-deleted')
+  } catch (error) {
+    console.error('Failed to delete comment:', error)
+  }
+}
+
 
 defineExpose({ fetchComments })
 </script>
@@ -144,14 +168,16 @@ defineExpose({ fetchComments })
     {{ t('comments.empty') }}
   </p>
 
-  <CommentItem
-    v-else
-    v-for="comment in comments"
-    :key="comment.id"
-    :comment="comment"
-    @edit="handleEdit"
-    @delete="handleDelete"
-  />
+ 
+<CommentItem
+  v-for="comment in comments"
+  :key="comment.name"
+  :comment="comment"
+  @edit="handleEdit"
+  @delete="handleDelete"
+  @updated="handleCommentUpdated"
+/>
+
 </div>
        
 

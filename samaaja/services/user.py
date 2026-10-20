@@ -193,12 +193,23 @@ class UserManager:
     @staticmethod
     def complete_user_profile(user_email:str, user_mobile_no:str, user_gender:str,user_category:str,user_bio:str,user_dob:str)-> Result:
         try:
+            current_user = frappe.session.user
+            if not current_user or current_user == "Guest": 
+                return Result.failure("Authentication required")
+            user_email = current_user    
             if not validate_mobile_no(user_mobile_no):
                 return Result.bad_request(
                     "Invalid mobile number"
                 )
-            if frappe.db.exists("User", {"mobile_no": user_mobile_no}):
-                return Result.bad_request("User with this mobile number already exists")
+            existing = frappe.db.get_value(
+                "User",
+                {"mobile_no": user_mobile_no},
+                "name",
+            )    
+            if existing and existing != user_email:
+                return Result.bad_request(
+                    "User with this mobile number already exists"
+                )
 
             user_category = frappe.db.get_value("User Category", {"category_name": user_category}, "name")
 
