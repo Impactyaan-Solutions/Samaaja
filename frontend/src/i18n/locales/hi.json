@@ -80,6 +80,7 @@
     "passwordRequired": "कृपया अपना पासवर्ड दर्ज करें",
     "loginFailed": "गलत मोबाइल नंबर या पासवर्ड",
     "connectionFailed": "कनेक्शन विफल: {error}",
+    "loadOptionsFailed": "लॉगिन विकल्प लोड करने में विफल। कृपया पेज को फिर से लोड करें।",
     "adminLoginLink": "एडमिन लॉगिन"
   },
   "adminLogin": {

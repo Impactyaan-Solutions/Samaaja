@@ -82,6 +82,7 @@
     "passwordRequired": "Please enter your password",
     "loginFailed": "Incorrect mobile number or password",
     "connectionFailed": "Connection failed: {error}",
+    "loadOptionsFailed": "Failed to load login options. Please refresh the page.",
     "adminLoginLink": "Admin login"
   },
   "adminLogin": {

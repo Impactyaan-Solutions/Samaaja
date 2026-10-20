@@ -31,6 +31,7 @@ onMounted(async () => {
     providers.value = options.providers || [];
   } catch (error) {
     console.error("Failed to load login options:", error);
+    errorMessage.value = t('login.loadOptionsFailed');
   }
 });
 

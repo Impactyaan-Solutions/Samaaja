@@ -4,15 +4,9 @@ from samaaja.services.metadata import MetadataManager
 from samaaja.utils.custom_response import custom_response
 
 
-@frappe.whitelist(methods=["GET"])
+@frappe.whitelist(methods=["GET"], allow_guest=True)
 def get_list(doctype, lang="en"):
     try:
-        if frappe.session.user == "Guest":
-            return custom_response(
-                message="Authentication required",
-                status_code=401
-            )
-
         return MetadataManager.get_list(
             doctype=doctype,
             lang=lang
