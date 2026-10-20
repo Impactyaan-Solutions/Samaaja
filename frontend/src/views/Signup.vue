@@ -110,7 +110,6 @@ const handleSubmit = async () => {
   }
 };
 
-// One button per configured Social Login Key, same as Login.vue
 const signupWithProvider = (authUrl) => {
   window.location.href = authUrl;
 };
@@ -276,7 +275,6 @@ const goBack = () => {
           <span class="bg-white px-3 text-gray-400 font-bold tracking-wider">{{ phoneLoginEnabled ? t('signup.orSignUpWith') : t('signup.SignUpWith') }}</span>
         </div>
       </div>
-      <!-- One button per configured Social Login Key - nothing renders if none are set up -->
       <div class="pb-4 space-y-4" v-if="providers.length">
         <button
           v-for="provider in providers"

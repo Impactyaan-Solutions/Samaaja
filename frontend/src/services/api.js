@@ -67,9 +67,6 @@ export const getLoggedUser = async () => {
 
 }
 
-// What the login/signup screens should actually show: whatever Social Login
-// Keys are configured (empty list if none), and whether OTP is enabled
-// (phone+password is the default either way - see samaaja/api/login.py).
 export const getLoginOptions = async () => {
     const response = await fetch(baseurl + '/api/method/samaaja.api.login.get_login_options', {
         method: 'GET',
@@ -225,7 +222,6 @@ export const loginUsingPassword = async (data) => {
 
         const data = await response.json()
 
-        // Store user auth tokens
         localStorage.setItem(
             'api_key',
             data.data.api_key
@@ -245,15 +241,9 @@ export const loginUsingPassword = async (data) => {
     return true
 }
 
-// Admin login: the platform's own core session login (/api/method/login),
-// not a custom Samaaja endpoint. Used only by the separate admin login
-// screen - the Administrator account has no mobile number or Google
-// identity, so it
-// cannot use either of the sign-in methods above.
 export const loginWithUsernamePassword = async (usr, pwd) => {
-    // Form-encoded, not JSON - this is the documented way to call this
-    // particular built-in endpoint (unlike the custom samaaja.api.* methods
-    // elsewhere in this file, which take JSON bodies).
+    // This core endpoint takes form-encoded data, unlike every other
+    // endpoint in this file which takes JSON.
     const body = new URLSearchParams({ usr, pwd })
 
     const response = await fetch(baseurl + '/api/method/login', {

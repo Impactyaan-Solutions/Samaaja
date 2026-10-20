@@ -190,8 +190,6 @@ watch(activeTab,async(newTab)=>{
 // Helper: single source of truth for "whose profile are we viewing"
 const viewedEmail = computed(() => route.query.user_email || authCache.email)
 
-// "Share my profile" is only offered on the logged-in user's own page,
-// not while viewing someone else's profile via ?user_email=
 const isOwnProfile = computed(() => !route.query.user_email)
 const shareUrl = computed(
   () => `${window.location.origin}/account?user_email=${encodeURIComponent(authCache.email || '')}`

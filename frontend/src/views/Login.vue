@@ -16,12 +16,7 @@ const router = useRouter();
 const goBack = () => {
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
 };
-// Phone + password is the default; OTP only shows if enabled in Samaaja
-// Settings (set via the setup wizard), and replaces password entirely when
-// it is - never both at once. Social buttons are whatever Social Login Key
-// records are actually configured, empty list means none render at all.
-// Phone login itself can be turned off entirely (social-only deployments) -
-// default true here so the form doesn't flash/hide while options load.
+// Default true so the form doesn't flash/hide while options load.
 const phoneLoginEnabled = ref(true);
 const otpEnabled = ref(false);
 const providers = ref([]);

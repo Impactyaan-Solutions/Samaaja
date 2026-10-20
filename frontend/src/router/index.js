@@ -23,11 +23,6 @@ const router = createRouter({
       component: () => import('../views/Login.vue')
     },
     {
-      // The Administrator account (created by `bench new-site`) has no
-      // mobile number or Google identity, so it can't use either sign-in
-      // method above. This is a separate email+password form that hits
-      // the platform's own core session login and hands off to /desk on
-      // success.
       path: '/admin-login',
       name: 'admin-login',
       meta: { hideNavbar: true, public: true },

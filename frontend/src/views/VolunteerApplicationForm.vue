@@ -135,7 +135,6 @@ const goToHome = () => {
 }
 onMounted(async () => {
   try {
-    // Fetch availability options separately
     try {
       const options = await getMetadataOptions('Availability')
       availabilityOptions.value = options.map(option => ({
