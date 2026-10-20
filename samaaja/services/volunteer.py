@@ -323,6 +323,9 @@ class VolunteerManager:
                 data=application,
             )
 
+        except frappe.exceptions.ValidationError as e:
+            return Result.bad_request(str(e))
+
         except Exception as e:
             frappe.log_error(
                 frappe.get_traceback(),
