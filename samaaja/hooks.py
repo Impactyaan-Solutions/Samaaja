@@ -254,6 +254,10 @@ doc_events = {
     "Samaaja Settings": {
         "validate": "samaaja.doc_events.samaaja_settings.validate"
     },
+    "Social Login Key": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate_social_login_key",
+        "on_trash": "samaaja.doc_events.samaaja_settings.on_trash_social_login_key"
+    },
     "Energy Point Log": {
         "before_insert": "samaaja.doc_events.energy_point_log.before_insert"
     },

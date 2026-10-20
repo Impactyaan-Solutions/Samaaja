@@ -23,10 +23,45 @@ def validate(doc, method):
         )
 
 
-def _has_enabled_social_login():
+def validate_social_login_key(doc, method):
+    """Same invariant as validate() above, checked from the other
+    direction: a Social Login Key being disabled or its secret cleared.
+    """
+    if _is_enabled_with_secret(doc):
+        return
+    _guard_last_sign_in_method(doc.name)
+
+
+def on_trash_social_login_key(doc, method):
+    _guard_last_sign_in_method(doc.name)
+
+
+def _guard_last_sign_in_method(excluding_name):
+    if frappe.get_single("Samaaja Settings").enable_phone_login:
+        return
+
+    if not _has_enabled_social_login(excluding_name=excluding_name):
+        frappe.throw(
+            "At least one sign-in method must stay enabled. Enable phone "
+            "number login in Samaaja Settings before disabling or deleting "
+            "the last configured Social Login Key."
+        )
+
+
+def _is_enabled_with_secret(doc):
+    if not doc.enable_social_login:
+        return False
+    return bool(doc.get_password("client_secret", raise_exception=False))
+
+
+def _has_enabled_social_login(excluding_name=None):
+    filters = {"enable_social_login": 1}
+    if excluding_name:
+        filters["name"] = ["!=", excluding_name]
+
     providers = frappe.get_all(
         "Social Login Key",
-        filters={"enable_social_login": 1},
+        filters=filters,
         fields=["name"],
     )
     for provider in providers:
