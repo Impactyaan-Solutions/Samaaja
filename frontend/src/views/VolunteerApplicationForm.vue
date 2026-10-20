@@ -7,7 +7,8 @@ import { authState } from '@/auth'
 import {
   checkVolunteerApplication,
   getVolunteerOpportunity,
-  applyForVolunteerOpportunity
+  applyForVolunteerOpportunity,
+  getMetadataOptions
 } from '@/services/api'
 import Form from '@/components/common/Form.vue'
 
@@ -17,6 +18,7 @@ const { t } = useI18n()
 
 const volunteerOpportunityId = route.params.id
 const opportunity = ref(null)
+const availabilityOptions = ref([])
 
 const loading = ref(true)
 const alreadyApplied = ref(false)
@@ -67,24 +69,7 @@ const fields = ref([
     label: t('volunteerApplication.preferredAvailableDays'),
     type: 'radio',
     required: true,
-    options: [
-      {
-        value: 'Daily',
-        label: t('volunteerApplication.daily')
-      },
-      {
-        value: 'Few times a week',
-        label: t('volunteerApplication.fewTimesAWeek')
-      },
-      {
-        value: 'Only on Weekends',
-        label: t('volunteerApplication.onlyOnWeekends')
-      },
-      {
-        value: 'Flexible',
-        label: t('volunteerApplication.flexible')
-      }
-    ]
+    options: availabilityOptions.value
   },
   {
     key: 'whyDoYouWantToVolunteer',
@@ -150,6 +135,26 @@ const goToHome = () => {
 }
 onMounted(async () => {
   try {
+    // Fetch availability options separately
+    try {
+      const options = await getMetadataOptions('Availability')
+      availabilityOptions.value = options.map(option => ({
+        value: option,
+        label: option
+      }))
+
+      const availabilityField = fields.value.find(
+        field => field.key === 'preferredAvailableDays'
+      )
+
+      if (availabilityField) {
+        availabilityField.options = availabilityOptions.value
+      }
+    } catch (e) {
+      console.error('Failed to load availability options:', e)
+    }
+
+
     const result = await checkVolunteerApplication(
       volunteerOpportunityId
     )
