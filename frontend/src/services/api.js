@@ -124,20 +124,10 @@ export const getLeaderboard = async () => {
     return data.data
 }
 export const logout = async () => {
-    const requestOptions = getRequestOptions();
-
-    
-    const response = await fetch(baseurl + '/api/method/logout', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            ...requestOptions.headers
-        },
-        ...requestOptions
-    });
-     if (!response.ok) { 
-        throw new Error(`Logout failed with status: ${response.status}`); 
+    const headers = {
+        'Accept': 'application/json',
     }
+    await callAPI(headers, baseurl + '/api/method/logout', 'POST')
     return true;
 };
 

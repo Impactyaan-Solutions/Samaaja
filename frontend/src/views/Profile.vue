@@ -360,12 +360,12 @@ watch(
       </div>
 
       <!-- Badges -->
-      <div class="px-5 mb-20" v-if="user.badges?.length">
+      <div class="px-5 mb-20">
         <div class="flex items-center space-x-2 mb-4">
           <span class="text-xl">🥇</span>
           <h3 class="font-bold text-gray-900 text-lg">{{ t('profile.badgesEarned') }}</h3>
         </div>
-        <div v-if="user.badges" class="grid grid-cols-3 gap-3">
+        <div v-if="user.badges?.length" class="grid grid-cols-3 gap-3">
           <div v-for="(badge, index) in user.badges" :key="index" class="flex flex-col justify-center items-center text-center">
             <img :src="badge.badge_icon" class="w-8 h-8 mb-1 rounded-full"/>
             <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ badge.badge_name }}</span>

@@ -23,11 +23,17 @@ const toggleMenu = () => {
 const handleLogout = async () => {
   try {
     await apiLogout()
-    isMenuOpen.value = false;
-    localStorage.clear(); 
-    window.location.href = '/login';
   } catch (error) {
-    console.warn("Logout error:", error)
+    console.error("Logout error:", error)
+    // Fail loudly: if the server-side session wasn't actually invalidated,
+    // the user needs to know - a console.warn they'll never see isn't enough.
+    alert(t('menu.logoutFailedWarning'))
+  } finally {
+    // ...but gracefully: always clear local state and leave, even if the
+    // call above failed. Never leave the user stuck looking logged in.
+    isMenuOpen.value = false;
+    localStorage.clear();
+    window.location.href = '/login';
   }
 }
 </script>
