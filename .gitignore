@@ -11,3 +11,6 @@ node_modules/
 samaaja/public/frontend/
 samaaja/www/index.html
 samaaja/vue_routes.json
+
+# Local writeups, plans, cards and scratch docs (not part of repo docs)
+docs/planning/

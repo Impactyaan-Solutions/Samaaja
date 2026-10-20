@@ -8,10 +8,12 @@
     Droplets,
     BookOpen,
     Settings,
-    LogOut // Added for the menu
+    LogOut, // Added for the menu
+    Share2
   } from 'lucide-vue-next'
   import { Heart, MessageSquare } from 'lucide-vue-next'
   import AppHeader from '@/components/common/AppHeader.vue'
+  import ShareProfileSheet from '@/components/Overlays/ShareProfileSheet.vue'
   import { authState } from '@/auth'
   import { getProfile } from '@/services/api'
   import { getUserProfilePosts, getUserProfileActions } from '@/services/api'
@@ -19,6 +21,7 @@
   const { t } = useI18n()
   // --- Menu Logic ---
   const isMenuOpen = ref(false)
+  const isShareOpen = ref(false)
   const userPosts = ref([])
   const userActions = ref([])
   const postsLoading = ref(false)
@@ -187,6 +190,11 @@ watch(activeTab,async(newTab)=>{
 // Helper: single source of truth for "whose profile are we viewing"
 const viewedEmail = computed(() => route.query.user_email || authCache.email)
 
+const isOwnProfile = computed(() => !route.query.user_email)
+const shareUrl = computed(
+  () => `${window.location.origin}/account?user_email=${encodeURIComponent(authCache.email || '')}`
+)
+
 watch(
   () => route.query.user_email,
   async (newEmail) => {
@@ -262,14 +270,31 @@ watch(
       </transition>
 
       <!-- Invisible Backdrop: Closes menu when clicking anywhere else -->
-      <div 
-        v-if="isMenuOpen" 
-        @click="isMenuOpen = false" 
+      <div
+        v-if="isMenuOpen"
+        @click="isMenuOpen = false"
         class="fixed inset-0 z-40"
       ></div>
 
+      <!-- Share my profile -->
+      <ShareProfileSheet
+        v-if="isShareOpen"
+        :share-url="shareUrl"
+        @close="isShareOpen = false"
+      />
+
       <!-- Original Profile Content -->
-      <div class="px-5 pb-2 rounded-2xl shadow-sm mb-5">
+      <div class="px-5 pb-2 rounded-2xl shadow-sm mb-5 relative">
+        <!-- Share my profile -->
+        <button
+          v-if="isOwnProfile"
+          @click="isShareOpen = true"
+          :aria-label="t('profile.shareProfile')"
+          class="absolute top-2 right-6 p-2.5 bg-white rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors z-10"
+        >
+          <Share2 class="w-4 h-4 text-gray-600" />
+        </button>
+
         <div class="flex flex-col items-center p-2 px-4 text-center">
           <!-- Avatar -->
           <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4">
@@ -365,7 +390,7 @@ watch(
           <span class="text-xl">🥇</span>
           <h3 class="font-bold text-gray-900 text-lg">{{ t('profile.badgesEarned') }}</h3>
         </div>
-        <div v-if="user.badges" class="grid grid-cols-3 gap-3">
+        <div v-if="user.badges?.length" class="grid grid-cols-3 gap-3">
           <div v-for="(badge, index) in user.badges" :key="index" class="flex flex-col justify-center items-center text-center">
             <img :src="badge.badge_icon" class="w-8 h-8 mb-1 rounded-full"/>
             <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ badge.badge_name }}</span>

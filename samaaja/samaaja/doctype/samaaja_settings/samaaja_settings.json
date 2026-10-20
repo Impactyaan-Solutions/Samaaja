@@ -89,7 +89,11 @@
   "top_cities_max_cities",
   "top_cities_max_days",
   "pincode_section",
-  "pincode_key"
+  "pincode_key",
+  "authentication_tab",
+  "enable_phone_login",
+  "enable_otp_login",
+  "otp_provider_key"
  ],
  "fields": [
   {
@@ -550,6 +554,33 @@
    "fieldname": "attachment_label",
    "fieldtype": "Data",
    "label": "Attachment Label"
+  },
+  {
+   "fieldname": "authentication_tab",
+   "fieldtype": "Tab Break",
+   "label": "Authentication"
+  },
+  {
+   "default": "1",
+   "description": "Off means no phone-number sign-in at all (password or OTP) - citizens can only use social login. At least one sign-in method must stay enabled; turning this off is blocked if no social login provider is configured.",
+   "fieldname": "enable_phone_login",
+   "fieldtype": "Check",
+   "label": "Enable Phone Number Login"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.enable_phone_login",
+   "description": "When off, citizens log in with phone number + password. When on, OTP replaces password as the login method entirely. Not production-ready: the code is always 1111, for any phone number, with no real SMS sent, until a real SMS provider is wired in.",
+   "fieldname": "enable_otp_login",
+   "fieldtype": "Check",
+   "label": "Enable OTP Login"
+  },
+  {
+   "depends_on": "eval:doc.enable_phone_login && doc.enable_otp_login",
+   "description": "Placeholder for a future SMS/OTP API key. Not used yet - OTP login still uses a fixed test code until a real provider is wired in.",
+   "fieldname": "otp_provider_key",
+   "fieldtype": "Data",
+   "label": "OTP Provider Key"
   }
  ],
  "index_web_pages_for_search": 1,

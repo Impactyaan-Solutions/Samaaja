@@ -14,7 +14,7 @@ import {
 } from 'lucide-vue-next'
 import AppHeader from '@/components/common/AppHeader.vue'
 import LanguagePickerSheet from '@/components/Overlays/LanguagePickerSheet.vue'
-import { getProfile } from '@/services/api.js'
+import { getProfile, logout as apiLogout } from '@/services/api.js'
 import router from '../router'
 
 const { t, locale } = useI18n()
@@ -61,9 +61,16 @@ onMounted(() => {
   fetchUserProfile()
 })
 
-const handleLogout = () => {
-  // Add your logout logic here (e.g., clear tokens and redirect)
- // console.log("Logging out...")
+const handleLogout = async () => {
+  try {
+    await apiLogout()
+  } catch (error) {
+    console.error("Logout error:", error)
+    alert(t('menu.logoutFailedWarning'))
+  } finally {
+    localStorage.clear()
+    window.location.href = '/login'
+  }
 }
 </script>
 

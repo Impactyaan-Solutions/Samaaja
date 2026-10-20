@@ -32,7 +32,8 @@
   },
   "menu": {
     "settings": "सेटिंग्स",
-    "logout": "लॉग आउट"
+    "logout": "लॉग आउट",
+    "logoutFailedWarning": "हम सर्वर पर आपका सत्र समाप्त होने की पुष्टि नहीं कर सके, लेकिन आपको इस डिवाइस पर लॉग आउट कर दिया गया है।"
   },
   "actionSheet": {
     "title": "एक कार्य चुनें",
@@ -60,7 +61,9 @@
   "login": {
     "title": "लॉग इन करें",
     "subtitle": "सत्यापन कोड प्राप्त करने और सुरक्षित रूप से लॉग इन करने के लिए अपना मोबाइल नंबर दर्ज करें।",
+    "passwordSubtitle": "लॉग इन करने के लिए अपना मोबाइल नंबर और पासवर्ड दर्ज करें।",
     "mobileNumberPlaceholder": "मोबाइल नंबर",
+    "passwordPlaceholder": "पासवर्ड",
     "otpLabel": "ओटीपी",
     "sendOtp": "ओटीपी भेजें",
     "loginButton": "लॉग इन करें",
@@ -74,7 +77,22 @@
     "invalidMobile": "कृपया एक मान्य 10-अंकीय मोबाइल नंबर दर्ज करें",
     "otpSent": "ओटीपी सफलतापूर्वक भेजा गया। लॉगिन के लिए 1111 का उपयोग करें",
     "invalidOtp": "कृपया एक मान्य 4-अंकीय ओटीपी दर्ज करें",
-    "connectionFailed": "कनेक्शन विफल: {error}"
+    "passwordRequired": "कृपया अपना पासवर्ड दर्ज करें",
+    "loginFailed": "गलत मोबाइल नंबर या पासवर्ड",
+    "connectionFailed": "कनेक्शन विफल: {error}",
+    "loadOptionsFailed": "लॉगिन विकल्प लोड करने में विफल। कृपया पेज को फिर से लोड करें।",
+    "adminLoginLink": "एडमिन लॉगिन"
+  },
+  "adminLogin": {
+    "title": "एडमिन लॉगिन",
+    "subtitle": "अपने एडमिन यूज़रनेम और पासवर्ड से साइन इन करें।",
+    "usernamePlaceholder": "यूज़रनेम",
+    "passwordPlaceholder": "पासवर्ड",
+    "loginButton": "लॉग इन करें",
+    "loggingIn": "लॉग इन हो रहा है...",
+    "invalidCredentials": "गलत यूज़रनेम या पासवर्ड।",
+    "missingFields": "यूज़रनेम और पासवर्ड दोनों दर्ज करें।",
+    "backToLogin": "लॉगिन पर वापस जाएं"
   },
   "signup": {
     "title": "साइन अप करें",
@@ -93,11 +111,17 @@
     "mobileNumber": "मोबाइल नंबर",
     "bio": "बायो",
     "bioPlaceholder": "संक्षिप्त बायो",
+    "password": "पासवर्ड",
+    "passwordPlaceholder": "पासवर्ड",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "confirmPasswordPlaceholder": "अपना पासवर्ड फिर से दर्ज करें",
     "createAccount": "खाता बनाएं",
     "orSignUpWith": "या इसके साथ साइन अप करें",
     "SignUpWith": "इसके साथ साइन अप करें",
     "google": "गूगल",
     "fillRequiredFields": "कृपया सभी आवश्यक फ़ील्ड भरें।",
+    "passwordRequired": "कृपया एक पासवर्ड दर्ज करें",
+    "passwordMismatch": "पासवर्ड मेल नहीं खाते",
     "connectionFailed": "कनेक्शन विफल: {error}"
   },
   "profileCompletion": {
@@ -116,8 +140,6 @@
     "mobileNumber": "मोबाइल नंबर",
     "mobileNumberPlaceholder": "जैसे 9876543210",
     "bio": "बायो",
-    "selectOrganisationLabel": "कॉलेज चुनें",
-    "organisation": "संगठन",
     "bioPlaceholder": "अपने बारे में और आप क्यों जुड़े, थोड़ा बताएं।",
     "savingProfile": "प्रोफ़ाइल सहेजी जा रही है...",
     "completeRegistration": "पंजीकरण पूर्ण करें"
@@ -157,7 +179,14 @@
     "postLabel": "पोस्ट",
     "failedToLoadActions": "कार्य लोड करने में विफल।",
     "failedToLoadPosts": "पोस्ट लोड करने में विफल।",
-    "loading": "लोड हो रहा है..."
+    "loading": "लोड हो रहा है...",
+    "shareProfile": "मेरी प्रोफ़ाइल साझा करें",
+    "shareTitle": "अपनी प्रोफ़ाइल साझा करें",
+    "shareSubtitle": "दूसरों को Samaaja पर अपना प्रभाव दिखाएं",
+    "shareText": "मेरी Samaaja प्रोफ़ाइल देखें!",
+    "copyLink": "कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "shareVia": "इसके ज़रिए साझा करें..."
   },
   "addPost": {
     "headerTitle": "पोस्ट जोड़ें",

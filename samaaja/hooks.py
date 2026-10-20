@@ -80,6 +80,10 @@ after_install = "samaaja.setup.samaaja_setup.after_install"
 # crashed on missing doctypes) had to stay commented out.
 after_migrate = "samaaja.utils.temp_sync_options.sync_options"
 
+# See samaaja/public/js/setup_wizard.js and samaaja/setup/wizard.py.
+setup_wizard_requires = "assets/samaaja/js/setup_wizard.js"
+setup_wizard_stages = "samaaja.setup.wizard.get_setup_stages"
+
 # Uninstallation
 # ------------
 
@@ -246,6 +250,13 @@ doc_events = {
     },
     "User Metadata": {
         "validate": "samaaja.doc_events.user_metadata.on_save"
+    },
+    "Samaaja Settings": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate"
+    },
+    "Social Login Key": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate_social_login_key",
+        "on_trash": "samaaja.doc_events.samaaja_settings.on_trash_social_login_key"
     },
     "Energy Point Log": {
         "before_insert": "samaaja.doc_events.energy_point_log.before_insert"
