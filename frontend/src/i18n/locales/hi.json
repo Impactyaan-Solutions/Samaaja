@@ -45,7 +45,7 @@
   },
   "landing": {
     "appName": "Samaaja",
-    "logo": { "src": "/samaaja.png", "alt": "Samaaja Logo", "name": "Samaaja" },
+    "logo": { "src": "samaaja.png", "alt": "Samaaja Logo", "name": "Samaaja" },
     "tagline": "अपना समुदाय बनाएं। कार्रवाई करें।",
     "subtitle": "अपने क्षेत्र के लोगों से जुड़ें जो वास्तविक समस्याओं को हल कर रहे हैं और मिलकर अपने समुदाय को बेहतर बना रहे हैं।",
     "signUp": "साइन अप करें",

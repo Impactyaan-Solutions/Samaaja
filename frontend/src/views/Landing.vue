@@ -11,6 +11,8 @@ import {
 
 const { t, locale } = useI18n();
 
+const logoSrc = computed(() => import.meta.env.BASE_URL + t('landing.logo.src'));
+
 const features = computed(() => [
   {
     title: t('landing.features.reportAct.title'),
@@ -51,7 +53,7 @@ const features = computed(() => [
       <header class="flex justify-between items-center mt-4 mb-2">
         <div class="flex items-center gap-2">
          <img
-          :src="t('landing.logo.src')"
+          :src="logoSrc"
           :alt="t('landing.logo.alt')"
           class="w-12 h-12"
         />
