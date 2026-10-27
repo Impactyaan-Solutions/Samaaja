@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { completeProfile } from '@/services/api';
+import { completeProfile, getMetadataOptions } from '@/services/api';
 import { checkAuth, authState } from '@/auth';
 import { User, Calendar, Phone, BookOpen, Tag } from 'lucide-vue-next';
 
@@ -18,6 +18,24 @@ const formData = ref({
 
 const isSubmitting = ref(false);
 const errorMessage = ref('');
+const genderOptions = ref([]);
+const categoryOptions = ref([]);
+
+const fetchMetadataOptions = async () => {
+  try {
+    const [genders, categories] = await Promise.all([
+      getMetadataOptions('Gender'),
+      getMetadataOptions('User Category')
+    ]);
+    genderOptions.value = genders;
+    categoryOptions.value = categories;
+  } catch (error) {
+    console.error('Failed to load metadata options:', error);
+    errorMessage.value = 'Failed to load profile options. Please refresh the page.';
+  }
+};
+
+fetchMetadataOptions();
 
 const isFormValid = computed(() => {
   return formData.value.gender &&
@@ -85,9 +103,7 @@ const submitForm = async () => {
             <span class="pl-4 text-gray-400"><User :size="14" /></span>
             <select v-model="formData.gender" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
               <option value="" disabled>{{ t('profileCompletion.selectGender') }}</option>
-              <option value="Male">{{ t('profileCompletion.genderMale') }}</option>
-              <option value="Female">{{ t('profileCompletion.genderFemale') }}</option>
-              <option value="Other">{{ t('profileCompletion.genderOther') }}</option>
+              <option v-for="option in genderOptions" :key="option" :value="option">{{ option }}</option>
             </select>
           </div>
         </div>
@@ -99,8 +115,7 @@ const submitForm = async () => {
             <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
             <select v-model="formData.category" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
               <option value="" disabled>{{ t('profileCompletion.selectCategory') }}</option>
-              <option value="Citizen">{{ t('profileCompletion.categoryCitizen') }}</option>
-              <option value="NGO Partner">{{ t('profileCompletion.categoryNgoPartner') }}</option>
+              <option v-for="option in categoryOptions" :key="option" :value="option">{{ option }}</option>
             </select>
           </div>
         </div>
