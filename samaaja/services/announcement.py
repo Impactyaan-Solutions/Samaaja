@@ -26,8 +26,7 @@ class AnnouncementManager:
             for name in names:
                 doc = frappe.get_doc("Announcement", name)
 
-                if doc.valid_from and doc.valid_from > now:
-                    continue
+                
                 if doc.valid_to and doc.valid_to < now:
                     continue
                 if doc.target_audience == "Registered Users" and frappe.session.user == "Guest":
@@ -100,21 +99,20 @@ class AnnouncementManager:
 
         
             if not doc.published:
-                return Result.error("Announcement is not published")
+                return Result.bad_request("Announcement is not published")
 
             # Validate announcement dates
-            if doc.valid_from and doc.valid_from > now:
-                return Result.error("Announcement is not active yet")
+            
 
             if doc.valid_to and doc.valid_to < now:
-                return Result.error("Announcement has expired")
+                return Result.bad_request("Announcement has expired")
 
             # Validate target audience
             if (
                 doc.target_audience == "Registered Users"
                 and frappe.session.user == "Guest"
             ):
-                return Result.error(
+                return Result.bad_request(
                     "Please login to view this announcement"
                 )
             is_event = doc.custom_announcement_type == "Event"
@@ -198,7 +196,7 @@ class AnnouncementManager:
                 frappe.get_traceback(),
                 "Failed to fetch announcement details",
             )
-            return Result.error(
+            return Result.bad_request(
                 "Failed to fetch announcement details"
             )
        

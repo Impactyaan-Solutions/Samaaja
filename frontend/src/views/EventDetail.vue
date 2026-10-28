@@ -228,6 +228,7 @@ const eventAction = computed(() => {
   return "none"
 })
 function goToCheckIn(event) {
+console.log("clciked")
   if ( event.checked_in) return
 
   router.push({
@@ -487,7 +488,7 @@ function goToCheckIn(event) {
 <button
   v-else-if="eventAction === 'checkin'"
   type="button"
-  :disabled="!event.registered || event.checked_in"
+  :disabled="event.checked_in"
    @click="goToCheckIn(event)"
   :class="[
     'rounded-xl px-4 py-3 font-semibold text-sm transition-colors',

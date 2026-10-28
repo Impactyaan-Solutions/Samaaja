@@ -30,13 +30,6 @@ const fields = ref([
     required: true
   },
   {
-    key: 'age',
-    label: 'Age',
-    type: 'number',
-    min: 18,
-    required: true
-  },
-  {
     key: 'contact_number',
     label: 'Contact Number',
     type: 'tel',
