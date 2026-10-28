@@ -107,6 +107,7 @@ const handleLogout = async () => {
               </router-link>
 
               <button
+                v-if="false"
                 @click="isMenuOpen = false"
                 class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors text-left"
               >

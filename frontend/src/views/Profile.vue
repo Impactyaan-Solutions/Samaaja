@@ -468,7 +468,7 @@ watch(
             : 'text-gray-600'
         ]"
       >
-        Opportunities
+        {{ t('profile.opportunitiesTab') }}
       </button>
     </div>
    
@@ -527,7 +527,7 @@ watch(
   <!-- Opportunities -->
   <div v-if="activeTab === 'opportunities' && isOwnProfile">
     <div v-if="applicationsLoading" class="text-center py-6">
-      Loading your applications...
+      {{ t('profile.loadingApplications') }}
     </div>
 
     <div v-else-if="applicationsError" class="text-center text-red-500 py-6">
@@ -535,7 +535,7 @@ watch(
     </div>
 
     <div v-else-if="myApplications.length === 0" class="text-center text-gray-500 py-6">
-      You haven't applied to any opportunities yet.
+      {{ t('profile.noApplicationsFound') }}
     </div>
 
     <div v-else>
@@ -565,7 +565,7 @@ watch(
           @click="router.push({ name: 'volunteer-opportunity-detail', params: { id: application.volunteer_opportunity } })"
           class="mt-4 text-sm font-semibold text-blue-600"
         >
-          View Details →
+          {{ t('profile.viewDetails') }}
         </button>
       </div>
     </div>

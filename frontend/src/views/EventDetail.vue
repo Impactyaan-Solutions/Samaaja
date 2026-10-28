@@ -380,28 +380,30 @@ console.log("clciked")
             </div>
           </div>
 
-          <div class="border-t border-gray-100"></div>
+          <template v-if="announcementType === 'Event'">
+            <div class="border-t border-gray-100"></div>
 
-          <!-- Venue -->
-          <div class="flex items-start gap-3">
-            <div class="rounded-lg bg-blue-50 p-2">
-              <MapPin class="h-5 w-5 text-blue-600" />
+            <!-- Venue -->
+            <div class="flex items-start gap-3">
+              <div class="rounded-lg bg-blue-50 p-2">
+                <MapPin class="h-5 w-5 text-blue-600" />
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <p
+                  class="text-xs font-semibold uppercase tracking-wide text-gray-500"
+                >
+                  Venue
+                </p>
+
+                <p
+                  class="mt-1 break-words text-sm font-medium text-gray-900"
+                >
+                  {{ eventLocation }}
+                </p>
+              </div>
             </div>
-
-            <div class="min-w-0 flex-1">
-              <p
-                class="text-xs font-semibold uppercase tracking-wide text-gray-500"
-              >
-                Venue
-              </p>
-
-              <p
-                class="mt-1 break-words text-sm font-medium text-gray-900"
-              >
-                {{ eventLocation }}
-              </p>
-            </div>
-          </div>
+          </template>
 
           <!-- Expected Attendees -->
           <template v-if="event.expected_attendees">
@@ -471,10 +473,13 @@ console.log("clciked")
   v-if="eventAction === 'register'"
   type="button"
   @click.stop="registerEvent(event)"
-  :disabled="registering"
-  class="rounded-xl bg-primary-600 px-4 py-3
-         text-white font-semibold text-sm
-         hover:bg-primary-700 disabled:opacity-50"
+  :disabled="registering || event.registered"
+  :class="[
+    'rounded-xl px-4 py-3 font-semibold text-sm',
+    event.registered
+      ? 'bg-gray-200 text-gray-700 cursor-not-allowed'
+      : 'bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50'
+  ]"
 >
   {{
     registering
