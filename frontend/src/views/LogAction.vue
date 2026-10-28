@@ -1,12 +1,19 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ArrowLeft, Image as ImageIcon, X, Video } from 'lucide-vue-next'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { logAction, getMetadataOptions } from '../services/api'
+import { logAction, getMetadataOptions, completeProjectTask} from '../services/api'
 import { checkAuth } from '../auth'
 
 const router = useRouter()
+const route = useRoute()
+
+const volunteerOpportunity = route.query.volunteer_opportunity
+const taskName = route.query.task_name
+
+const isTaskAction = Boolean(volunteerOpportunity && taskName)
+
 const { t } = useI18n()
 
 const fileInput = ref(null)
@@ -20,13 +27,22 @@ const category = ref('')
 const description = ref('')
 const hours_invested = ref('')
 
+
+
 const submitAction = async (e) => {
+  e.preventDefault()
+
   try {
-    if(!type.value || !category.value || !description.value || !hours_invested.value){
+    if (
+      !type.value ||
+      !category.value ||
+      !description.value ||
+      !hours_invested.value
+    ) {
       alert(t('logAction.fillAllFields'))
-      return;
+      return
     }
-    e.preventDefault()
+
     const response = await logAction({
       type: type.value,
       category: category.value,
@@ -34,13 +50,51 @@ const submitAction = async (e) => {
       hours_invested: hours_invested.value,
       attachments: uploadedFiles.value
     })
+
+    if (isTaskAction) {
+      const actionName = response?.name
+
+      if (!actionName) {
+        throw new Error(
+          'Action was saved, but its name was not returned by the API.'
+        )
+      }
+
+      const completionResponse = await completeProjectTask({
+        volunteer_opportunity: volunteerOpportunity,
+        task_name: taskName,
+        action_name: actionName
+      })
+
+      if (
+        completionResponse?.status === 'error' ||
+        completionResponse?.status_code >= 400
+      ) {
+        throw new Error(
+          completionResponse?.message || 'Failed to complete project task.'
+        )
+      }
+
+      alert('Action logged and task completed successfully.')
+
+      await router.push({
+        name: 'project',
+        params: { id: volunteerOpportunity }
+      })
+
+      return
+    }
+
     alert(t('logAction.actionLogged'))
     await checkAuth()
-    router.push({ name: 'home' });
+    router.push({ name: 'home' })
   } catch (error) {
-    console.error('Error logging action:', error)
+    console.error('Error logging action or completing task:', error)
+    alert(error.message || 'Something went wrong. Please try again.')
   }
 }
+
+
 
 const handleMediaClick = () => {
   fileInput.value?.click()

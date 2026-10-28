@@ -44,6 +44,26 @@ const router = createRouter({
       component: () => import('../views/Announcements.vue')
     },
     {
+     path: '/events/:id',
+     name: 'event-detail',
+     component: () => import('../views/EventDetail.vue')
+    },
+    {
+      path: '/event-register/:id',
+      name: 'event-register',
+      component: () => import('../views/EventRegister.vue')
+    },
+    {
+      path: '/event-registerd/:id',
+      name: 'event-registerd',
+      component: () => import('../views/EventRegistrationSuccess.vue')
+    },
+    {
+      path: '/event-attend/:id',
+      name: 'event-attend',
+      component: () => import('../views/EventAttendence.vue')
+    },
+    {
       path: '/volunteer-listings',
       name: 'volunteer-listings',
       component: () => import('../views/VolunteerListings.vue')
@@ -53,6 +73,7 @@ const router = createRouter({
       name: 'volunteer-opportunity-detail',
       component: () => import('../views/VolunteerOpportunityDetail.vue')
     },
+    
     {
       path: '/volunteer-listings/:id/apply',
       name: 'volunteer-application',
@@ -65,6 +86,12 @@ const router = createRouter({
       path: '/account',
       name: 'account',
       component: () => import('../views/Profile.vue')
+    },
+    {
+      path: '/project/:id',
+      name: 'project',
+      component: () => import('../views/Project.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/settings',

@@ -1,0 +1,125 @@
+{
+ "app": "samaaja",
+ "charts": [
+  {
+   "chart_name": "Action Trend",
+   "label": "Action Trend"
+  },
+  {
+   "chart_name": "Action Categories",
+   "label": "Action by Categories"
+  },
+  {
+   "chart_name": "Action Types",
+   "label": "Actions by Type"
+  },
+  {
+   "chart_name": "No of Users",
+   "label": "Total Users"
+  }
+ ],
+ "content": "[{\"id\":\"e7wVYwsWjy\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h1\\\">Welcome to Samaaja - The Community Building Platform</span>\",\"col\":12}},{\"id\":\"DPf796i9wH\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Users\",\"col\":4}},{\"id\":\"NoVGQzaIrP\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Action Count\",\"col\":4}},{\"id\":\"TUQ8-EaXrA\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Posts Done by Users\",\"col\":4}},{\"id\":\"K9oc-5uL8C\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"k-HVcNkLL2\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Configure your Gamification Platform</span>\",\"col\":12}},{\"id\":\"4lQw3mZvho\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Add Action Type\",\"col\":4}},{\"id\":\"diW_ge-3Pc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Add Action Category\",\"col\":4}},{\"id\":\"mkFv33kQoC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Add New Badge\",\"col\":5}},{\"id\":\"Nu2PJFTxwt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Add Gamification Rule\",\"col\":4}},{\"id\":\"we2dZtix1K\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"LcctXVZ4jX\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Samaaja Dashboard</span>\",\"col\":12}},{\"id\":\"rT3mllZZha\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Action Trend\",\"col\":6}},{\"id\":\"fWvem3t5Gv\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Total Users\",\"col\":6}},{\"id\":\"3Ue2NrjJMt\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Action by Categories\",\"col\":6}},{\"id\":\"_-PTDwiARN\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Actions by Type\",\"col\":6}},{\"id\":\"2aaxyqHHik\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JhiHjrxa-m\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Manage Users</span>\",\"col\":12}},{\"id\":\"1YRDZPbTHt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Add New User\",\"col\":3}},{\"id\":\"mIQpEZtmGQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User List\",\"col\":3}},{\"id\":\"9sP2kNByXL\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Manage Actions\",\"col\":3}},{\"id\":\"VfPLrONMRF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Manage Permissions\",\"col\":3}}]",
+ "creation": "2026-10-26 10:59:57.535316",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "color-energy-points",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Samaaja",
+ "link_type": "DocType",
+ "links": [],
+ "modified": "2026-10-26 15:02:22.161228",
+ "modified_by": "Administrator",
+ "module": "Samaaja",
+ "name": "Samaaja",
+ "number_cards": [
+  {
+   "label": "Total Users",
+   "number_card_name": "Users"
+  },
+  {
+   "label": "Total Action Count",
+   "number_card_name": "Total Actions"
+  },
+  {
+   "label": "Posts Done by Users",
+   "number_card_name": "Community Posts"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "Add New User",
+   "link_to": "User",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "New",
+   "label": "Add Action Type",
+   "link_to": "Action Type",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "New",
+   "label": "Add Action Category",
+   "link_to": "Action Category",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "User List",
+   "link_to": "User",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "Add New Badge",
+   "link_to": "Badge",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Manage Actions",
+   "link_to": "Action",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "New",
+   "label": "Add Gamification Rule",
+   "link_to": "Energy Point Rule",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Manage Permissions",
+   "link_to": "User Permission",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Samaaja",
+ "type": "Workspace"
+}

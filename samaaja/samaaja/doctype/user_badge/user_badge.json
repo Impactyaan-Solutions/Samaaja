@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2022-10-09 23:17:11.603283",
  "doctype": "DocType",
@@ -46,7 +47,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-12 09:03:29.139341",
+ "modified": "2026-10-22 19:03:20.993999",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "User Badge",

@@ -1,6 +1,6 @@
   <script setup>
   import { ref, computed, onMounted, watch } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import {
     ChevronDown,
@@ -16,7 +16,7 @@
   import ShareProfileSheet from '@/components/Overlays/ShareProfileSheet.vue'
   import { authState } from '@/auth'
   import { getProfile } from '@/services/api'
-  import { getUserProfilePosts, getUserProfileActions } from '@/services/api'
+  import { getUserProfilePosts, getUserProfileActions, getMyApplications} from '@/services/api'
 
   const { t } = useI18n()
   // --- Menu Logic ---
@@ -26,6 +26,9 @@
   const userActions = ref([])
   const postsLoading = ref(false)
   const actionsLoading = ref(false)
+  const myApplications = ref([])
+  const applicationsLoading = ref(false)
+  const applicationsError = ref('')
   const activeTab = ref('actions')
   const postsError = ref("")
   const actionsError = ref("")
@@ -47,6 +50,7 @@
 
   // --- Original User Logic ---
   const route = useRoute()
+  const router = useRouter()
   const externalProfile = ref(null)
   const isExternalLoading = ref(false)
 
@@ -178,6 +182,21 @@
   //   }
   // )
 
+const fetchApplications = async () => {
+  applicationsLoading.value = true
+  applicationsError.value = ''
+
+  try {
+    const data = await getMyApplications()
+    myApplications.value = data.applications || []
+  } catch (err) {
+    console.error('Failed to load applications:', err)
+    applicationsError.value = 'Failed to load your applications.'
+  } finally {
+    applicationsLoading.value = false
+  }
+}
+
 watch(activeTab,async(newTab)=>{
   if(newTab === 'actions' && userActions.value.length === 0) {
    
@@ -185,6 +204,12 @@ watch(activeTab,async(newTab)=>{
   } else if(newTab === 'posts' && userPosts.value.length === 0) {
    
     await fetchPosts()
+  }
+  else if (
+    newTab === 'opportunities' &&
+    myApplications.value.length === 0
+  ) {
+    await fetchApplications()
   }
 })
 // Helper: single source of truth for "whose profile are we viewing"
@@ -430,6 +455,20 @@ watch(
       >
         {{ t('profile.postsTab') }}
       </button>
+      <button
+        @click="
+    //console.log('Posts clicked');
+    activeTab = 'opportunities';
+  "
+        :class="[
+          'flex-1 py-2 text-sm font-medium rounded-md transition-all',
+          activeTab === 'opportunities'
+            ? 'bg-white text-gray-900 shadow'
+            : 'text-gray-600'
+        ]"
+      >
+        Opportunities
+      </button>
     </div>
    
   <div class="mt-4 space-y-4">
@@ -455,7 +494,7 @@ watch(
   </div>
 
     <!-- Posts -->
-   <div v-else>
+   <div v-else-if="activeTab === 'posts'">
     <div v-if="postsLoading" class="text-center py-6">{{ t('profile.loadingPosts') }}</div>
     <div v-else-if="postsError" class="text-center text-red-500 py-6">{{ postsError }}</div>
     <div v-else-if="userPosts.length === 0" class="text-center text-gray-500 py-6">{{ t('profile.noPostsFound') }}</div>
@@ -481,11 +520,61 @@ watch(
           </div>
         </div>
       </div>
+        </div>
+  </div>
+
+  <!-- Opportunities -->
+  <div v-if="activeTab === 'opportunities'">
+    <div v-if="applicationsLoading" class="text-center py-6">
+      Loading your applications...
     </div>
+
+    <div v-else-if="applicationsError" class="text-center text-red-500 py-6">
+      {{ applicationsError }}
+    </div>
+
+    <div v-else-if="myApplications.length === 0" class="text-center text-gray-500 py-6">
+      You haven't applied to any opportunities yet.
+    </div>
+
+    <div v-else>
+      <div
+        v-for="application in myApplications"
+        :key="application.name"
+        class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm mb-3"
+      >
+        <h3 class="font-bold text-gray-900">
+          {{ application.opportunity?.title || application.volunteer_opportunity }}
+        </h3>
+
+        <div class="mt-3">
+          <span
+            class="inline-block rounded-full px-3 py-1 text-xs font-semibold"
+            :class="{
+              'bg-yellow-100 text-yellow-800': application.workflow_state === 'Applied',
+              'bg-green-100 text-green-800': application.workflow_state === 'Selected',
+              'bg-red-100 text-red-800': application.workflow_state === 'Rejected'
+            }"
+          >
+            {{ application.workflow_state || 'Applied' }}
+          </span>
+        </div>
+
+        <button
+          v-if="application.workflow_state === 'Selected'"
+          @click="router.push(`/project/${application.volunteer_opportunity}`)"
+          class="mt-4 text-sm font-semibold text-blue-600"
+        >
+          View Project →
+        </button>
+      </div>
+    </div>
+  </div>
+
+
   </div>
 </div>
 </div>
-    </div>
 
 
 

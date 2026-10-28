@@ -2,15 +2,58 @@
 import { ref, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 import { ArrowRightCircle, Loader2 } from "lucide-vue-next"
-import { getActiveAnnouncements } from "@/services/api"
+import { getActiveAnnouncements , checkRegisterForEvent } from "@/services/api"
 import { authState } from "@/auth"
 import AppHeader from "@/components/common/AppHeader.vue"
+import { useRouter } from "vue-router"
 
 const { t, locale } = useI18n()
-
+const router = useRouter()
 const announcements = ref([])
 const loading = ref(true)
 const error = ref(null)
+const selectedEvent = ref(null)
+const registering = ref(false)
+
+const viewDetails = (item) => {
+  router.push({
+    name: "event-detail",
+    params: { id: item.name }
+  })
+}
+
+
+const registerEvent = async (item) => {
+  try {
+    registering.value = true
+
+  
+    const result = await checkRegisterForEvent(item.event_id)
+   console.log("Full result:", result)
+
+    const isRegistered = result?.registered
+
+    console.log("Is registered:", isRegistered)
+
+    if (isRegistered===true) {
+    console.log("this will render on another page")
+      router.push({
+        name: "event-registerd",
+        params: { id: item.name }
+      })
+    } else {
+      router.push({
+        name: "event-register",
+        params: { id: item.name }
+      })
+    }
+  } catch (e) {
+    console.error("Failed to check event registration:", e)
+    error.value = e.message || "Unable to check registration status."
+  } finally {
+    registering.value = false
+  }
+}
 
 onMounted(async () => {
   try {
@@ -21,12 +64,12 @@ onMounted(async () => {
     loading.value = false
   }
 })
-
+console.log("this",announcements)
 const handleInteraction = (item) => {
-  if (item.url_link) {
-    recordInteraction(item.name, "Click")
-    window.open(item.url_link, "_blank")
-  }
+ router.push({
+    name: "event-detail",
+    params: { id: item.name }
+  })
 }
 
 const formatDate = (timeStr) => {
@@ -80,6 +123,38 @@ const formatDate = (timeStr) => {
               <span v-if="item.valid_to" class="text-gray-400">-</span>
               <span v-if="item.valid_to">{{ formatDate(item.valid_to) }}</span>
             </div>
+            
+<!-- Event Actions: show only for Event announcements -->
+<div v-if="item.announcement_type === 'Event'" class="flex flex-wrap gap-3 mt-4">
+  <button
+    type="button"
+     @click.stop="viewDetails(item)"
+    class="px-4 py-2 rounded-xl border border-primary-600
+           text-primary-600 font-semibold text-sm
+           hover:bg-primary-50 transition-colors"
+  >
+   {{ t('announcements.viewDetails') }}
+  </button>
+
+  <button
+  type="button"
+  @click.stop="registerEvent(item)"
+  :disabled="item.registered || registering"
+  class="px-4 py-2 rounded-xl bg-primary-600 text-white
+         font-semibold text-sm hover:bg-primary-700
+         disabled:opacity-50 disabled:cursor-not-allowed
+         transition-colors"
+>
+  {{
+      item.registered
+        ? t('announcements.registered')
+        : registering
+          ? t('announcements.registering')
+          : t('announcements.register')
+    }}
+</button>
+</div>
+
           </div>
         </div>
       </div>

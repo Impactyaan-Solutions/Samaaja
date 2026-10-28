@@ -22,6 +22,7 @@ onMounted(async () => {
       name: item.full_name,
       role: item.user_category,
       actions: item.action_count,
+      hours: item.hours_invested ?? 0,
       avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),
       verified: false, 
       email: item.user,
@@ -102,10 +103,23 @@ onMounted(async () => {
           </div>
         </div>
         </router-link>  
-        <div class="bg-blue-50/70 border border-blue-50 text-primary-600 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
-          <span class="font-bold text-sm leading-none">{{ user.actions }}</span>
-          <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">{{ t('leaderboard.actions') }}</span>
-        </div>
+       <div class="flex items-center gap-2">
+  <!-- Actions -->
+  <div class="bg-blue-50/70 border border-blue-50 text-primary-600 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
+    <span class="font-bold text-sm leading-none">{{ user.actions ?? 0 }}</span>
+    <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">
+      {{ t('leaderboard.actions') }}
+    </span>
+  </div>
+
+  <!-- Hours Invested -->
+  <div class="bg-green-50 border border-green-100 text-green-700 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
+    <span class="font-bold text-sm leading-none">{{ user.hours }}</span>
+    <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">
+      Hours
+    </span>
+  </div>
+</div>
       </div>
     </div>
   </div>

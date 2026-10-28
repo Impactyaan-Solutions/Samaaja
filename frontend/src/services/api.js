@@ -312,7 +312,8 @@ export const logAction = async (data) => {
 
         console.log("FORM DATA READY")
         const result = await callAPI({}, baseurl + '/api/method/samaaja.api.action.create', 'POST', formData, true)
-        return result.data
+        console.log('FULL ACTION API RESPONSE:', JSON.stringify(result, null, 2))
+        return result.data?.data ?? result.data ?? result.message?.data ?? result.message
 
     }
     catch (err) {
@@ -341,8 +342,22 @@ const getSeenAnnouncements = () => {
 export const getActiveAnnouncements = async () => {
     const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
     const result = await callAPI(headers, `${baseurl}/api/method/samaaja.api.announcements.get_active_announcements`, 'GET', null)
+    console.log("get resu",result)
     return result.data
 }
+export const getAnnouncementDetail = async (name) => {
+  const headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+
+  const result = await callAPI(
+    headers,
+    `${baseurl}/api/method/samaaja.api.announcements.get_announcement_details?name=${encodeURIComponent(name)}`
+  );
+
+  return result;
+};
 
 export const getVolunteerListings = async (
     filters = {},
@@ -625,9 +640,92 @@ export const getUserProfileActions = async (user,limit = 10, offset = 0) => {
     const response = await callAPI(headers, `${baseurl}/api/method/samaaja.api.profile.get_actions?user=${user}&limit=${limit}&offset=${offset}`, 'GET', null)
     return response.data
 }
+
+export const getMyApplications = async () => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.project.get_my_applications`,
+            'GET',
+            null
+        )
+
+        return result.data || result.message?.data || result
+    } catch (error) {
+        console.error('Failed to fetch my applications:', error)
+        throw error
+    }
+}
 // --- Volunteer and metadata endpoints, ported from samaaja_frontend (fe/main).
 //     They go through callAPI above, so csrfHeader() adds X-Frappe-CSRF-Token
 //     on unsafe methods without any change here.
+
+export const get_project = async(volunteer_opportunity) => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.project.get_project?volunteer_opportunity=${volunteer_opportunity}`,
+            'GET',
+            null
+        )
+
+        return result.data || result.message?.data || result
+    } catch (error) {
+        console.error('Failed to fetch all projects:', error)
+        throw error
+    }
+}
+
+export const claimProjectTask = async ({
+  volunteer_opportunity,
+  task_name,
+}) => {
+  const formData = new FormData()
+  formData.append('volunteer_opportunity', volunteer_opportunity)
+  formData.append('task_name', task_name)
+
+  const result = await callAPI(
+    {},
+    baseurl + '/api/method/samaaja.api.project.claim_task',
+    'POST',
+    formData,
+    true
+  )
+
+  return result.data || result.message?.data || result
+}
+
+
+export const completeProjectTask = async ({
+  volunteer_opportunity,
+  task_name,
+  action_name,
+}) => {
+  const formData = new FormData()
+  formData.append('volunteer_opportunity', volunteer_opportunity)
+  formData.append('task_name', task_name)
+  formData.append('action_name', action_name)
+
+  const result = await callAPI(
+    {},
+    baseurl + '/api/method/samaaja.api.project.complete_task',
+    'POST',
+    formData,
+    true
+  )
+
+  return result.data || result.message?.data || result
+}
 
 export const getVolunteerOpportunity = async (volunteerId) => {
     try {
@@ -706,6 +804,48 @@ export const applyForVolunteerOpportunity = async (applicationData) => {
         console.error('Failed to apply for volunteer opportunity:', error)
         throw error
     }
+}
+export const registerForEvent = async ({ event }) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    const url = `${baseurl}/api/method/samaaja.api.event.register`
+
+    const result = await callAPI(headers, url, 'POST', {
+        event
+    })
+
+    return result.data || result
+}
+export const checkRegisterForEvent = async ( event ) => {
+    const header = {
+        Accept: "application/json"
+    }
+
+    const url =
+        `${baseurl}/api/method/samaaja.api.event.check_registered_event` +
+        `?event=${event}`
+
+    const result = await callAPI(header, url, "GET")
+
+    return result.data || result
+}
+
+export const checkInEvent = async (event) => {
+    const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+    }
+
+    const url = `${baseurl}/api/method/samaaja.api.event.event_check_in`
+
+    const result = await callAPI(headers, url, "POST", {
+        event,
+    })
+
+    return result.data || result
 }
 
 export const getMetadataOptions = async (doctype) => {

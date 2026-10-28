@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2023-04-09 14:13:35.656996",
  "default_view": "List",
@@ -50,7 +51,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-23 13:59:16.596614",
+ "modified": "2026-10-22 19:03:20.479429",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Samaaja Profile Tabs",
@@ -70,6 +71,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
