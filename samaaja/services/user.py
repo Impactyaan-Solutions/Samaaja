@@ -3,7 +3,6 @@ import frappe
 from samaaja.services.action import ActionManager
 from frappe.utils import logger
 from samaaja.utils.utils import validate_mobile_no
-from datetime import datetime
 from frappe.auth import LoginManager
 from frappe.utils.password import check_password
 
@@ -17,32 +16,33 @@ class UserManager:
     #mobile number should be unique...to do
 
     @staticmethod
-    def create(full_name:str,dob:str,gender:str,category:str,mobile_no:str,bio:str,password:str)->Result:
+    def create(full_name:str,mobile_no:str,email:str,gender:str)->Result:
+        # Demo-only shape: name, mobile number, email, and gender. No
+        # password - OTP is the login method here, and that never touches
+        # the password field, so a passwordless account logs in fine.
+        # Gender stays required: the volunteer application form reads it
+        # as a locked, pre-filled field with no way to enter it there, so
+        # every account needs a value from the start. Category/bio/dob
+        # stay optional, nothing downstream depends on them being set.
 
         try:
             if frappe.db.exists("User", {"mobile_no": mobile_no}):
                 return Result.bad_request("User already exists with this mobile number")
+            if frappe.db.exists("User", email):
+                return Result.bad_request("User already exists with this email")
             user = frappe.new_doc("User")
             user.first_name = full_name
-            formatted_dob = datetime.strptime(dob, "%Y-%m-%d").date()
-            user.birth_date = formatted_dob
-            user.gender = gender
-            user.bio=bio
             user.mobile_no = mobile_no
-            user.email=mobile_no+"@samaaja.com"
-            user.new_password = password
+            user.email = email
+            user.gender = gender
             user.flags.no_welcome_mail = True
             user.send_welcome_email = 0
             user.save(ignore_permissions=True)
-        
+
             user_metadata = frappe.get_doc(
                             "User Metadata",
                             {"user": user.email}
                             )
-            user_category_name = frappe.db.get_value("User Category", {"category_name": category}, "name")
-            user_metadata.user_category = user_category_name
-            user_metadata.save(ignore_permissions=True)
-
 
             frappe.local.login_manager = LoginManager()
             frappe.local.login_manager.user = user.email
@@ -193,51 +193,45 @@ class UserManager:
         )
 
     @staticmethod
-    def complete_user_profile(user_email:str, user_mobile_no:str, user_gender:str,user_category:str,user_bio:str,user_dob:str)-> Result:
+    def complete_user_profile(user_name:str, user_mobile_no:str, user_gender:str)-> Result:
+        # Demo-only shape, matches UserManager.create(): name, mobile
+        # number, and gender are editable here. Email stays untouched
+        # deliberately - it's the User doctype's primary key (name ==
+        # email in Frappe core), changing it needs frappe.rename_doc, not
+        # a field set, so this only handles what's actually safe to edit
+        # in place. Mainly exists for social-login users, who get name and
+        # email from the provider automatically but never a phone number
+        # or gender.
         try:
             current_user = frappe.session.user
-            if not current_user or current_user == "Guest": 
+            if not current_user or current_user == "Guest":
                 return Result.failure("Authentication required")
-            user_email = current_user    
+            user_email = current_user
             if not validate_mobile_no(user_mobile_no):
                 return Result.bad_request(
                     "Invalid mobile number"
+                )
+            if not user_gender:
+                return Result.bad_request(
+                    "Gender is required"
                 )
             existing = frappe.db.get_value(
                 "User",
                 {"mobile_no": user_mobile_no},
                 "name",
-            )    
+            )
             if existing and existing != user_email:
                 return Result.bad_request(
                     "User with this mobile number already exists"
                 )
 
-            user_category = frappe.db.get_value("User Category", {"category_name": user_category}, "name")
-
-            if not user_category :
-                return Result.bad_request(
-                    "Invalid user category"
-                )
-            if not frappe.db.exists("User Metadata", user_email):
-                frappe.log_error(
-                    f"No user metadata found for this user {user_email}",
-                    "No user metadata found for this user"
-                )
-                return Result.not_found(
-                    "No user metadata found for this user"
-                )
             user = frappe.get_doc("User", user_email)
-            user.gender = user_gender
-            user.bio = user_bio 
+            if user_name:
+                user.first_name = user_name
             user.mobile_no = user_mobile_no
-            user.birth_date = user_dob
+            user.gender = user_gender
             user.save(ignore_permissions=True)
 
-            user_metadata = frappe.get_doc("User Metadata", user_email)
-            user_metadata.user_category = user_category
-            user_metadata.save(ignore_permissions=True)
-            
             return Result.success(
                 "User profile completed successfully"
             )

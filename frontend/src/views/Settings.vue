@@ -27,7 +27,6 @@ const showLanguagePicker = ref(false)
 
 const user = ref({
   name: '',
-  role: 'Volunteer', // Default category
   email: '',
   avatar: null
 })
@@ -45,9 +44,7 @@ const fetchUserProfile = async () => {
     if (profileData) {
       user.value = {
         name: profileData.full_name,
-        email: profileData.email,
-        // Using user_category from API for the role badge
-        role: profileData.user_category || 'Volunteer' 
+        email: profileData.email
       }
     }
   } catch (error) {

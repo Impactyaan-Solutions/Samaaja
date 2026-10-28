@@ -54,34 +54,22 @@ def create_user():
 		user_data = frappe.request.get_json()
 		user_name = user_data.get("name")
 		user_mobile_no = user_data.get("mobile_no")
+		user_email = user_data.get("email")
 		user_gender = user_data.get("gender")
-		user_category = user_data.get("category")
-		user_bio = user_data.get("bio")
-		user_dob = user_data.get("dob")
-		user_password = user_data.get("password")
 
 		if not user_name:
 			frappe.throw("Name is required")
 		if not user_mobile_no:
 			frappe.throw("Mobile number is required")
+		if not user_email:
+			frappe.throw("Email is required")
 		if not user_gender:
 			frappe.throw("Gender is required")
-		if not user_category:
-			frappe.throw("Category is required")
-		if not user_bio:
-			frappe.throw("Bio is required")
-		if not user_dob:
-			frappe.throw("Date of birth is required")
-		if not user_password:
-			frappe.throw("Password is required")
 		result = UserManager.create(
 			user_name,
-			user_dob,
-			user_gender,
-			user_category,
 			user_mobile_no,
-			user_bio,
-			user_password
+			user_email,
+			user_gender
 		)
 		return result.to_custom_response()
 	except Exception as e:
@@ -332,25 +320,14 @@ def get_active_cm_count():
 @frappe.whitelist(allow_guest=True)
 def complete_user_profile():
 	request_json = frappe.request.get_json()
-	user_email = request_json.get("user_email")
+	user_name = request_json.get("user_name")
 	user_mobile_no = request_json.get("user_mobile_no")
 	user_gender = request_json.get("user_gender")
-	user_category = request_json.get("user_category")
-	user_bio = request_json.get("user_bio")
-	user_dob = request_json.get("user_dob")
-	if not user_email:
-		return custom_response("user_email is required", None, 400)
 	if not user_mobile_no:
 		return custom_response("user_mobile_no is required", None, 400)
 	if not user_gender:
 		return custom_response("user_gender is required", None, 400)
-	if not user_category:
-		return custom_response("user_category is required", None, 400)
-	if not user_bio:
-		return custom_response("user_bio is required", None, 400)	
-	if not user_dob:
-			return custom_response("user_dob is required", None, 400)
-	result = UserManager.complete_user_profile(user_email, user_mobile_no, user_gender,user_category,user_bio,user_dob)
+	result = UserManager.complete_user_profile(user_name, user_mobile_no, user_gender)
 	return result.to_custom_response()
 
 @frappe.whitelist()

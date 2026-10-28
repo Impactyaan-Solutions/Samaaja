@@ -18,9 +18,8 @@ export const authState = reactive({
     organization: null,
     interests: [],
     gender: null,
-    dob: null,
     mobileNumber: null,
-    bio: null, // Separating bio from interests for clarity if needed, or keeping it as interests
+    bio: null,
     stats: {
       actions: 0,
       posts: 0,
@@ -30,10 +29,12 @@ export const authState = reactive({
 })
 
 export const isProfileComplete = () => {
-  const p = authState.profile;
-  // All these are mandatory: Gender, Bio (interests/bio), Category, Date of birth, Mobile Number
-  // Using interests or bio based on what gets saved. Let's rely on 'bio'.
-  return !!(p.gender && p.bio && p.category && p.dob && p.mobileNumber);
+  // Demo-only shape: name, email, mobile number, and gender are what
+  // Signup/ProfileCompletion collect now. Gender has to be here too, not
+  // just collected at signup - the volunteer application form reads it as
+  // a locked, pre-filled field with no way for the user to enter it
+  // themselves, so anyone who reaches that form without it would be stuck.
+  return !!(authState.profile.fullName && authState.email && authState.profile.mobileNumber && authState.profile.gender);
 }
 
 const loadCachedAuth = () => {
@@ -75,7 +76,6 @@ export async function checkAuth() {
       authState.profile.interests = 'Community, Volunteering, Social Work';
       authState.profile.bio = 'Passionate about helping the community.';
       authState.profile.gender = 'Male';
-      authState.profile.dob = '1990-01-01';
       authState.profile.mobileNumber = '9876543210';
       authState.profile.stats.actions = 10;
       authState.profile.stats.issuesReported = 5;
@@ -109,7 +109,6 @@ export async function checkAuth() {
       authState.profile.category = user_profile.user_category
       authState.profile.organization = user_profile.user_organization
       authState.profile.gender = user_profile.gender
-      authState.profile.dob = user_profile.birth_date // Assuming Frappe standard field
       authState.profile.mobileNumber = user_profile.mobile_no // Assuming Frappe standard field
       authState.profile.bio = user_profile.bio
       authState.profile.interests = user_profile.interests

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Menu, Settings, LogOut, Bell, HandHeart } from 'lucide-vue-next'
+import { Menu, Settings, LogOut, Bell, HandHeart, UserCog } from 'lucide-vue-next'
 import { authState } from '@/auth'
 import { logout as apiLogout } from '@/services/api'
 
@@ -50,7 +50,6 @@ const handleLogout = async () => {
           </div>
           <div>
             <h2 class="font-bold text-gray-900 text-[15px]">{{ authState.profile.fullName }}</h2>
-            <p class="text-[11px] text-gray-500">{{ authState.profile.category }}</p>
           </div>
         </div>
       </template>
@@ -105,6 +104,14 @@ const handleLogout = async () => {
                 <Settings class="w-4 h-4 text-gray-500" />
                 <span class="text-sm font-medium">{{ t('menu.settings') }}</span>
               </router-link>
+
+              <button
+                @click="isMenuOpen = false"
+                class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors text-left"
+              >
+                <UserCog class="w-4 h-4 text-gray-500" />
+                <span class="text-sm font-medium">{{ t('menu.updateProfile') }}</span>
+              </button>
 
               <div class="border-t border-gray-100 mx-2"></div>
 

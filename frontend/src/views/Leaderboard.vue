@@ -20,7 +20,7 @@ onMounted(async () => {
     list.value = data.map((item, index) => ({
       rank: index + 1,
       name: item.full_name,
-      role: item.user_category,
+      role: item.user_category || '',
       actions: item.action_count,
       hours: item.hours_invested ?? 0,
       avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),

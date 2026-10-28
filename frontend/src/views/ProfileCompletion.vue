@@ -1,48 +1,44 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { completeProfile, getMetadataOptions } from '@/services/api';
 import { checkAuth, authState } from '@/auth';
-import { User, Calendar, Phone, BookOpen, Tag } from 'lucide-vue-next';
+import { User, Phone, Mail, Tag } from 'lucide-vue-next';
 
 const router = useRouter();
 const { t } = useI18n();
 const formData = ref({
-  gender: '',
-  bio: '',
-  category: '',
-  dob: '',
-  mobileNumber: ''
+  name: '',
+  mobileNumber: '',
+  gender: ''
 });
 
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 const genderOptions = ref([]);
-const categoryOptions = ref([]);
+
+onMounted(() => {
+  formData.value.name = authState.profile.fullName || '';
+  formData.value.mobileNumber = authState.profile.mobileNumber || '';
+  formData.value.gender = authState.profile.gender || '';
+});
 
 const fetchMetadataOptions = async () => {
   try {
-    const [genders, categories] = await Promise.all([
-      getMetadataOptions('Gender'),
-      getMetadataOptions('User Category')
-    ]);
-    genderOptions.value = genders;
-    categoryOptions.value = categories;
+    genderOptions.value = await getMetadataOptions('Gender');
   } catch (error) {
     console.error('Failed to load metadata options:', error);
     errorMessage.value = 'Failed to load profile options. Please refresh the page.';
   }
 };
 
-fetchMetadataOptions();
+onMounted(() => {
+  fetchMetadataOptions();
+});
 
 const isFormValid = computed(() => {
-  return formData.value.gender &&
-         formData.value.bio &&
-         formData.value.category &&
-         formData.value.dob &&
-         formData.value.mobileNumber;
+  return formData.value.name && formData.value.mobileNumber && formData.value.gender;
 });
 
 const submitForm = async () => {
@@ -52,15 +48,10 @@ const submitForm = async () => {
   errorMessage.value = '';
 
   try {
-    // Call the backend update API
-    console.log(authState.email)
     await completeProfile({
-      user_gender: formData.value.gender,
-      user_bio: formData.value.bio,
-      user_category: formData.value.category,
-      user_dob: formData.value.dob,
+      user_name: formData.value.name,
       user_mobile_no: formData.value.mobileNumber,
-      user_email: authState.email
+      user_gender: formData.value.gender
     });
 
     // Refresh the local authState cache to pull down the newly saved data
@@ -82,7 +73,7 @@ const submitForm = async () => {
 <template>
   <div class="min-h-screen bg-gray-50 flex justify-center font-sans">
     <div class="bg-white w-full max-w-md min-h-screen px-6 py-10 flex flex-col">
-      
+
       <div class="mb-2">
         <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">{{ t('profileCompletion.title') }}</h2>
         <p class="text-gray-500 text-sm leading-relaxed">
@@ -96,39 +87,16 @@ const submitForm = async () => {
 
       <form @submit.prevent="submitForm" class="flex-1 flex flex-col space-y-5">
 
-        <!-- Gender -->
+        <!-- Name -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.gender') }}</label>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.name') }}</label>
           <div class="relative flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
             <span class="pl-4 text-gray-400"><User :size="14" /></span>
-            <select v-model="formData.gender" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
-              <option value="" disabled>{{ t('profileCompletion.selectGender') }}</option>
-              <option v-for="option in genderOptions" :key="option" :value="option">{{ option }}</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Category -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.category') }}</label>
-          <div class="relative flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
-            <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
-            <select v-model="formData.category" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
-              <option value="" disabled>{{ t('profileCompletion.selectCategory') }}</option>
-              <option v-for="option in categoryOptions" :key="option" :value="option">{{ option }}</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Date of Birth -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.dob') }}</label>
-          <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
-            <span class="pl-4 text-gray-400"><Calendar :size="14" /></span>
             <input
-              v-model="formData.dob"
-              type="date"
+              v-model="formData.name"
+              type="text"
               required
+              :placeholder="t('profileCompletion.namePlaceholder')"
               class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent"
             />
           </div>
@@ -149,18 +117,29 @@ const submitForm = async () => {
           </div>
         </div>
 
-        <!-- Bio -->
+        <!-- Gender -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.bio') }}</label>
-          <div class="flex border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
-            <span class="pl-4 pt-3.5 text-gray-400"><BookOpen :size="14" /></span>
-            <textarea
-              v-model="formData.bio"
-              required
-              :placeholder="t('profileCompletion.bioPlaceholder')"
-              rows="3"
-              class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent resize-none"
-            ></textarea>
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.gender') }}</label>
+          <div class="relative flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
+            <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
+            <select v-model="formData.gender" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
+              <option value="" disabled>{{ t('profileCompletion.selectGender') }}</option>
+              <option v-for="option in genderOptions" :key="option" :value="option">{{ option }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Email (read-only: it's the account's sign-in identity) -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.email') }}</label>
+          <div class="flex items-center border border-gray-100 rounded-xl overflow-hidden bg-gray-100">
+            <span class="pl-4 text-gray-400"><Mail :size="14" /></span>
+            <input
+              :value="authState.email"
+              type="email"
+              disabled
+              class="w-full px-1 py-1.5 outline-none text-gray-500 bg-transparent"
+            />
           </div>
         </div>
 
@@ -182,8 +161,3 @@ const submitForm = async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Remove standard select arrow to rely on clean styling if desired */
-/* select { -webkit-appearance: none; -moz-appearance: none; appearance: none; } */
-</style>
