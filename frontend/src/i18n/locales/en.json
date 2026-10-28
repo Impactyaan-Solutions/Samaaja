@@ -45,9 +45,7 @@
     "volunteerListings": "Volunteer Opportunities",
     "volunteerListingsDesc": "Discover roles to support your community.",
     "completeProject": "Complete Project",
-    "completeProjectDesc": "Complete the tasks on your projects!",
-    "noActiveProjects": "You don't have any active projects yet.",
-    "loadProjectsError": "Could not load your projects. Please try again."
+    "completeProjectDesc": "Complete the tasks on your projects!"
   },
   "myProjects": {
     "headerTitle": "My Projects",
