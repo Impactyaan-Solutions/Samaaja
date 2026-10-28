@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       }),
       {
         name: 'copy-index-to-www',
-        closeBundle() {
+        writeBundle() {
           let html = readFileSync('../samaaja/public/frontend/index.html', 'utf8')
 
           // Hand the page's own CSRF token to the app.
