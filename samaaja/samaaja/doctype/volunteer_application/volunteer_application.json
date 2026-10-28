@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2026-08-18 08:30:24.497874",
  "doctype": "DocType",
@@ -94,7 +95,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-10 18:28:33.571346",
+ "modified": "2026-10-22 19:03:17.941344",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Volunteer Application",

@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "creation": "2023-11-09 14:30:43.118014",
  "default_view": "List",
  "doctype": "DocType",
@@ -96,7 +97,7 @@
   }
  ],
  "links": [],
- "modified": "2025-07-08 23:21:33.342034",
+ "modified": "2026-10-22 19:03:20.215528",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "User Review",

@@ -21,7 +21,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-08 11:02:33.872202",
+ "modified": "2026-10-22 19:03:21.345532",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Action Source",
@@ -41,6 +41,7 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

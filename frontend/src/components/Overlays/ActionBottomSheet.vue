@@ -1,33 +1,82 @@
 <script setup>
-import { computed } from 'vue'
-import { Zap, X, MessageSquareText } from 'lucide-vue-next'
+import { computed, onMounted, ref } from 'vue'
+import { Zap, X, MessageSquareText, ClipboardCheck } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { getMyActiveProjects } from '@/services/api'
 
 const emit = defineEmits(['close'])
 const router = useRouter()
 const { t } = useI18n()
 
-const actions = computed(() => [
-  {
-    title: t('actionSheet.logAction'),
-    description: t('actionSheet.logActionDesc'),
-    icon: Zap,
-    colorClass: 'bg-green-100 text-green-600',
-    path: '/log-action'
-  },
-  {
-    title: t('actionSheet.addPost'),
-    description: t('actionSheet.addPostDesc'),
-    icon: MessageSquareText,
-    colorClass: 'bg-blue-100 text-blue-600',
-    path: '/add-post'
-  }
-])
+const activeProjects = ref([])
 
-const handleAction = (path) => {
+const fetchActiveProjects = async () => {
+  try {
+    const result = await getMyActiveProjects()
+    activeProjects.value = result?.projects || []
+  } catch (err) {
+    console.error('Failed to load active projects:', err)
+    activeProjects.value = []
+  }
+}
+
+onMounted(fetchActiveProjects)
+
+const actions = computed(() => {
+  const list = [
+    {
+      key: 'log-action',
+      title: t('actionSheet.logAction'),
+      description: t('actionSheet.logActionDesc'),
+      icon: Zap,
+      colorClass: 'bg-green-100 text-green-600',
+      path: '/log-action'
+    },
+    {
+      key: 'add-post',
+      title: t('actionSheet.addPost'),
+      description: t('actionSheet.addPostDesc'),
+      icon: MessageSquareText,
+      colorClass: 'bg-blue-100 text-blue-600',
+      path: '/add-post'
+    }
+  ]
+
+  if (activeProjects.value.length > 0) {
+    list.push({
+      key: 'complete-project',
+      title: t('actionSheet.completeProject'),
+      description: t('actionSheet.completeProjectDesc'),
+      icon: ClipboardCheck,
+      colorClass: 'bg-purple-100 text-purple-600'
+    })
+  }
+
+  return list
+})
+
+const goToActiveProjects = () => {
   emit('close')
-  router.push(path)
+
+  if (activeProjects.value.length === 1) {
+    router.push({
+      name: 'volunteer-opportunity-detail',
+      params: { id: activeProjects.value[0].name }
+    })
+  } else {
+    router.push({ name: 'my-projects' })
+  }
+}
+
+const handleAction = (action) => {
+  if (action.key === 'complete-project') {
+    goToActiveProjects()
+    return
+  }
+
+  emit('close')
+  router.push(action.path)
 }
 </script>
 
@@ -49,10 +98,10 @@ const handleAction = (path) => {
       </div>
 
       <div class="space-y-3 mt-4">
-        <button 
-          v-for="action in actions" 
-          :key="action.title"
-          @click="handleAction(action.path)"
+        <button
+          v-for="action in actions"
+          :key="action.key"
+          @click="handleAction(action)"
           class="w-full flex items-center p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-left"
         >
           <div :class="['w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center mr-4', action.colorClass]">

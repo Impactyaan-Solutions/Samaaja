@@ -44,6 +44,27 @@ const router = createRouter({
       component: () => import('../views/Announcements.vue')
     },
     {
+     path: '/events/:id',
+     name: 'event-detail',
+     component: () => import('../views/EventDetail.vue')
+    },
+    {
+      path: '/event-register/:id',
+      name: 'event-register',
+      component: () => import('../views/EventRegister.vue')
+    },
+    {
+      path: '/event-registerd/:id',
+      name: 'event-registerd',
+      component: () => import('../views/EventRegistrationSuccess.vue')
+    },
+    {
+      path: '/event-checkin/:id',
+      name: 'event-checkin',
+      component: () => import('../views/EventAttendence.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/volunteer-listings',
       name: 'volunteer-listings',
       component: () => import('../views/VolunteerListings.vue')
@@ -53,10 +74,16 @@ const router = createRouter({
       name: 'volunteer-opportunity-detail',
       component: () => import('../views/VolunteerOpportunityDetail.vue')
     },
+    
     {
       path: '/volunteer-listings/:id/apply',
       name: 'volunteer-application',
       component: () => import('../views/VolunteerApplicationForm.vue')
+    },
+    {
+      path: '/my-projects',
+      name: 'my-projects',
+      component: () => import('../views/MyActiveProjects.vue')
     },
     {
       // Renamed from /profile: Frappe already uses that address for the
@@ -65,6 +92,12 @@ const router = createRouter({
       path: '/account',
       name: 'account',
       component: () => import('../views/Profile.vue')
+    },
+    {
+      path: '/project/:id',
+      name: 'project',
+      component: () => import('../views/Project.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/settings',
@@ -131,10 +164,18 @@ router.beforeEach(async (to, from, next) => {
     return next({ name: 'home' });
   }
 
+  // if (!isPublic && !isLoggedIn) {
+  //   // Not logged in and trying to access a private page? Send to landing/login.
+  //   return next({ name: 'landingpage' });
+  // }
   if (!isPublic && !isLoggedIn) {
-    // Not logged in and trying to access a private page? Send to landing/login.
-    return next({ name: 'landingpage' });
-  }
+  return next({
+    name: 'login',
+    query: {
+      redirect: to.fullPath
+    }
+  });
+}
 
   // If none of the above rules hit, proceed as normal
   next();

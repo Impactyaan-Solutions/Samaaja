@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2026-05-08 17:34:59.317323",
  "doctype": "DocType",
@@ -73,7 +74,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-17 14:37:05.705461",
+ "modified": "2026-10-22 19:03:18.688721",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Community Post",

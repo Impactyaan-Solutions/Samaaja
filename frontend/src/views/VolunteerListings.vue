@@ -8,7 +8,8 @@ import {
   Tag,
   SlidersHorizontal,
   X,
-  Loader2
+  Loader2,
+  Users
 } from 'lucide-vue-next'
 
 import AppHeader from '@/components/common/AppHeader.vue'
@@ -90,9 +91,9 @@ const performFetch = async ({ reset }) => {
     hasMore.value = result.has_more
   } catch (e) {
     const message = e.message || t(
-      reset 
-        ? 'volunteerListings.loadError' : 
-        'volunteerListings.loadMoreError'
+      reset
+        ? 'volunteerListings.loadError'
+        : 'volunteerListings.loadMoreError'
     )
 
     if (reset) {
@@ -100,7 +101,7 @@ const performFetch = async ({ reset }) => {
     } else {
       loadMoreError.value = message
     }
-    
+
     console.error('Failed to load more volunteer opportunities:', e)
   } finally {
     if (reset) {
@@ -175,7 +176,6 @@ onUnmounted(() => {
     observer.disconnect()
   }
 })
-
 
 const getLocation = (item) => {
   /*
@@ -296,9 +296,7 @@ const formatDescription = (description) => {
 
     <AppHeader />
 
-    <!-- =========================
-         FILTERS
-    ========================== -->
+    <!-- FILTERS -->
     <div class="relative px-5 pt-4">
 
       <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
@@ -320,7 +318,7 @@ const formatDescription = (description) => {
           </span>
         </button>
 
-        <!-- Category -->
+        <!-- Category filter -->
         <button
           @click="toggleCategoryFilter"
           class="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition"
@@ -337,7 +335,7 @@ const formatDescription = (description) => {
           </span>
         </button>
 
-        <!-- Skills -->
+        <!-- Skills filter -->
         <button
           @click="toggleSkillFilter"
           class="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition"
@@ -365,9 +363,7 @@ const formatDescription = (description) => {
 
       </div>
 
-      <!-- =========================
-           LOCATION DROPDOWN
-      ========================== -->
+      <!-- LOCATION DROPDOWN -->
       <div
         v-if="showLocationFilter"
         class="absolute left-5 right-5 top-14 z-30 rounded-xl border border-gray-100 bg-white p-2 shadow-lg"
@@ -396,9 +392,7 @@ const formatDescription = (description) => {
         </div>
       </div>
 
-      <!-- =========================
-           CATEGORY DROPDOWN
-      ========================== -->
+      <!-- CATEGORY DROPDOWN -->
       <div
         v-if="showCategoryFilter"
         class="absolute left-5 right-5 top-14 z-30 rounded-xl border border-gray-100 bg-white p-2 shadow-lg"
@@ -427,9 +421,7 @@ const formatDescription = (description) => {
         </div>
       </div>
 
-      <!-- =========================
-           SKILLS DROPDOWN
-      ========================== -->
+      <!-- SKILLS DROPDOWN -->
       <div
         v-if="showSkillFilter"
         class="absolute left-5 right-5 top-14 z-30 max-h-64 overflow-y-auto rounded-xl border border-gray-100 bg-white p-2 shadow-lg"
@@ -460,25 +452,19 @@ const formatDescription = (description) => {
 
     </div>
 
-    <!-- =========================
-         LOADING
-    ========================== -->
+    <!-- LOADING -->
     <div
       v-if="loading"
       class="flex flex-col items-center justify-center px-5 pt-16 text-center"
     >
-      <Loader2
-        class="mb-3 h-7 w-7 animate-spin text-primary-500"
-      />
+      <Loader2 class="mb-3 h-7 w-7 animate-spin text-primary-500" />
 
       <p class="text-sm text-gray-500">
         {{ t('volunteerListings.loading') }}
       </p>
     </div>
 
-    <!-- =========================
-         ERROR
-    ========================== -->
+    <!-- ERROR -->
     <div
       v-else-if="error"
       class="px-5 pt-12 text-center"
@@ -488,9 +474,7 @@ const formatDescription = (description) => {
       </p>
     </div>
 
-    <!-- =========================
-         EMPTY
-    ========================== -->
+    <!-- EMPTY -->
     <div
       v-else-if="listings.length === 0"
       class="px-5 pt-12 text-center"
@@ -510,9 +494,7 @@ const formatDescription = (description) => {
       </p>
     </div>
 
-    <!-- =========================
-         OPPORTUNITY CARDS
-    ========================== -->
+    <!-- OPPORTUNITY CARDS -->
     <div
       v-else
       class="space-y-3 px-5 pb-6 pt-4"
@@ -521,14 +503,33 @@ const formatDescription = (description) => {
       <div
         v-for="item in listings"
         :key="item.name || item.title"
-        class="rounded-xl border border-gray-100 bg-white p-3.5 shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
+        @click="goToDetail(item)"
+        @keydown.enter="goToDetail(item)"
+        @keydown.space.prevent="goToDetail(item)"
+        role="link"
+        tabindex="0"
+        class="cursor-pointer rounded-xl border border-gray-100 bg-white p-3.5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition hover:border-primary-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500"
       >
 
-        <!-- Category -->
-        <div
-          class="inline-flex rounded-md bg-blue-50 px-2 py-1 text-[10px] font-semibold text-blue-700"
-        >
-          {{ item.category || t('volunteerListings.community') }}
+        <!-- Category, Team-based and Applied badges -->
+        <div class="flex flex-wrap items-center gap-2">
+
+          <!-- Category -->
+          <span
+            class="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2 py-1 text-[10px] font-semibold text-blue-700"
+          >
+            {{ item.category || t('volunteerListings.community') }}
+          </span>
+
+          <!-- Team-based -->
+          <span
+            v-if="item.is_project"
+            class="inline-flex items-center gap-1.5 rounded-md bg-[#E2F7E8] px-2 py-1 text-[10px] font-semibold text-[#159447]"
+          >
+            <Users class="h-3 w-3" />
+            Team-based
+          </span>
+
         </div>
 
         <!-- Title -->
@@ -541,6 +542,21 @@ const formatDescription = (description) => {
           {{ formatDescription(item.description) }}
         </p>
 
+        <!-- Total Positions for team-based projects -->
+        <div
+          v-if="item.is_project"
+          class="mt-2 flex items-center gap-1.5 text-xs text-gray-500"
+        >
+          <Users class="h-3.5 w-3.5 shrink-0" />
+
+          <span>
+            <span class="font-semibold text-gray-700">
+              Total Positions:
+            </span>
+            {{ item.team_size ?? 0 }}
+          </span>
+        </div>
+
         <!-- Bottom row -->
         <div class="mt-3 flex items-center justify-between gap-3">
 
@@ -548,9 +564,7 @@ const formatDescription = (description) => {
           <div
             class="flex min-w-0 items-center gap-1.5 text-xs text-gray-500"
           >
-            <MapPin
-              class="h-3.5 w-3.5 shrink-0 text-gray-400"
-            />
+            <MapPin class="h-3.5 w-3.5 shrink-0 text-gray-400" />
 
             <span class="truncate">
               {{ getLocation(item) }}
@@ -561,7 +575,6 @@ const formatDescription = (description) => {
           <button
             @click="goToDetail(item)"
             class="shrink-0 rounded-md bg-primary-600 px-4 py-2 text-[11px] font-semibold text-white transition hover:bg-primary-700"
-            
           >
             {{ t('volunteerListings.viewDetails') }}
           </button>
@@ -569,6 +582,7 @@ const formatDescription = (description) => {
         </div>
 
       </div>
+
       <!-- Infinite Scroll Trigger -->
       <div
         ref="loadMoreSentinel"

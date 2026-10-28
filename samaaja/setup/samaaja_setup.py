@@ -35,7 +35,7 @@ REFERENCE_OPTIONS = {
     "Gender": {
         "field": "gender",
         "defaults": {},
-        "values": ["Male", "Female", "Other"],
+        "values": ["Male", "Female", "Transgender", "Others", "Prefer not to say"],
     },
     "User Category": {
         "field": "category_name",

@@ -93,7 +93,7 @@ const fetchPosts = async () => {
 
   try {
     const response = await getFeed(limit, offset.value)
-
+    console.log(response)
     const newPosts = response.posts || []
     posts.value.push(...newPosts)
 

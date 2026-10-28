@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "creation": "2024-06-03 14:07:09.569002",
  "default_view": "List",
  "doctype": "DocType",
@@ -96,7 +97,7 @@
   }
  ],
  "links": [],
- "modified": "2026-05-11 07:30:26.751793",
+ "modified": "2026-10-22 19:03:20.117078",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Action Review",
