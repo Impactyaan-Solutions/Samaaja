@@ -57,8 +57,9 @@
   "landing": {
     "appName": "Samaaja",
     "logo": { "src": "samaaja.png", "alt": "Samaaja Logo", "name": "Samaaja" },
-    "tagline": "Build Your Community. Take Action.",
-    "subtitle": "Join people in your area solving real issues and improving their community together.",
+    "tagline1": "Connect people.",
+    "tagline2": "Build communities.",
+    "tagline3": "Enable action.",
     "signUp": "Sign Up",
     "login": "Login",
     "whatYouCanDo": "What you can do",
