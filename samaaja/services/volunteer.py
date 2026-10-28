@@ -169,6 +169,7 @@ class VolunteerManager:
                 .select(
                     VolunteerOpportunity.name,
                     VolunteerOpportunity.title,
+                    VolunteerOpportunity.image,
                     VolunteerOpportunity.description,
                     VolunteerOpportunity.category,
                     SamaajaLocation.city.as_("location"),
@@ -195,6 +196,13 @@ class VolunteerManager:
                 )
 
             opportunity = opportunity[0]
+
+            media_base_url = frappe.conf.media_base_url
+            opportunity["image"] = (
+                f"{media_base_url}{opportunity['image']}"
+                if opportunity.get("image")
+                else ""
+            )
 
             opportunity["skills_needed"] = frappe.get_all(
                 "Skill Child Table",

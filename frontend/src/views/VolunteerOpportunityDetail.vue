@@ -14,6 +14,7 @@ import {
   MapPin,
   Users,
   Wrench,
+  HandHeart,
 } from 'lucide-vue-next'
 
 import {
@@ -464,6 +465,23 @@ onMounted(async () => {
     </div>
 
     <template v-else-if="opportunity">
+      <!-- Opportunity Image -->
+      <div class="h-56 w-full overflow-hidden bg-blue-50 sm:h-72">
+        <img
+          v-if="opportunity.image"
+          :src="opportunity.image"
+          :alt="title"
+          class="h-full w-full object-cover"
+        />
+
+        <div
+          v-else
+          class="flex h-full items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100"
+        >
+          <HandHeart class="h-16 w-16 text-blue-400" />
+        </div>
+      </div>
+
       <!-- Title and metadata -->
       <div class="px-5 pt-4">
         <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">

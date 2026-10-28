@@ -8,6 +8,7 @@
  "field_order": [
   "details_section",
   "title",
+  "image",
   "description",
   "skills_needed",
   "location",
@@ -33,6 +34,11 @@
    "label": "Title",
    "length": 120,
    "reqd": 1
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
   },
   {
    "fieldname": "description",
