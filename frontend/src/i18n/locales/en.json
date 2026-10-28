@@ -65,10 +65,10 @@
     "login": "Login",
     "whatYouCanDo": "What you can do",
     "features": {
-      "reportAct": { "title": "Report & Act", "description": "Raise local problems and track progress." },
-      "connect": { "title": "Connect", "description": "Post or join community discussions." },
-      "getRecognised": { "title": "Get Recognised", "description": "See your impact and leaderboard rank." },
-      "askForHelp": { "title": "Ask for Help", "description": "Get support from experts and community." }
+      "reportAct": { "title": "Make a Difference", "description": "Report local issues and turn concerns into collective action." },
+      "connect": { "title": "Be Part of the Community", "description": "Share ideas, join conversations, and collaborate with others." },
+      "getRecognised": { "title": "Volunteer & Take Action", "description": "Discover volunteering opportunities and join projects that create meaningful change." },     
+      "askForHelp": { "title": "Celebrate Your Impact", "description": "Track your contributions, earn recognition, and inspire others." }
     }
   },
   "login": {

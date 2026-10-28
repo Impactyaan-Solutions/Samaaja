@@ -33,15 +33,15 @@ const features = computed(() => [
     iconColor: 'text-blue-600'
   },
   {
-    title: t('landing.features.getRecognised.title'),
-    description: t('landing.features.getRecognised.description'),
+    title: t('landing.features.askForHelp.title'),
+    description: t('landing.features.askForHelp.description'),
     icon: Medal,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
   },
   {
-    title: t('landing.features.askForHelp.title'),
-    description: t('landing.features.askForHelp.description'),
+    title: t('landing.features.getRecognised.title'),
+    description: t('landing.features.getRecognised.description'),
     icon: LifeBuoy,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
@@ -54,13 +54,13 @@ const features = computed(() => [
     
     <div class="w-full max-w-md bg-white min-h-screen shadow-sm px-8 py-0 flex flex-col gap-0">
       
-      <header class="relative flex items-center justify-center mt-6 mb-6">
+      <header class="flex items-center justify-between mt-6 mb-6">
         <img
           :src="logoSrc"
           :alt="t('landing.logo.alt')"
           class="h-16 w-auto"
         />
-        <button class="absolute right-0 flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
+        <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
           {{ locale }}
         </button>

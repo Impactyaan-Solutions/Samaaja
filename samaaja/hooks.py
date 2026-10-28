@@ -78,7 +78,7 @@ after_install = "samaaja.setup.samaaja_setup.after_install"
 # records that are missing, so it is cheap and safe to repeat. This is why it
 # can live here while the old setup_samaaja (which also seeded demo users and
 # crashed on missing doctypes) had to stay commented out.
-after_migrate = "samaaja.utils.temp_sync_options.sync_options"
+after_migrate = "samaaja.setup.samaaja_setup.seed_reference_options"
 
 # See samaaja/public/js/setup_wizard.js and samaaja/setup/wizard.py.
 setup_wizard_requires = "assets/samaaja/js/setup_wizard.js"
