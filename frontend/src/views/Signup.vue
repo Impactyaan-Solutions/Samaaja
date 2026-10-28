@@ -12,6 +12,7 @@ import { createAccount, getLoginOptions, getMetadataOptions } from '@/services/a
 
 // const router = useRouter();
 const { t } = useI18n();
+const logoSrc = `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`;
 
 const genderOptions = ref([]);
 
@@ -106,7 +107,7 @@ const goBack = () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
+        <img :src="logoSrc" :alt="t('landing.logo.alt')" class="h-9 w-auto" />
         <div class="w-5"></div> 
       </div>
 
@@ -148,22 +149,14 @@ const goBack = () => {
 
         <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">{{ t('signup.gender') }} <span class="text-red-500">*</span></label>
-          <div class="grid grid-cols-3 gap-3">
-            <button
-              type="button"
-              v-for="option in genderOptions"
-              :key="option"
-              @click="formData.gender = option"
-              :class="[
-                'py-2 rounded-xl border text-sm font-medium transition-all',
-                formData.gender === option
-                  ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100'
-                  : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100'
-              ]"
-            >
-              {{ option }}
-            </button>
-          </div>
+          <select
+            v-model="formData.gender"
+            required
+            class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
+          >
+            <option value="" disabled>{{ t('profileCompletion.selectGender') }}</option>
+            <option v-for="option in genderOptions" :key="option" :value="option">{{ option }}</option>
+          </select>
         </div>
 
         <div class="space-y-1">

@@ -456,6 +456,7 @@ watch(
         {{ t('profile.postsTab') }}
       </button>
       <button
+        v-if="isOwnProfile"
         @click="
     //console.log('Posts clicked');
     activeTab = 'opportunities';
@@ -524,7 +525,7 @@ watch(
   </div>
 
   <!-- Opportunities -->
-  <div v-if="activeTab === 'opportunities'">
+  <div v-if="activeTab === 'opportunities' && isOwnProfile">
     <div v-if="applicationsLoading" class="text-center py-6">
       Loading your applications...
     </div>

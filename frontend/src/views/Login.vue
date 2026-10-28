@@ -8,6 +8,7 @@ import {
 import { getLoginOptions, loginUsingOtp, loginUsingPassword } from '@/services/api';
 
 const { t } = useI18n();
+const logoSrc = `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`;
 const mobileNumber = ref('');
 const password = ref('');
 const otp = ref('');
@@ -133,7 +134,7 @@ const redirectAfterLogin = () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeft class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
+        <img :src="logoSrc" :alt="t('landing.logo.alt')" class="h-9 w-auto" />
         <div class="w-5"></div>
       </div>
 

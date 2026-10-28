@@ -167,7 +167,7 @@
   },
   "leaderboard": {
     "Individual": "Individual",
-    "global": "Global",
+    "global": "Geography",
     "searchPlaceholder": "Search City or Country...",
     "loading": "Loading leaderboard...",
     "actions": "Actions"
