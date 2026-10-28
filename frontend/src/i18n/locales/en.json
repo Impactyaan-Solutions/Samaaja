@@ -43,7 +43,18 @@
     "addPost": "Add a Post",
     "addPostDesc": "Post an update to share with your community.",
     "volunteerListings": "Volunteer Opportunities",
-    "volunteerListingsDesc": "Discover roles to support your community."
+    "volunteerListingsDesc": "Discover roles to support your community.",
+    "completeProject": "Complete Project",
+    "completeProjectDesc": "Complete the tasks on your projects!",
+    "noActiveProjects": "You don't have any active projects yet.",
+    "loadProjectsError": "Could not load your projects. Please try again."
+  },
+  "myProjects": {
+    "headerTitle": "My Projects",
+    "loading": "Loading your projects...",
+    "loadError": "Failed to load your projects.",
+    "noProjects": "No active projects",
+    "noProjectsHint": "Projects you're selected for will show up here."
   },
   "landing": {
     "appName": "Samaaja",

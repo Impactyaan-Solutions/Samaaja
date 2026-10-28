@@ -665,6 +665,27 @@ export const getMyApplications = async () => {
 //     They go through callAPI above, so csrfHeader() adds X-Frappe-CSRF-Token
 //     on unsafe methods without any change here.
 
+export const getMyActiveProjects = async () => {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        const result = await callAPI(
+            headers,
+            `${baseurl}/api/method/samaaja.api.project.get_my_active_projects`,
+            'GET',
+            null
+        )
+
+        return result.data || result.message?.data || result
+    } catch (error) {
+        console.error('Failed to fetch active projects:', error)
+        throw error
+    }
+}
+
 export const get_project = async(volunteer_opportunity) => {
     try {
         const headers = {

@@ -81,6 +81,11 @@ const router = createRouter({
       component: () => import('../views/VolunteerApplicationForm.vue')
     },
     {
+      path: '/my-projects',
+      name: 'my-projects',
+      component: () => import('../views/MyActiveProjects.vue')
+    },
+    {
       // Renamed from /profile: Frappe already uses that address for the
       // logged-in user's own account page. We leave it to Frappe rather
       // than fight over it.

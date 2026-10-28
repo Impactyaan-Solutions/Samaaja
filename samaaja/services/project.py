@@ -49,6 +49,68 @@ class ProjectManager:
             )
 
     @staticmethod
+    def get_my_active_projects() -> Result:
+        try:
+            current_user = frappe.session.user
+
+            if current_user == "Guest":
+                return Result.failure(
+                    "Please log in to view your projects"
+                )
+
+            applications = frappe.get_all(
+                "Volunteer Application",
+                filters={
+                    "user": current_user,
+                    "workflow_state": "Selected",
+                },
+                fields=["volunteer_opportunity"],
+            )
+
+            opportunity_ids = list({
+                application.volunteer_opportunity
+                for application in applications
+                if application.volunteer_opportunity
+            })
+
+            if not opportunity_ids:
+                return Result.success(
+                    "No active projects found",
+                    data={"projects": []},
+                )
+
+            projects = frappe.get_all(
+                "Volunteer Opportunity",
+                filters={
+                    "name": ["in", opportunity_ids],
+                    "is_project": 1,
+                },
+                fields=[
+                    "name",
+                    "title",
+                    "description",
+                    "category",
+                    "location",
+                    "is_project",
+                    "team_size",
+                ],
+            )
+
+            return Result.success(
+                "Your active projects fetched successfully",
+                data={"projects": projects},
+            )
+
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to fetch active projects",
+            )
+            return Result.failure(
+                "Failed to fetch your active projects"
+            )
+
+    @staticmethod
     def get_project(volunteer_opportunity: str) -> Result:
         try:
             current_user = frappe.session.user

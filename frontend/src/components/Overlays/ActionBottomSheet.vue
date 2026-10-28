@@ -1,15 +1,19 @@
 <script setup>
-import { computed } from 'vue'
-import { Zap, X, MessageSquareText } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import { Zap, X, MessageSquareText, ClipboardCheck, Loader2 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { getMyActiveProjects } from '@/services/api'
 
 const emit = defineEmits(['close'])
 const router = useRouter()
 const { t } = useI18n()
 
+const loadingProjects = ref(false)
+
 const actions = computed(() => [
   {
+    key: 'log-action',
     title: t('actionSheet.logAction'),
     description: t('actionSheet.logActionDesc'),
     icon: Zap,
@@ -17,17 +21,60 @@ const actions = computed(() => [
     path: '/log-action'
   },
   {
+    key: 'add-post',
     title: t('actionSheet.addPost'),
     description: t('actionSheet.addPostDesc'),
     icon: MessageSquareText,
     colorClass: 'bg-blue-100 text-blue-600',
     path: '/add-post'
+  },
+  {
+    key: 'complete-project',
+    title: t('actionSheet.completeProject'),
+    description: t('actionSheet.completeProjectDesc'),
+    icon: ClipboardCheck,
+    colorClass: 'bg-purple-100 text-purple-600'
   }
 ])
 
-const handleAction = (path) => {
+const goToActiveProjects = async () => {
+  if (loadingProjects.value) return
+
+  loadingProjects.value = true
+
+  try {
+    const result = await getMyActiveProjects()
+    const projects = result?.projects || []
+
+    emit('close')
+
+    if (projects.length === 1) {
+      router.push({
+        name: 'volunteer-opportunity-detail',
+        params: { id: projects[0].name }
+      })
+    } else if (projects.length === 0) {
+      alert(t('actionSheet.noActiveProjects'))
+    } else {
+      router.push({ name: 'my-projects' })
+    }
+  } catch (err) {
+    console.error('Failed to load active projects:', err)
+    emit('close')
+    alert(t('actionSheet.loadProjectsError'))
+  } finally {
+    loadingProjects.value = false
+  }
+}
+
+const handleAction = (action) => {
+  if (action.key === 'complete-project') {
+    goToActiveProjects()
+    return
+  }
+
   emit('close')
-  router.push(path)
+  router.push(action.path)
 }
 </script>
 
@@ -49,14 +96,19 @@ const handleAction = (path) => {
       </div>
 
       <div class="space-y-3 mt-4">
-        <button 
-          v-for="action in actions" 
-          :key="action.title"
-          @click="handleAction(action.path)"
-          class="w-full flex items-center p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-left"
+        <button
+          v-for="action in actions"
+          :key="action.key"
+          @click="handleAction(action)"
+          :disabled="action.key === 'complete-project' && loadingProjects"
+          class="w-full flex items-center p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-left disabled:cursor-not-allowed disabled:opacity-60"
         >
           <div :class="['w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center mr-4', action.colorClass]">
-            <component :is="action.icon" class="w-6 h-6" />
+            <Loader2
+              v-if="action.key === 'complete-project' && loadingProjects"
+              class="w-6 h-6 animate-spin"
+            />
+            <component v-else :is="action.icon" class="w-6 h-6" />
           </div>
           <div>
             <h4 class="font-semibold text-gray-900">{{ action.title }}</h4>

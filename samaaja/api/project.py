@@ -26,6 +26,28 @@ def get_my_applications():
 
 
 @frappe.whitelist(methods=["GET"])
+def get_my_active_projects():
+    try:
+        if frappe.session.user == "Guest":
+            return custom_response(
+                message="Authentication required",
+                status_code=401,
+            )
+
+        return ProjectManager.get_my_active_projects().to_custom_response()
+
+    except Exception:
+        frappe.log_error(
+            frappe.get_traceback(),
+            "Failed to fetch active projects",
+        )
+        return custom_response(
+            message="Failed to fetch active projects",
+            status_code=500,
+        )
+
+
+@frappe.whitelist(methods=["GET"])
 def get_project(volunteer_opportunity):
     try:
         if frappe.session.user == "Guest":
