@@ -17,7 +17,7 @@ def generate_check_in_qr(self, method=None):
     if not event_name:
         return
 
-    check_in_url = get_url(f"/event-checkin/{event_name}")
+    check_in_url = get_url(f"/event-attend/{event_name}")
 
     qr = pyqrcode.create(check_in_url)
 
