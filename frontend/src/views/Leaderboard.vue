@@ -49,7 +49,7 @@ onMounted(async () => {
           class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all"
           :class="scope === 'organisation' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500'"
         >
-          {{ t('leaderboard.organisation') }}
+          {{ t('leaderboard.Individual') }}
         </button>
         <button
           @click="scope = 'global'"
@@ -60,7 +60,7 @@ onMounted(async () => {
         </button>
       </div>
 
-      <div class="relative flex items-center">
+      <!--<div class="relative flex items-center">
         <Search class="absolute left-4 w-5 h-5 text-gray-400" />
         <input
           type="text"
@@ -70,7 +70,7 @@ onMounted(async () => {
         <button class="absolute right-4 text-gray-400 hover:text-gray-600">
           <Filter class="w-5 h-5" />
         </button>
-      </div>
+      </div>-->
     </div>
 
     <!-- Loading State -->

@@ -29,7 +29,7 @@ const loadEvent = async () => {
 
   try {
     const result = await getAnnouncementDetail(route.params.id)
-
+   console.log(result)
     // Handle Axios responses and direct API responses.
     const candidates = [
       result?.data?.data,
@@ -138,6 +138,9 @@ const shareEvent = async () => {
 }
 
 const registerEvent = async (item) => {
+  if (item.announcement_type !== "Event") {
+    return
+  }
   try {
     registering.value = true
     const result = await checkRegisterForEvent(item.event_id)
@@ -165,6 +168,74 @@ const registerEvent = async (item) => {
 }
 const exploreMore = () => {
   router.push({ name: "announcements" })
+}
+
+const announcementType = computed(
+  () => event.value?.announcement_type ||
+        event.value?.custom_announcement_type ||
+        "General"
+)
+
+const eventAction = computed(() => {
+  if (announcementType.value !== "Event") {
+    return "none"
+  }
+
+  const now = new Date()
+
+  const startValue = event.value?.starts_on || event.value?.valid_from
+  const endValue = event.value?.ends_on || event.value?.valid_to
+
+  if (!startValue) {
+    return "register"
+  }
+
+  const start = new Date(String(startValue).replace(" ", "T"))
+  const end = endValue
+    ? new Date(String(endValue).replace(" ", "T"))
+    : null
+
+  if (Number.isNaN(start.getTime())) {
+    return "register"
+  }
+
+  // Event is on today's date: show Check-in.
+  const isToday =
+    start.getFullYear() === now.getFullYear() &&
+    start.getMonth() === now.getMonth() &&
+    start.getDate() === now.getDate()
+
+  if (isToday) {
+    return "checkin"
+  }
+
+  // Event is currently in progress.
+  if (end && !Number.isNaN(end.getTime()) &&
+      now >= start && now <= end) {
+    return "checkin"
+  }
+
+  // Event has already ended.
+  if (end && !Number.isNaN(end.getTime()) && now > end) {
+    return "none"
+  }
+
+  // Event is in the future.
+  if (now < start) {
+    return "register"
+  }
+
+  return "none"
+})
+function goToCheckIn(event) {
+  if ( event.checked_in) return
+
+  router.push({
+    name: "event-checkin",
+    params: {
+      id: event.event_id,
+    },
+  })
 }
 </script>
 
@@ -395,23 +466,43 @@ const exploreMore = () => {
         class="sticky bottom-0 z-10 border-t border-gray-100 bg-white px-5 py-4"
       >
         <div class="mx-auto flex max-w-3xl gap-3">
-          <button
+<button
+  v-if="eventAction === 'register'"
   type="button"
   @click.stop="registerEvent(event)"
-  :disabled="event.registered || registering"
-  class="px-4 py-2 rounded-xl bg-primary-600 text-white
-         font-semibold text-sm hover:bg-primary-700
-         disabled:opacity-50 disabled:cursor-not-allowed
-         transition-colors"
+  :disabled="registering"
+  class="rounded-xl bg-primary-600 px-4 py-3
+         text-white font-semibold text-sm
+         hover:bg-primary-700 disabled:opacity-50"
 >
-   {{
-        event.registered
-          ? t('announcements.registered')
-          : registering
-            ? t('announcements.registering')
-            : t('announcements.register')
-      }}
+  {{
+    registering
+      ? t('announcements.registering')
+      : event.registered
+        ? t('announcements.registered')
+        : t('announcements.register')
+  }}
 </button>
+
+<button
+  v-else-if="eventAction === 'checkin'"
+  type="button"
+  :disabled="!event.registered || event.checked_in"
+   @click="goToCheckIn(event)"
+  :class="[
+    'rounded-xl px-4 py-3 font-semibold text-sm transition-colors',
+    event.checked_in
+      ? 'bg-gray-200 text-gray-700 cursor-not-allowed'
+      : 'bg-green-600 text-white hover:bg-green-700 disabled:opacity-50'
+  ]"
+>
+  {{
+    event.checked_in
+      ? 'Checked In'
+      : 'Check-in'
+  }}
+</button>
+
 
           <button
             type="button"

@@ -54,14 +54,11 @@ class VolunteerManager:
                     VolunteerOpportunity.compensation_type,
                     VolunteerOpportunity.status,
                     VolunteerOpportunity.is_project,
+                    VolunteerOpportunity.team_size,
                 )
                 .where(VolunteerOpportunity.status == "Active")
             )
 
-            if applied_opportunities:
-                query = query.where(
-                    ~VolunteerOpportunity.name.isin(applied_opportunities)
-                )
 
             categories = filters.get("categories") or []
             locations = filters.get("locations") or []
@@ -103,6 +100,10 @@ class VolunteerManager:
             )
 
             opportunities = query.run(as_dict=True)
+            for opportunity in opportunities:
+                opportunity["already_applied"] = (
+                    opportunity["name"] in applied_opportunities
+                )
 
             opportunity_names = [opportunity["name"] for opportunity in opportunities]
 

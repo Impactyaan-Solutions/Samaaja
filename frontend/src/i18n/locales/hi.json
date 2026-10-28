@@ -151,7 +151,7 @@
     "noActive": "कोई सक्रिय घोषणा नहीं है।"
   },
   "leaderboard": {
-    "organisation": "संगठन",
+    "Individual": "वैयक्तिक",
     "global": "वैश्विक",
     "searchPlaceholder": "शहर या देश खोजें...",
     "loading": "लीडरबोर्ड लोड हो रहा है...",

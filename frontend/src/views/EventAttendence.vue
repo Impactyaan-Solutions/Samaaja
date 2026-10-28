@@ -1,3 +1,4 @@
+
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
@@ -18,6 +19,7 @@ const { t } = useI18n()
 const loading = ref(true)
 const retrying = ref(false)
 const resultMessage = ref("")
+const eventName = ref("")
 const checkedInOn = ref(null)
 const registered = ref(false)
 const checkedIn = ref(false)
@@ -72,7 +74,8 @@ function extractResponse(response) {
     if (
       data.checked_in !== undefined ||
       data.registered !== undefined ||
-      data.checked_in_on !== undefined
+      data.checked_in_on !== undefined ||
+      data.event_name !== undefined
     ) {
       return data
     }
@@ -142,6 +145,7 @@ async function markPresent() {
   loading.value = true
   error.value = false
   resultMessage.value = ""
+  eventName.value = ""
   checkedIn.value = false
   registered.value = false
   checkedInOn.value = null
@@ -154,9 +158,10 @@ async function markPresent() {
     const response = await checkInEvent(eventId.value)
     const data = extractResponse(response)
 
-    checkedIn.value = data.checked_in === true
-    registered.value = data.registered === true
+    checkedIn.value = data.checked_in === true || data.checked_in === 1
+    registered.value = data.registered === true || data.registered === 1
     checkedInOn.value = data.checked_in_on || null
+    eventName.value = data.event_name || ""
 
     resultMessage.value = extractMessage(
       response,
@@ -214,6 +219,7 @@ onMounted(() => {
     <section
       class="mx-auto w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm sm:p-8"
     >
+      <!-- Loading indicator -->
       <div
         v-if="loading"
         class="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-blue-600"
@@ -221,6 +227,7 @@ onMounted(() => {
         <Loader2 :size="38" class="animate-spin" />
       </div>
 
+      <!-- Check-in result icon -->
       <div
         v-else
         class="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full"
@@ -250,18 +257,32 @@ onMounted(() => {
         {{ statusDescription }}
       </p>
 
+      <!-- Event subject and ID -->
       <div
         class="mt-7 rounded-xl border border-gray-200 bg-gray-50 p-4 text-left"
       >
-        <p class="text-xs font-medium text-gray-500">
-          {{ t("eventCheckIn.eventId") }}
+        <p
+          class="text-xs font-medium uppercase tracking-wider text-gray-500"
+        >
+          Event
         </p>
 
-        <p class="mt-1 break-all text-lg font-bold text-gray-900">
-          {{ eventId || t("eventCheckIn.notAvailable") }}
-        </p>
+        <h2 class="mt-1 break-words text-lg font-bold text-gray-900">
+          {{ eventName || t("eventCheckIn.notAvailable") }}
+        </h2>
+
+        <div class="mt-3 border-t border-gray-200 pt-3">
+          <p class="text-xs font-medium text-gray-500">
+            {{ t("eventCheckIn.eventId") }}
+          </p>
+
+          <p class="mt-1 break-all text-sm font-medium text-gray-700">
+            {{ eventId || t("eventCheckIn.notAvailable") }}
+          </p>
+        </div>
       </div>
 
+      <!-- Registration and attendance details -->
       <div
         v-if="!loading && checkedIn"
         class="mt-5 rounded-xl border border-gray-200 px-4 text-left"
@@ -306,6 +327,7 @@ onMounted(() => {
         </div>
       </div>
 
+      <!-- Error message -->
       <div
         v-if="!loading && error"
         class="mt-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-left text-red-700"
@@ -317,6 +339,7 @@ onMounted(() => {
         </p>
       </div>
 
+      <!-- Retry button -->
       <button
         v-if="!loading && error"
         type="button"
@@ -326,7 +349,12 @@ onMounted(() => {
       >
         <Loader2 v-if="retrying" :size="18" class="animate-spin" />
         <RefreshCw v-else :size="18" />
-        {{ retrying ? t("eventCheckIn.retrying") : t("eventCheckIn.retry") }}
+
+        {{
+          retrying
+            ? t("eventCheckIn.retrying")
+            : t("eventCheckIn.retry")
+        }}
       </button>
 
       <p class="mt-8 border-t border-gray-100 pt-5 text-xs text-gray-400">

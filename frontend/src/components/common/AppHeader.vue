@@ -30,7 +30,7 @@ const handleLogout = async () => {
     // Always clear local state and leave, even if the server call above failed.
     isMenuOpen.value = false;
     localStorage.clear();
-    window.location.href = '/login';
+    window.location.href = '/';
   }
 }
 </script>

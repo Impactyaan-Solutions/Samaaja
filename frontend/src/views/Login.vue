@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter , useRoute  } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
   ArrowLeft
@@ -12,6 +12,7 @@ const mobileNumber = ref('');
 const password = ref('');
 const otp = ref('');
 const router = useRouter();
+const route = useRoute();
 // Navigation Helper
 const goBack = () => {
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
@@ -64,7 +65,7 @@ const handleOtpLogin = async () => {
     }
     const result = await loginUsingOtp(data)
     if (result) {
-      router.push('/homepage')
+     redirectAfterLogin()
     }
   } catch (error) {
     console.error("Login Error:", error);
@@ -92,7 +93,7 @@ const handlePasswordLogin = async () => {
     }
     const result = await loginUsingPassword(data)
     if (result) {
-      router.push('/homepage')
+     redirectAfterLogin();
     } else {
       errorMessage.value = t('login.loginFailed')
     }
@@ -107,7 +108,19 @@ const handlePasswordLogin = async () => {
 const loginWithProvider = (authUrl) => {
   window.location.href = authUrl;
 };
+const redirectAfterLogin = () => {
+  const redirect = route.query.redirect;
 
+  if (
+    typeof redirect === 'string' &&
+    redirect.startsWith('/') &&
+    !redirect.startsWith('//')
+  ) {
+    router.replace(redirect);
+  } else {
+    router.replace({ name: 'home' });
+  }
+};
 </script>
 
 <template>
@@ -241,7 +254,15 @@ const loginWithProvider = (authUrl) => {
       >
         {{ t('login.adminLoginLink') }}
       </router-link>
-
+       <router-link
+  :to="{ name: 'signup', query: route.query.redirect ? { redirect: route.query.redirect } : {} }"
+  class="mb-4 text-center text-sm text-gray-600"
+>
+  Don't have an account?
+  <span class="font-semibold text-blue-600 hover:underline">
+    Sign up
+  </span>
+</router-link>
       <p class="mb-6 text-center text-[10px] text-gray-400 leading-relaxed px-4">
         {{ t('login.agreementPrefix') }}
         <a href="#" class="text-blue-600 font-semibold hover:underline">{{ t('login.termsOfService') }}</a> {{ t('login.and') }}

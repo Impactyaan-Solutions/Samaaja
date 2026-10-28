@@ -153,7 +153,7 @@
     "noActive": "No active announcements."
   },
   "leaderboard": {
-    "organisation": "Organisation",
+    "Individual": "Individual",
     "global": "Global",
     "searchPlaceholder": "Search City or Country...",
     "loading": "Loading leaderboard...",

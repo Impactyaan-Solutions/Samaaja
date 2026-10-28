@@ -120,16 +120,22 @@ class AnnouncementManager:
             is_event = doc.custom_announcement_type == "Event"
             event_id = doc.custom_event if is_event else None
             registered = False
+            checked_in = False
             if event_id and user != "Guest":
-                registered = bool(
-                    frappe.db.exists(
+                registration = frappe.db.get_value(
                         "Event Registration",
                         {
                             "event": event_id,
                             "user": user,
                         },
+                        ["checked_in"],
+                        as_dict=True,
                     )
-                )    
+                
+                if registration:
+                    registered = True
+                    checked_in = bool(registration.checked_in)
+    
 
         # Prepare announcement details
             announcement = {
@@ -148,6 +154,7 @@ class AnnouncementManager:
                 "target_audience": doc.target_audience,
                 "event_id": doc.custom_event if doc.custom_announcement_type == "Event" else None,
                 "registered": registered,
+                "checked_in": checked_in,
             }
 
             # Include Event details for Event announcements

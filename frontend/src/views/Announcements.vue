@@ -24,6 +24,9 @@ const viewDetails = (item) => {
 
 
 const registerEvent = async (item) => {
+  if (item.announcement_type !== "Event") {
+    return
+  }
   try {
     registering.value = true
 
@@ -125,7 +128,7 @@ const formatDate = (timeStr) => {
             </div>
             
 <!-- Event Actions: show only for Event announcements -->
-<div v-if="item.announcement_type === 'Event'" class="flex flex-wrap gap-3 mt-4">
+<div  class="flex flex-wrap gap-3 mt-4">
   <button
     type="button"
      @click.stop="viewDetails(item)"
@@ -136,7 +139,7 @@ const formatDate = (timeStr) => {
    {{ t('announcements.viewDetails') }}
   </button>
 
-  <button
+  <button v-if="item.announcement_type === 'Event'"
   type="button"
   @click.stop="registerEvent(item)"
   :disabled="item.registered || registering"

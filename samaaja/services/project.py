@@ -97,6 +97,17 @@ class ProjectManager:
                 pluck="skill",
             )
 
+            # Fetch the current user's application and workflow state.
+            current_application = frappe.db.get_value(
+                "Volunteer Application",
+                {
+                    "user": current_user,
+                    "volunteer_opportunity": volunteer_opportunity,
+                },
+                ["name", "workflow_state"],
+                as_dict=True,
+            )
+
             # Team capacity configured on the opportunity.
             team_size = int(
                 opportunity_doc.get("team_size") or 0
@@ -187,11 +198,23 @@ class ProjectManager:
                     else None
                 )
 
+            # Return project, tasks, and current user's application.
+            application_data = None
+
+            if current_application:
+                application_data = {
+                    "name": current_application.get("name"),
+                    "workflow_state": current_application.get(
+                        "workflow_state"
+                    ),
+                }
+
             return Result.success(
                 "Project details fetched successfully",
                 data={
                     "project": opportunity,
                     "tasks": tasks,
+                    "application": application_data,
                 },
             )
 

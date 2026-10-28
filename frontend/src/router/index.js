@@ -59,9 +59,10 @@ const router = createRouter({
       component: () => import('../views/EventRegistrationSuccess.vue')
     },
     {
-      path: '/event-attend/:id',
-      name: 'event-attend',
-      component: () => import('../views/EventAttendence.vue')
+      path: '/event-checkin/:id',
+      name: 'event-checkin',
+      component: () => import('../views/EventAttendence.vue'),
+      meta: { requiresAuth: true },
     },
     {
       path: '/volunteer-listings',
@@ -158,10 +159,18 @@ router.beforeEach(async (to, from, next) => {
     return next({ name: 'home' });
   }
 
+  // if (!isPublic && !isLoggedIn) {
+  //   // Not logged in and trying to access a private page? Send to landing/login.
+  //   return next({ name: 'landingpage' });
+  // }
   if (!isPublic && !isLoggedIn) {
-    // Not logged in and trying to access a private page? Send to landing/login.
-    return next({ name: 'landingpage' });
-  }
+  return next({
+    name: 'login',
+    query: {
+      redirect: to.fullPath
+    }
+  });
+}
 
   // If none of the above rules hit, proceed as normal
   next();
