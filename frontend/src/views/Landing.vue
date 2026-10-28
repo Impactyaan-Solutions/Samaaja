@@ -55,9 +55,8 @@ const features = computed(() => [
          <img
           :src="logoSrc"
           :alt="t('landing.logo.alt')"
-          class="w-12 h-12"
+          class="h-10 w-auto"
         />
-          <h1 class="text-2xl font-black text-blue-600">{{ t('landing.appName') }}</h1>
         </div>
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
