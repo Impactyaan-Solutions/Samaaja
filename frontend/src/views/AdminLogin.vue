@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowLeft } from 'lucide-vue-next';
 import { loginWithUsernamePassword } from '@/services/api';
+import { brandingState } from '@/branding';
 
 const { t } = useI18n();
+const appName = computed(() => brandingState.appName || t('landing.appName'));
 const username = ref('');
 const password = ref('');
 const isSubmitting = ref(false);
@@ -45,7 +47,7 @@ const handleLogin = async () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeft class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
+        <h1 class="text-[var(--brand-primary)] font-bold text-xl tracking-tight">{{ appName }}</h1>
         <div class="w-5"></div>
       </div>
 
@@ -77,7 +79,7 @@ const handleLogin = async () => {
         <button
           type="submit"
           :disabled="isSubmitting"
-          class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
+          class="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-accent)] disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
         >
           {{ isSubmitting ? t('adminLogin.loggingIn') : t('adminLogin.loginButton') }}
         </button>

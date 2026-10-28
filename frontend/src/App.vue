@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed,watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import BottomTabBar from './components/layout/BottomTabBar.vue'
 import ActionBottomSheet from './components/Overlays/ActionBottomSheet.vue'
 import { useI18n } from 'vue-i18n'
+import { brandingState, loadBranding } from '@/branding'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -13,19 +14,20 @@ const handleActClick = () => {
   showActionSheet.value = true
 }
 
-watch(
-  locale,
-  () => {
-    document.title = t('landing.appName')
-    document.documentElement.lang = locale.value
+const applyIdentity = () => {
+  document.title = brandingState.appName || t('landing.appName')
+  document.documentElement.lang = locale.value
 
-    const favicon = document.getElementById('favicon')
-    if (favicon) {
-      favicon.href = import.meta.env.BASE_URL + t('landing.logo.src')
-    }
-  },
-  { immediate: true }
-)
+  const favicon = document.getElementById('favicon')
+  if (favicon) {
+    favicon.href = brandingState.logo || (import.meta.env.BASE_URL + t('landing.logo.src'))
+  }
+}
+
+watch(locale, applyIdentity, { immediate: true })
+watch(() => [brandingState.appName, brandingState.logo], applyIdentity)
+
+loadBranding()
 
 // Define the paths where you want absolutely 0 top/bottom padding
 // Update these paths if your router uses different URLs (e.g., '/landing')

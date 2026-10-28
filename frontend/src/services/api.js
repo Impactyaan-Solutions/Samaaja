@@ -83,6 +83,22 @@ export const getLoginOptions = async () => {
     return result.message
 }
 
+export const getBranding = async () => {
+    const response = await fetch(baseurl + '/api/method/samaaja.api.settings.get_branding', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server Error Output:", errorText);
+        throw new Error(`Server error: ${response.status}`);
+    }
+    const result = await response.json();
+    return result.message
+}
+
 export const fetchImageAsBase64 = async (url) => {
     try {
         // Rewrite absolute URLs to relative paths in DEV so Vite proxy can handle CORS

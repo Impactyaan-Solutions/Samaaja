@@ -10,9 +10,11 @@ import {
 } from 'lucide-vue-next';
 import router from '../router';
 import { createAccount, getLoginOptions, getMetadataOptions } from '@/services/api';
+import { brandingState } from '@/branding';
 
 // const router = useRouter();
 const { t } = useI18n();
+const appName = computed(() => brandingState.appName || t('landing.appName'));
 
 const genderOptions = ref([]);
 const roleOptions = ref([]);
@@ -129,7 +131,7 @@ const goBack = () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
+        <h1 class="text-[var(--brand-primary)] font-bold text-xl tracking-tight">{{ appName }}</h1>
         <div class="w-5"></div> 
       </div>
 
@@ -260,7 +262,7 @@ const goBack = () => {
 
         <button
           type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200 mt-2 active:scale-[0.98]"
+          class="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-accent)] text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200 mt-2 active:scale-[0.98]"
         >
           {{ t('signup.createAccount') }}
         </button>

@@ -14,6 +14,14 @@
   --color-primary-900: #1e3a8a;
 }
 
+:root {
+  /* Defaults match the existing hardcoded blue-600/blue-700 look exactly -
+     branding.js overrides these two via inline style once an admin sets a
+     custom color in Samaaja Settings, nothing changes until then. */
+  --brand-primary: var(--color-primary-600);
+  --brand-accent: var(--color-primary-700);
+}
+
 body {
   background-color: #f9fafb; /* gray-50 equivalent */
   color: #1f2937; /* gray-800 equivalent */

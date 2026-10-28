@@ -81,6 +81,10 @@ after_migrate = [
     "samaaja.setup.samaaja_setup.seed_badges_and_points",
 ]
 
+# See samaaja/public/js/setup_wizard.js and samaaja/setup/wizard.py.
+setup_wizard_requires = "assets/samaaja/js/setup_wizard.js"
+setup_wizard_stages = "samaaja.setup.wizard.get_setup_stages"
+
 # Uninstallation
 # ------------
 

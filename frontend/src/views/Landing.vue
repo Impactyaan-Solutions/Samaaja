@@ -8,10 +8,13 @@ import {
   LifeBuoy,
   Globe
 } from 'lucide-vue-next';
+import { brandingState } from '@/branding';
 
 const { t, locale } = useI18n();
 
-const logoSrc = computed(() => import.meta.env.BASE_URL + t('landing.logo.src'));
+const logoSrc = computed(() => brandingState.logo || (import.meta.env.BASE_URL + t('landing.logo.src')));
+const appName = computed(() => brandingState.appName || t('landing.appName'));
+const tagline = computed(() => brandingState.tagline || t('landing.tagline'));
 
 const features = computed(() => [
   {
@@ -57,7 +60,7 @@ const features = computed(() => [
           :alt="t('landing.logo.alt')"
           class="w-12 h-12"
         />
-          <h1 class="text-2xl font-black text-blue-600">{{ t('landing.appName') }}</h1>
+          <h1 class="text-2xl font-black text-[var(--brand-primary)]">{{ appName }}</h1>
         </div>
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
@@ -67,7 +70,7 @@ const features = computed(() => [
 
       <section class="space-y-2 mb-2">
         <h2 class="text-4xl font-extrabold text-slate-900 leading-tight">
-          {{ t('landing.tagline') }}
+          {{ tagline }}
         </h2>
         <p class="text-slate-500 text-lg leading-relaxed">
           {{ t('landing.subtitle') }}
@@ -76,7 +79,7 @@ const features = computed(() => [
 
       <section class="flex flex-col gap-3 mb-6">
         <a href="/signup">
-          <button class="w-full py-4 bg-blue-600 hover:bg-blue-700 transition-colors text-white font-bold rounded-xl shadow-md">
+          <button class="w-full py-4 bg-[var(--brand-primary)] hover:bg-[var(--brand-accent)] transition-colors text-white font-bold rounded-xl shadow-md">
             {{ t('landing.signUp') }}
           </button>
         </a>

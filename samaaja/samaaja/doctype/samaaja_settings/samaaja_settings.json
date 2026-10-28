@@ -7,6 +7,14 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "branding_tab",
+  "app_logo",
+  "app_name",
+  "tagline",
+  "branding_colors_section",
+  "primary_color",
+  "branding_colors_column_break",
+  "accent_color",
   "authentication_tab",
   "enable_phone_login",
   "enable_otp_login",
@@ -31,6 +39,49 @@
   "go_to_energy_point_rule"
  ],
  "fields": [
+  {
+   "fieldname": "branding_tab",
+   "fieldtype": "Tab Break",
+   "label": "Branding"
+  },
+  {
+   "fieldname": "app_logo",
+   "fieldtype": "Attach",
+   "label": "Logo"
+  },
+  {
+   "default": "Samaaja",
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "App Name",
+   "reqd": 1
+  },
+  {
+   "description": "Shown on the landing page, under the app name.",
+   "fieldname": "tagline",
+   "fieldtype": "Data",
+   "label": "Tagline"
+  },
+  {
+   "fieldname": "branding_colors_section",
+   "fieldtype": "Section Break",
+   "label": "Colors"
+  },
+  {
+   "description": "Applied to the header and primary buttons. Not yet applied everywhere in the app - see the project's planning docs for the full theming follow-up.",
+   "fieldname": "primary_color",
+   "fieldtype": "Color",
+   "label": "Primary Color"
+  },
+  {
+   "fieldname": "branding_colors_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accent_color",
+   "fieldtype": "Color",
+   "label": "Accent Color"
+  },
   {
    "fieldname": "authentication_tab",
    "fieldtype": "Tab Break",
