@@ -23,8 +23,8 @@ const categories = ref([])
 const action_types = ref([])
 
 const type = ref('')
-const category = ref('')
-const description = ref('')
+const category = ref(route.query.category || '')
+const description = ref(route.query.description || '')
 const hours_invested = ref('')
 
 

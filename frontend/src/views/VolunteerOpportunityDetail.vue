@@ -67,6 +67,13 @@ const isSelected = computed(
       .toLowerCase() === 'selected'
 )
 
+const isRejected = computed(
+  () =>
+    String(application.value?.workflow_state || '')
+      .trim()
+      .toLowerCase() === 'rejected'
+)
+
 const projectTasks = computed(() => {
   const tasks =
     projectData.value?.tasks ||
@@ -356,6 +363,8 @@ const markComplete = (task) => {
     query: {
       volunteer_opportunity: route.params.id,
       task_name: task.name,
+      category: category.value,
+      description: title.value,
     },
   })
 }
@@ -412,8 +421,8 @@ onMounted(async () => {
         <ArrowLeft class="h-6 w-6 text-gray-800" />
       </button>
 
-      <h2 class="text-lg font-bold text-gray-900">
-        {{ isProject ? 'Project' : 'Opportunity' }}
+      <h2 class="text-base font-bold text-gray-900">
+        Opportunity
       </h2>
 
       <button
@@ -647,7 +656,7 @@ onMounted(async () => {
       </div>
 
       <!-- What happens after I apply: preserved from the old page -->
-      <div class="px-5 pt-5">
+      <div v-if="!isSelected && !isRejected" class="px-5 pt-5">
         <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
           <h2 class="text-sm font-bold text-gray-900">
             {{ t('volunteerOpportunityDetail.whatHappensAfterApply') }}
@@ -785,6 +794,7 @@ onMounted(async () => {
 
       <!-- Bottom application button -->
       <footer
+        v-if="!isSelected"
         class="sticky bottom-0 z-10 border-t border-gray-100 bg-white px-5 py-4"
       >
         <button
@@ -797,12 +807,21 @@ onMounted(async () => {
         </button>
 
         <button
+          v-else-if="isRejected"
+          type="button"
+          disabled
+          class="mx-auto block w-full max-w-md cursor-not-allowed rounded-xl bg-red-50 px-6 py-3.5 text-base font-bold text-red-400"
+        >
+          Rejected
+        </button>
+
+        <button
           v-else
           type="button"
           disabled
           class="mx-auto block w-full max-w-md cursor-not-allowed rounded-xl bg-gray-100 px-6 py-3.5 text-base font-bold text-gray-400"
         >
-          Applied
+          Already Applied
         </button>
       </footer>
     </template>
