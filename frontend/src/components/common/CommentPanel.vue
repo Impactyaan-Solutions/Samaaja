@@ -156,7 +156,7 @@ defineExpose({ fetchComments })
        
 
         <div class="px-4 py-3 border-t border-gray-100 flex items-center space-x-3 bg-white">
-        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs shrink-0 overflow-hidden">
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[var(--brand-primary)] font-bold text-xs shrink-0 overflow-hidden">
   <img
     v-if="authState.profile?.image || authState.profile?.imageBase64"
     :src="authState.profile.image || authState.profile.imageBase64"
@@ -177,7 +177,7 @@ defineExpose({ fetchComments })
           <button
             @click="submitComment"
             :disabled="!commentText.trim()"
-            class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            class="p-2 rounded-full bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-accent)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             <Send class="w-4 h-4" />
           </button>

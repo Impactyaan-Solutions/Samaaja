@@ -246,8 +246,8 @@ const loginWithProvider = (authUrl) => {
 
       <p class="mb-6 text-center text-[10px] text-gray-400 leading-relaxed px-4">
         {{ t('login.agreementPrefix') }}
-        <a href="#" class="text-blue-600 font-semibold hover:underline">{{ t('login.termsOfService') }}</a> {{ t('login.and') }}
-        <a href="#" class="text-blue-600 font-semibold hover:underline">{{ t('login.privacyPolicy') }}</a>.
+        <a href="#" class="text-[var(--brand-primary)] font-semibold hover:underline">{{ t('login.termsOfService') }}</a> {{ t('login.and') }}
+        <a href="#" class="text-[var(--brand-primary)] font-semibold hover:underline">{{ t('login.privacyPolicy') }}</a>.
       </p>
 
     </div>

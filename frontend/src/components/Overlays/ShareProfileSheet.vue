@@ -97,7 +97,7 @@ const openSocial = (href) => {
         <button
           @click="copyLink"
           class="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors flex-shrink-0"
-          :class="copied ? 'bg-green-100 text-green-700' : 'bg-blue-600 text-white hover:bg-blue-700'"
+          :class="copied ? 'bg-green-100 text-green-700' : 'bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-accent)]'"
         >
           <Check v-if="copied" class="w-3.5 h-3.5" />
           {{ copied ? t('profile.copied') : t('profile.copyLink') }}
@@ -108,7 +108,7 @@ const openSocial = (href) => {
       <button
         v-if="canNativeShare"
         @click="nativeShare"
-        class="w-full mb-5 py-3 rounded-2xl bg-blue-50 text-blue-700 font-semibold text-sm hover:bg-blue-100 transition-colors"
+        class="w-full mb-5 py-3 rounded-2xl bg-blue-50 text-[var(--brand-accent)] font-semibold text-sm hover:bg-blue-100 transition-colors"
       >
         {{ t('profile.shareVia') }}
       </button>

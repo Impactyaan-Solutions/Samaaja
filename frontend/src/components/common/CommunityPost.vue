@@ -107,7 +107,7 @@ onUnmounted(() => {
         <router-link :to="{ name: 'account', query: { user_email: post.user } }" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
           <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
             <img v-if="post.user_profile?.user_image" :src="post.user_profile.user_image" alt="Avatar" class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+            <div v-else class="w-full h-full bg-blue-100 flex items-center justify-center text-[var(--brand-primary)] font-bold">
               {{ post.user_profile?.full_name?.charAt(0) || '?' }}
             </div>
           </div>

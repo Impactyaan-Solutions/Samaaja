@@ -169,7 +169,7 @@ const submitForm = async () => {
           type="submit"
           :disabled="!isFormValid || isSubmitting"
           class="w-full py-2 mt-2 rounded-xl font-bold transition-all shadow-md flex justify-center items-center"
-          :class="isFormValid && !isSubmitting ? 'bg-blue-600 hover:bg-blue-700 text-white active:scale-[0.98]' : 'bg-gray-200 text-gray-400 cursor-not-allowed'"
+          :class="isFormValid && !isSubmitting ? 'bg-[var(--brand-primary)] hover:bg-[var(--brand-accent)] text-white active:scale-[0.98]' : 'bg-gray-200 text-gray-400 cursor-not-allowed'"
         >
           <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

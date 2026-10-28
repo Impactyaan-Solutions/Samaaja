@@ -22,28 +22,28 @@ const features = computed(() => [
     description: t('landing.features.reportAct.description'),
     icon: ClipboardCheck,
     iconBg: 'bg-blue-100',
-    iconColor: 'text-blue-600'
+    iconColor: 'text-[var(--brand-primary)]'
   },
   {
     title: t('landing.features.connect.title'),
     description: t('landing.features.connect.description'),
     icon: Users,
     iconBg: 'bg-blue-100',
-    iconColor: 'text-blue-600'
+    iconColor: 'text-[var(--brand-primary)]'
   },
   {
     title: t('landing.features.getRecognised.title'),
     description: t('landing.features.getRecognised.description'),
     icon: Medal,
     iconBg: 'bg-blue-100',
-    iconColor: 'text-blue-600'
+    iconColor: 'text-[var(--brand-primary)]'
   },
   {
     title: t('landing.features.askForHelp.title'),
     description: t('landing.features.askForHelp.description'),
     icon: LifeBuoy,
     iconBg: 'bg-blue-100',
-    iconColor: 'text-blue-600'
+    iconColor: 'text-[var(--brand-primary)]'
   }
 ]);
 </script>

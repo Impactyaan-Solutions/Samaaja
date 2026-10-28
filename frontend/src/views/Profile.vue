@@ -336,7 +336,7 @@ watch(
           </div>
           
           <h1 class="text-2xl font-bold text-gray-900">{{ user.name }}</h1>
-          <p class="text-blue-600 font-semibold text-sm mt-1">{{ user.role }}</p>
+          <p class="text-[var(--brand-primary)] font-semibold text-sm mt-1">{{ user.role }}</p>
           
           <p 
             v-if="user.bio" 
@@ -370,15 +370,15 @@ watch(
 
         <div class="grid grid-cols-3 gap-3">
           <div class="bg-white border border-gray-100 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-            <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.actions }}</span>
+            <span class="text-3xl font-bold text-[var(--brand-primary)] mb-1">{{ user.stats.actions }}</span>
             <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ t('profile.actions') }}</span>
           </div>
           <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-            <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.hours }}</span>
+            <span class="text-3xl font-bold text-[var(--brand-primary)] mb-1">{{ user.stats.hours }}</span>
             <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ t('profile.hours') }}</span>
           </div>
           <div class="bg-white border border-gray-100  rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-            <span class="text-3xl font-bold text-blue-600 mb-1">{{ user.stats.posts }}</span>
+            <span class="text-3xl font-bold text-[var(--brand-primary)] mb-1">{{ user.stats.posts }}</span>
             <span class="text-[11px] text-gray-500 font-medium leading-tight">{{ t('profile.posts') }}</span>
           </div>
         </div>
@@ -492,7 +492,7 @@ watch(
     <!-- Loading State -->
     <div v-else class="h-screen flex items-center justify-center bg-white">
       <div class="flex flex-col items-center space-y-4">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--brand-primary)]"></div>
           <p class="text-gray-500 font-medium tracking-wide">{{ t('profile.loading') }}</p>
       </div>
     </div>

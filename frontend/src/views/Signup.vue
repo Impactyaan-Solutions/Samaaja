@@ -186,7 +186,7 @@ const goBack = () => {
               :class="[
                 'py-2 rounded-xl border text-sm font-medium transition-all',
                 formData.gender === option
-                  ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100'
+                  ? 'bg-[var(--brand-primary)] border-[var(--brand-primary)] text-white shadow-md shadow-blue-100'
                   : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100'
               ]"
             >
