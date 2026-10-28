@@ -32,6 +32,7 @@
   },
   "menu": {
     "settings": "Settings",
+    "updateProfile": "Update Profile",
     "logout": "Logout",
     "logoutFailedWarning": "We couldn't confirm your session was ended on the server, but you've been signed out on this device."
   },
@@ -111,6 +112,8 @@
     "subtitle": "Join the community to start making a real impact!",
     "fullName": "Full Name",
     "fullNamePlaceholder": "e.g. Rahul Poddar",
+    "email": "Email ID",
+    "emailPlaceholder": "e.g. rahul{'@'}example.com",
     "dob": "Date of Birth",
     "dobPlaceholder": "DD/MM/YYYY",
     "gender": "Gender",

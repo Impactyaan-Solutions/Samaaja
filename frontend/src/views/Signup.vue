@@ -4,7 +4,6 @@ import { useRouter  } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
   ArrowLeftIcon,
-  CalendarIcon,
   SearchIcon,
   UserIcon
 } from 'lucide-vue-next';
@@ -15,17 +14,12 @@ import { createAccount, getLoginOptions, getMetadataOptions } from '@/services/a
 const { t } = useI18n();
 
 const genderOptions = ref([]);
-const roleOptions = ref([]);
 
 const formData = ref({
   'name': '',
   'gender': '',
-  'bio': '',
-  'category': '',
-  'dob': '',
-  'mobile_no': '',
-  'password': '',
-  'confirmPassword': ''
+  'email': '',
+  'mobile_no': ''
 });
 
 const isSubmitting = ref(false);
@@ -47,13 +41,11 @@ onMounted(async () => {
 
 const fetchMetadataOptions = async () => {
   try {
-    const [genders, roles] = await Promise.all([
-      getMetadataOptions('Gender'),
-      getMetadataOptions('User Category')
+    const [genders] = await Promise.all([
+      getMetadataOptions('Gender')
     ]);
 
     genderOptions.value = genders;
-    roleOptions.value = roles;
   } catch (error) {
     console.error('Failed to load metadata options:', error);
     errorMessage.value = 'Failed to load signup options. Please refresh the page.';
@@ -66,25 +58,13 @@ onMounted(() => {
 
 const isFormValid = computed(() => {
   return formData.value.gender &&
-         formData.value.bio &&
-         formData.value.category &&
-         formData.value.dob &&
+         formData.value.email &&
          formData.value.mobile_no &&
-         formData.value.name &&
-         formData.value.password &&
-         formData.value.password === formData.value.confirmPassword;
+         formData.value.name;
 });
 
 // Logic for Manual Signup
 const handleSubmit = async () => {
-  if (!formData.value.password) {
-    errorMessage.value = t('signup.passwordRequired');
-    return;
-  }
-  if (formData.value.password !== formData.value.confirmPassword) {
-    errorMessage.value = t('signup.passwordMismatch');
-    return;
-  }
   if (!isFormValid.value) {
     alert(t('signup.fillRequiredFields'));
     return;
@@ -92,12 +72,9 @@ const handleSubmit = async () => {
   errorMessage.value = '';
   const data = {
     name: formData.value.name,
-    dob: formData.value.dob,
     gender: formData.value.gender,
-    category: formData.value.category,
-    mobile_no: formData.value.mobile_no,
-    bio: formData.value.bio,
-    password: formData.value.password
+    email: formData.value.email,
+    mobile_no: formData.value.mobile_no
   }
   isSubmitting.value = true;
   try{
@@ -158,18 +135,14 @@ const goBack = () => {
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">{{ t('signup.dob') }} <span class="text-red-500">*</span></label>
+          <label class="block text-sm font-semibold text-gray-700">{{ t('signup.email') }} <span class="text-red-500">*</span></label>
           <div class="relative">
             <input
-              v-model="formData.dob"
-              type="text"
-              :placeholder="t('signup.dobPlaceholder')"
-              onfocus="this.type='date'; this.showPicker()"
-              onblur="if(!this.value) this.type='text'"
-              @keydown.prevent
-              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300 cursor-pointer"
+              v-model="formData.email"
+              type="email"
+              :placeholder="t('signup.emailPlaceholder')"
+              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
             />
-            <CalendarIcon class="w-5 h-5 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2" />
           </div>
         </div>
 
@@ -194,23 +167,6 @@ const goBack = () => {
         </div>
 
         <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">{{ t('signup.role') }} <span class="text-red-500">*</span></label>
-          <select
-            v-model="formData.category"
-            class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white text-gray-700"
-          >
-            <option value="" disabled>Select role</option>
-            <option
-              v-for="option in roleOptions"
-              :key="option"
-              :value="option"
-            >
-              {{ option }}
-            </option>
-          </select>
-        </div>
-
-        <div class="space-y-1">
           <label class="block text-sm font-semibold text-gray-700">{{ t('signup.mobileNumber') }} <span class="text-red-500">*</span></label>
           <div class="relative flex items-center">
             <span class="absolute left-4 text-gray-500 font-medium">+91</span>
@@ -223,39 +179,6 @@ const goBack = () => {
               class="w-full pl-14 pr-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-gray-300"
             />
           </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">{{ t('signup.bio') }} <span class="text-red-500">*</span></label>
-          <div class="relative">
-            <textarea
-              v-model="formData.bio"
-              rows="2"
-              maxlength="100"
-              :placeholder="t('signup.bioPlaceholder')"
-              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300 resize-none"
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">{{ t('signup.password') }} <span class="text-red-500">*</span></label>
-          <input
-            v-model="formData.password"
-            type="password"
-            :placeholder="t('signup.passwordPlaceholder')"
-            class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
-          />
-        </div>
-
-        <div class="space-y-1">
-          <label class="block text-sm font-semibold text-gray-700">{{ t('signup.confirmPassword') }} <span class="text-red-500">*</span></label>
-          <input
-            v-model="formData.confirmPassword"
-            type="password"
-            :placeholder="t('signup.confirmPasswordPlaceholder')"
-            class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
-          />
         </div>
 
         <button
