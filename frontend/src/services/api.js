@@ -67,8 +67,8 @@ export const getLoggedUser = async () => {
 
 }
 
-export const getGoogleSignInURL = async () => {
-    const response = await fetch(baseurl + '/api/method/samaaja.api.login.get_google_auth_url', {
+export const getLoginOptions = async () => {
+    const response = await fetch(baseurl + '/api/method/samaaja.api.login.get_login_options', {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -124,21 +124,11 @@ export const getLeaderboard = async () => {
     return data.data
 }
 export const logout = async () => {
-    const requestOptions = getRequestOptions();
-
-    // Changing to GET often bypasses CSRF issues on logout
-    const response = await fetch(baseurl + '/api/method/logout', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            ...requestOptions.headers
-        },
-        ...requestOptions
-    });
-
-    // We don't strictly throw an error here because if the logout fails 
-    // on the server, we still want the user to be logged out locally.
-    return response.ok;
+    const headers = {
+        'Accept': 'application/json',
+    }
+    await callAPI(headers, baseurl + '/api/method/logout', 'POST')
+    return true;
 };
 
 export const completeProfile = async (data) => {
@@ -204,6 +194,70 @@ export const loginUsingOtp = async (data) => {
         )
     }
 
+
+    return true
+}
+
+export const loginUsingPassword = async (data) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    const response = await fetch(baseurl + '/api/method/samaaja.api.login.login_using_password', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data)
+    })
+
+    if (response.status === 404) {
+        alert("User not found!")
+        return false
+    }
+    if (!response.ok) {
+        throw new Error(`Failed to verify password and login: ${response.statusText}`)
+    }
+
+    if (Capacitor.isNativePlatform()) {
+
+        const data = await response.json()
+
+        localStorage.setItem(
+            'api_key',
+            data.data.api_key
+        )
+
+        localStorage.setItem(
+            'api_secret',
+            data.data.api_secret
+        )
+
+        localStorage.setItem(
+            'user',
+            data.data.user
+        )
+    }
+
+    return true
+}
+
+export const loginWithUsernamePassword = async (usr, pwd) => {
+    // This core endpoint takes form-encoded data, unlike every other
+    // endpoint in this file which takes JSON.
+    const body = new URLSearchParams({ usr, pwd })
+
+    const response = await fetch(baseurl + '/api/method/login', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body
+    })
+
+    if (!response.ok) {
+        throw new Error('Invalid email or password')
+    }
 
     return true
 }

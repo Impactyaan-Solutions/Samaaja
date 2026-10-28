@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { completeProfile, getMetadataOptions } from '@/services/api';
@@ -8,32 +8,46 @@ import { User, Calendar, Phone, BookOpen, Tag } from 'lucide-vue-next';
 
 const router = useRouter();
 const { t } = useI18n();
-const organisations = ref([]);
-const organisation = ref('');
 const formData = ref({
   gender: '',
   bio: '',
   category: '',
   dob: '',
-  mobileNumber: '',
-  organisation: ''
+  mobileNumber: ''
 });
 
 const isSubmitting = ref(false);
 const errorMessage = ref('');
+const genderOptions = ref([]);
+const categoryOptions = ref([]);
+
+const fetchMetadataOptions = async () => {
+  try {
+    const [genders, categories] = await Promise.all([
+      getMetadataOptions('Gender'),
+      getMetadataOptions('User Category')
+    ]);
+    genderOptions.value = genders;
+    categoryOptions.value = categories;
+  } catch (error) {
+    console.error('Failed to load metadata options:', error);
+    errorMessage.value = 'Failed to load profile options. Please refresh the page.';
+  }
+};
+
+fetchMetadataOptions();
 
 const isFormValid = computed(() => {
-  return formData.value.gender && 
-         formData.value.bio && 
-         formData.value.category && 
-         formData.value.dob && 
-         formData.value.mobileNumber && 
-         formData.value.organisation;
+  return formData.value.gender &&
+         formData.value.bio &&
+         formData.value.category &&
+         formData.value.dob &&
+         formData.value.mobileNumber;
 });
 
 const submitForm = async () => {
   if (!isFormValid.value) return;
-  
+
   isSubmitting.value = true;
   errorMessage.value = '';
 
@@ -46,8 +60,7 @@ const submitForm = async () => {
       user_category: formData.value.category,
       user_dob: formData.value.dob,
       user_mobile_no: formData.value.mobileNumber,
-      user_email: authState.email,
-      user_organisation: formData.value.organisation
+      user_email: authState.email
     });
 
     // Refresh the local authState cache to pull down the newly saved data
@@ -55,7 +68,7 @@ const submitForm = async () => {
 
     // The router guard will automatically allow us into the home page now
     router.push({ name: 'home' });
-    
+
   } catch (error) {
     console.error(error);
     errorMessage.value = error.message;
@@ -63,22 +76,6 @@ const submitForm = async () => {
     isSubmitting.value = false;
   }
 };
-
-const fetchMetadataOptions = async () => {
-  try {
-    const [organisationOptions ] = await Promise.all([
-      getMetadataOptions('Organization')
-    ])
-    organisations.value =  organisationOptions
-  console.log('Organisations set:', organisations.value)
-  } catch (e) {
-    console.error('Failed to load metadata options:', e)
-  }
-}
-
-onMounted(() => {
-  fetchMetadataOptions()
-})
 
 </script>
 
@@ -106,9 +103,7 @@ onMounted(() => {
             <span class="pl-4 text-gray-400"><User :size="14" /></span>
             <select v-model="formData.gender" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
               <option value="" disabled>{{ t('profileCompletion.selectGender') }}</option>
-              <option value="Male">{{ t('profileCompletion.genderMale') }}</option>
-              <option value="Female">{{ t('profileCompletion.genderFemale') }}</option>
-              <option value="Other">{{ t('profileCompletion.genderOther') }}</option>
+              <option v-for="option in genderOptions" :key="option" :value="option">{{ option }}</option>
             </select>
           </div>
         </div>
@@ -120,8 +115,7 @@ onMounted(() => {
             <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
             <select v-model="formData.category" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
               <option value="" disabled>{{ t('profileCompletion.selectCategory') }}</option>
-              <option value="Citizen">{{ t('profileCompletion.categoryCitizen') }}</option>
-              <option value="NGO Partner">{{ t('profileCompletion.categoryNgoPartner') }}</option>
+              <option v-for="option in categoryOptions" :key="option" :value="option">{{ option }}</option>
             </select>
           </div>
         </div>
@@ -153,27 +147,6 @@ onMounted(() => {
               class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent"
             />
           </div>
-        </div>
-
-         <!-- Organisation -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.organisation') }}</label>
-           <select
-          v-model="formData.organisation"
-          class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm font-medium"
-        >
-          <option value="" disabled>
-            {{ t('profileCompletion.selectOrganisationLabel') }}
-          </option>
-
-          <option
-            v-for="org in organisations"
-            :key="org"
-            :value="org"
-          >
-            {{ org }}
-          </option>
-        </select>
         </div>
 
         <!-- Bio -->

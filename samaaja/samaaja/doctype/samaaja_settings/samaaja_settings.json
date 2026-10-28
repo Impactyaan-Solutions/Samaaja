@@ -7,549 +7,145 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "leaderboard_tab",
-  "samaaja_icon",
-  "hero_bg_color",
-  "hero_text_color",
-  "tagline",
-  "blurb",
-  "summary",
-  "show_cta_1",
-  "show_cta_2",
-  "cta1_label",
-  "cta1_link",
-  "cta2_label",
-  "cta2_link",
-  "samaaja_feature_list",
-  "total_members_label",
-  "actions_taken_label",
-  "hours_invested_label",
-  "verified_members_label",
-  "verified_members_summary",
-  "most_active_members_label",
-  "most_active_members_summary",
-  "most_active_cities_label",
-  "most_active_cities_summary",
-  "campaign_label",
-  "campaign_summary",
-  "no_campaigns_text",
-  "opportunity_label",
-  "opportunity_summary",
-  "no_opportunity_text",
-  "view_all",
-  "section_break_zzox",
-  "show_opportunities_section_",
-  "show_campaign_section_",
-  "section_break_pfyo",
-  "location_field_name",
-  "user_profile_location_field",
-  "profile_tab",
-  "verified_change_maker_label",
-  "location_absent_text",
-  "last_activity_label",
-  "hours_label",
-  "actions_label",
-  "bio_label",
-  "no_bio_text",
-  "skill_badges_label",
-  "overview_label",
-  "highlight_label",
-  "interested_in_label",
-  "expert_review_label",
-  "action_label",
-  "highlight_absent_text",
-  "actions_absent_text",
-  "verified_by_label",
-  "skill_badges_absent_text",
-  "profile_label",
-  "add_action_label",
-  "ask_for_help_label",
-  "request_review_label",
-  "download_profile_label",
-  "highlight_label_menu",
-  "edit_label",
-  "delete_label",
-  "delete_confirm_text",
-  "no_reviews_text",
-  "partners_supporters_label",
-  "no_partners_text",
-  "attachment_label",
-  "tab_break_ze49d",
-  "location_section",
-  "geolocation_api_url",
-  "recent_actions",
-  "recent_actions_title",
-  "map_stats_query",
-  "leaderboard_setting_section",
-  "leaderboard_page_title",
-  "leaderboard_page_size",
-  "leaderboard_max_days",
-  "top_cities_chart_setting_section",
-  "top_cities_title",
-  "top_cities_max_cities",
-  "top_cities_max_days",
-  "pincode_section",
-  "pincode_key"
+  "authentication_tab",
+  "enable_phone_login",
+  "enable_otp_login",
+  "enable_google_login",
+  "metadata_tab",
+  "gender_section",
+  "gender_description",
+  "go_to_gender",
+  "action_type_section",
+  "action_type_description",
+  "go_to_action_type",
+  "action_category_section",
+  "action_category_description",
+  "go_to_action_category",
+  "user_category_section",
+  "user_category_description",
+  "go_to_user_category",
+  "badges_section",
+  "badges_description",
+  "go_to_badges",
+  "badges_column_break",
+  "go_to_energy_point_rule"
  ],
  "fields": [
   {
-   "collapsible": 1,
-   "fieldname": "location_section",
-   "fieldtype": "Section Break",
-   "label": "Location"
-  },
-  {
-   "fieldname": "geolocation_api_url",
-   "fieldtype": "Data",
-   "label": "Geolocation API URL"
-  },
-  {
-   "description": "Example query-<br>\nselect CAST('Fixed pothole' AS text) AS description, latitude, longitude from `tabLocation`;\n<br><br>\nData returned from this query will be used to show points on the map ",
-   "fieldname": "map_stats_query",
-   "fieldtype": "Code",
-   "label": "Map action points query",
-   "options": "SQL"
-  },
-  {
-   "description": "You can write HTML here.",
-   "fieldname": "recent_actions_title",
-   "fieldtype": "Small Text",
-   "label": "Title"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "leaderboard_setting_section",
-   "fieldtype": "Section Break",
-   "label": "Leaderboard Setting"
-  },
-  {
-   "fieldname": "leaderboard_page_size",
-   "fieldtype": "Int",
-   "label": "Page size"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "top_cities_chart_setting_section",
-   "fieldtype": "Section Break",
-   "label": "Top cities setting"
-  },
-  {
-   "fieldname": "top_cities_max_days",
-   "fieldtype": "Int",
-   "label": "Max days"
-  },
-  {
-   "description": "You can write HTML here.",
-   "fieldname": "top_cities_title",
-   "fieldtype": "Small Text",
-   "label": "Title"
-  },
-  {
-   "fieldname": "top_cities_max_cities",
-   "fieldtype": "Int",
-   "label": "Max cities"
-  },
-  {
-   "fieldname": "leaderboard_max_days",
-   "fieldtype": "Int",
-   "label": "Max days"
-  },
-  {
-   "description": "You can write HTML here.",
-   "fieldname": "leaderboard_page_title",
-   "fieldtype": "Small Text",
-   "label": "Title"
-  },
-  {
-   "fieldname": "profile_tab",
+   "fieldname": "authentication_tab",
    "fieldtype": "Tab Break",
-   "label": "Profile Page"
+   "label": "Authentication"
   },
   {
-   "fieldname": "tab_break_ze49d",
+   "default": "1",
+   "description": "Off means no phone-number sign-in at all (password or OTP) - citizens can only use social login. At least one sign-in method must stay enabled; turning this off is blocked unless Google login (or another configured social login) is enabled.",
+   "fieldname": "enable_phone_login",
+   "fieldtype": "Check",
+   "label": "Enable Phone Number Login"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.enable_phone_login",
+   "description": "When off, citizens log in with phone number + password. When on, OTP replaces password as the login method entirely. Needs SMS to be configured in SMS Settings first - not production-ready until a real SMS provider is wired in there.",
+   "fieldname": "enable_otp_login",
+   "fieldtype": "Check",
+   "label": "Enable Phone OTP Login"
+  },
+  {
+   "default": "0",
+   "description": "Needs a Social Login Key for Google with a Client ID and Client Secret already saved before this can be turned on.",
+   "fieldname": "enable_google_login",
+   "fieldtype": "Check",
+   "label": "Enable Google Login"
+  },
+  {
+   "fieldname": "metadata_tab",
    "fieldtype": "Tab Break",
-   "label": "Stats Page"
+   "label": "Metadata"
   },
   {
-   "collapsible": 1,
-   "fieldname": "recent_actions",
+   "fieldname": "gender_section",
    "fieldtype": "Section Break",
-   "label": "Recent Actions"
+   "label": "Gender"
   },
   {
-   "fieldname": "pincode_section",
+   "fieldname": "gender_description",
+   "fieldtype": "HTML",
+   "options": "<p>The gender options offered at signup and profile completion.</p>"
+  },
+  {
+   "fieldname": "go_to_gender",
+   "fieldtype": "Button",
+   "label": "Edit Genders"
+  },
+  {
+   "fieldname": "action_type_section",
    "fieldtype": "Section Break",
-   "label": "Pin Code Lookup",
-   "options": "sg sg\n dsg dg dfs\ng \ndg dfs"
+   "label": "Action Type"
   },
   {
-   "fieldname": "pincode_key",
-   "fieldtype": "Data",
-   "label": "Pin Code API Key"
+   "fieldname": "action_type_description",
+   "fieldtype": "HTML",
+   "options": "<p>The broad category an action belongs to (e.g. On-Ground Action, Training &amp; Mentoring). Shown as a dropdown when logging an action.</p>"
   },
   {
-   "fieldname": "leaderboard_tab",
-   "fieldtype": "Tab Break",
-   "label": "Leaderboard Page"
+   "fieldname": "go_to_action_type",
+   "fieldtype": "Button",
+   "label": "Edit Action Types"
   },
   {
-   "fieldname": "samaaja_feature_list",
-   "fieldtype": "Table",
-   "label": "Samaaja Feature List",
-   "options": "Samaaja Feature Item"
+   "fieldname": "action_category_section",
+   "fieldtype": "Section Break",
+   "label": "Action Category"
   },
   {
-   "fieldname": "samaaja_icon",
-   "fieldtype": "Attach",
-   "label": "Samaaja Icon"
+   "fieldname": "action_category_description",
+   "fieldtype": "HTML",
+   "options": "<p>A more specific tag within an action type (e.g. Health &amp; Nutrition, Education). Shown alongside Action Type when logging an action.</p>"
   },
   {
-   "fieldname": "total_members_label",
-   "fieldtype": "Data",
-   "label": "Total Members Label"
+   "fieldname": "go_to_action_category",
+   "fieldtype": "Button",
+   "label": "Edit Action Categories"
   },
   {
-   "fieldname": "actions_taken_label",
-   "fieldtype": "Data",
-   "label": "Actions Taken Label"
+   "fieldname": "user_category_section",
+   "fieldtype": "Section Break",
+   "label": "User Category"
   },
   {
-   "fieldname": "hours_invested_label",
-   "fieldtype": "Data",
-   "label": "Hours Invested Label"
+   "fieldname": "user_category_description",
+   "fieldtype": "HTML",
+   "options": "<p>The role assigned to a user at signup (e.g. Citizen, NGO Partner).</p>"
   },
   {
-   "fieldname": "verified_members_label",
-   "fieldtype": "Data",
-   "label": "Verified Members Label"
+   "fieldname": "go_to_user_category",
+   "fieldtype": "Button",
+   "label": "Edit User Categories"
   },
   {
-   "fieldname": "verified_members_summary",
-   "fieldtype": "Data",
-   "label": "Verified Members Summary"
+   "fieldname": "badges_section",
+   "fieldtype": "Section Break",
+   "label": "Badges / Points"
   },
   {
-   "fieldname": "most_active_members_label",
-   "fieldtype": "Data",
-   "label": "Most Active Members Label"
+   "fieldname": "badges_description",
+   "fieldtype": "HTML",
+   "options": "<p>Badges recognize user contributions, awarded automatically by Energy Point Rules when a matching action is logged.</p>"
   },
   {
-   "fieldname": "most_active_members_summary",
-   "fieldtype": "Data",
-   "label": "Most Active Members Summary"
+   "fieldname": "go_to_badges",
+   "fieldtype": "Button",
+   "label": "Edit Badges"
   },
   {
-   "fieldname": "most_active_cities_label",
-   "fieldtype": "Data",
-   "label": "Most Active Cities Label"
+   "fieldname": "badges_column_break",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "most_active_cities_summary",
-   "fieldtype": "Data",
-   "label": "Most Active Cities Summary"
-  },
-  {
-   "default": "1",
-   "fieldname": "show_opportunities_section_",
-   "fieldtype": "Check",
-   "label": "Show Opportunities Section ?"
-  },
-  {
-   "fieldname": "section_break_zzox",
-   "fieldtype": "Section Break"
-  },
-  {
-   "default": "1",
-   "fieldname": "show_campaign_section_",
-   "fieldtype": "Check",
-   "label": "Show Campaign Section ?"
-  },
-  {
-   "fieldname": "hero_text_color",
-   "fieldtype": "Color",
-   "label": "Hero section text color"
-  },
-  {
-   "fieldname": "hero_bg_color",
-   "fieldtype": "Color",
-   "label": "Hero background base color"
-  },
-  {
-   "fieldname": "tagline",
-   "fieldtype": "Data",
-   "label": "Tagline"
-  },
-  {
-   "fieldname": "blurb",
-   "fieldtype": "Data",
-   "label": "Blurb"
-  },
-  {
-   "fieldname": "summary",
-   "fieldtype": "Data",
-   "label": "Summary"
-  },
-  {
-   "default": "1",
-   "fieldname": "show_cta_1",
-   "fieldtype": "Check",
-   "label": "Show CTA 1 on Hero Section"
-  },
-  {
-   "default": "1",
-   "fieldname": "show_cta_2",
-   "fieldtype": "Check",
-   "label": "Show CTA 2 on Hero Section"
-  },
-  {
-   "fieldname": "cta1_label",
-   "fieldtype": "Data",
-   "label": "Hero section CTA 1 label"
-  },
-  {
-   "fieldname": "cta1_link",
-   "fieldtype": "Data",
-   "label": "Hero section CTA 1 link"
-  },
-  {
-   "fieldname": "cta2_label",
-   "fieldtype": "Data",
-   "label": "Hero section CTA 2 label"
-  },
-  {
-   "fieldname": "cta2_link",
-   "fieldtype": "Data",
-   "label": "Hero section CTA 2 link"
-  },
-  {
-   "fieldname": "section_break_pfyo",
-   "fieldtype": "Section Break"
-  },
-  {
-   "default": "District",
-   "fieldname": "location_field_name",
-   "fieldtype": "Data",
-   "label": "Name of the field for location based leaderboard"
-  },
-  {
-   "default": "district",
-   "fieldname": "user_profile_location_field",
-   "fieldtype": "Data",
-   "label": "Name of the field for picking location in user profile"
-  },
-  {
-   "default": "Verified Change Maker",
-   "fieldname": "verified_change_maker_label",
-   "fieldtype": "Data",
-   "label": "Verified Change Maker label"
-  },
-  {
-   "default": "Last activity",
-   "fieldname": "last_activity_label",
-   "fieldtype": "Data",
-   "label": "Last activity label"
-  },
-  {
-   "default": "Hours Invested",
-   "fieldname": "hours_label",
-   "fieldtype": "Data",
-   "label": "Hours Invested label"
-  },
-  {
-   "default": "Actions Taken",
-   "fieldname": "actions_label",
-   "fieldtype": "Data",
-   "label": "Actions Taken label"
-  },
-  {
-   "default": "Bio",
-   "fieldname": "bio_label",
-   "fieldtype": "Data",
-   "label": "Bio label"
-  },
-  {
-   "default": "Skill Badges",
-   "fieldname": "skill_badges_label",
-   "fieldtype": "Data",
-   "label": "Skill Badges label"
-  },
-  {
-   "default": "Overview",
-   "fieldname": "overview_label",
-   "fieldtype": "Data",
-   "label": "Overview label"
-  },
-  {
-   "default": "Highlight",
-   "fieldname": "highlight_label",
-   "fieldtype": "Data",
-   "label": "Highlight label"
-  },
-  {
-   "default": "Interested in",
-   "fieldname": "interested_in_label",
-   "fieldtype": "Data",
-   "label": "Interested in label"
-  },
-  {
-   "default": "Expert Review",
-   "fieldname": "expert_review_label",
-   "fieldtype": "Data",
-   "label": "Expert Review label"
-  },
-  {
-   "default": "Actions",
-   "fieldname": "action_label",
-   "fieldtype": "Data",
-   "label": "Actions label"
-  },
-  {
-   "default": "Looks like you don't have a bio. You may login and add your bio",
-   "fieldname": "no_bio_text",
-   "fieldtype": "Data",
-   "label": "Bio Absent Text"
-  },
-  {
-   "default": "Login and add your location !",
-   "fieldname": "location_absent_text",
-   "fieldtype": "Data",
-   "label": "Location Absent text"
-  },
-  {
-   "default": "Highlight an action to be displayed in this section !",
-   "fieldname": "highlight_absent_text",
-   "fieldtype": "Data",
-   "label": "Highlight absent text"
-  },
-  {
-   "default": "Please add actions to be displayed in this section !",
-   "fieldname": "actions_absent_text",
-   "fieldtype": "Data",
-   "label": "Actions absent text"
-  },
-  {
-   "default": "Verified by",
-   "fieldname": "verified_by_label",
-   "fieldtype": "Data",
-   "label": "Verified By label"
-  },
-  {
-   "default": "To start activating skill badges share the details of action taken by you!",
-   "fieldname": "skill_badges_absent_text",
-   "fieldtype": "Data",
-   "label": "Skill badges absent text"
-  },
-  {
-   "default": "Profile",
-   "fieldname": "profile_label",
-   "fieldtype": "Data",
-   "label": "Profile Label"
-  },
-  {
-   "default": "Add Action",
-   "fieldname": "add_action_label",
-   "fieldtype": "Data",
-   "label": "Add Action Button Label"
-  },
-  {
-   "default": "Ask for help",
-   "fieldname": "ask_for_help_label",
-   "fieldtype": "Data",
-   "label": "Ask for Help Button Label"
-  },
-  {
-   "default": "Request Review",
-   "fieldname": "request_review_label",
-   "fieldtype": "Data",
-   "label": "Request Review Button Label"
-  },
-  {
-   "default": "Download Profile",
-   "fieldname": "download_profile_label",
-   "fieldtype": "Data",
-   "label": "Download Profile Button Label"
-  },
-  {
-   "default": "Highlight",
-   "fieldname": "highlight_label_menu",
-   "fieldtype": "Data",
-   "label": "Highlight Menu Item Label"
-  },
-  {
-   "default": "Edit",
-   "fieldname": "edit_label",
-   "fieldtype": "Data",
-   "label": "Edit Menu Item Label"
-  },
-  {
-   "default": "Delete",
-   "fieldname": "delete_label",
-   "fieldtype": "Data",
-   "label": "Delete Menu Item Label"
-  },
-  {
-   "default": "Are you sure you want to Delete?",
-   "fieldname": "delete_confirm_text",
-   "fieldtype": "Data",
-   "label": "Delete Confirmation Text"
-  },
-  {
-   "default": "You haven't received any reviews as of now.",
-   "fieldname": "no_reviews_text",
-   "fieldtype": "Data",
-   "label": "No Reviews Text"
-  },
-  {
-   "default": "Partners/Supporters",
-   "fieldname": "partners_supporters_label",
-   "fieldtype": "Data",
-   "label": "Partners/Supporters Label"
-  },
-  {
-   "default": "No Partners/Supporters.",
-   "fieldname": "no_partners_text",
-   "fieldtype": "Data",
-   "label": "No Partners Text"
-  },
-  {
-   "fieldname": "campaign_label",
-   "fieldtype": "Data",
-   "label": "Campaign Label"
-  },
-  {
-   "fieldname": "campaign_summary",
-   "fieldtype": "Data",
-   "label": "Campaign Summary"
-  },
-  {
-   "fieldname": "no_campaigns_text",
-   "fieldtype": "Data",
-   "label": "Campaign Not Present Text"
-  },
-  {
-   "fieldname": "view_all",
-   "fieldtype": "Data",
-   "label": "View All Label"
-  },
-  {
-   "fieldname": "opportunity_label",
-   "fieldtype": "Data",
-   "label": "Opportunity Label"
-  },
-  {
-   "fieldname": "opportunity_summary",
-   "fieldtype": "Data",
-   "label": "Opportunity Summary"
-  },
-  {
-   "fieldname": "no_opportunity_text",
-   "fieldtype": "Data",
-   "label": "Opportunity Not Present Text"
-  },
-  {
-   "fieldname": "attachment_label",
-   "fieldtype": "Data",
-   "label": "Attachment Label"
+   "fieldname": "go_to_energy_point_rule",
+   "fieldtype": "Button",
+   "label": "Edit Energy Point Rules"
   }
  ],
  "index_web_pages_for_search": 1,

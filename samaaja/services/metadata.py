@@ -25,6 +25,13 @@ DROPDOWN_CONFIG = {
         "filters": {},
     },
 }
+SELECT_FIELD_CONFIG = {
+    "Availability": {
+        "doctype": "Volunteer Application",
+        "field": "preferred_available_days",
+    },
+}
+
 VOLUNTEER_FILTER_CONFIG = {
     "Category": {
         "handler": "_get_active_categories",
@@ -54,6 +61,7 @@ class MetadataManager:
             if (
                 doctype not in VOLUNTEER_FILTER_CONFIG
                 and doctype not in DROPDOWN_CONFIG
+                and doctype not in SELECT_FIELD_CONFIG
             ):
                 return Result.not_found(
                     "Dropdown options not found for the requested doctype"
@@ -62,6 +70,22 @@ class MetadataManager:
             if doctype in VOLUNTEER_FILTER_CONFIG:
                 handler_name = VOLUNTEER_FILTER_CONFIG[doctype]["handler"]
                 values = getattr(MetadataManager, handler_name)()
+
+                return Result.success(
+                    "Dropdown options fetched successfully",
+                    data=values,
+                )
+            if doctype in SELECT_FIELD_CONFIG:
+                config = SELECT_FIELD_CONFIG[doctype]
+                field = frappe.get_meta(
+                    config["doctype"]
+                ).get_field(config["field"])
+
+                values = [
+                    value.strip()
+                    for value in (field.options or "").split("\n")
+                    if value.strip()
+                ]
 
                 return Result.success(
                     "Dropdown options fetched successfully",

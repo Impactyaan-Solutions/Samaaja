@@ -75,10 +75,11 @@ web_include_js = ""
 after_install = "samaaja.setup.samaaja_setup.after_install"
 
 # Runs on every `bench migrate`, i.e. on every deploy. Only creates dropdown
-# records that are missing, so it is cheap and safe to repeat. This is why it
-# can live here while the old setup_samaaja (which also seeded demo users and
-# crashed on missing doctypes) had to stay commented out.
-after_migrate = "samaaja.utils.temp_sync_options.sync_options"
+# records that are missing, so it is cheap and safe to repeat.
+after_migrate = [
+    "samaaja.setup.samaaja_setup.seed_reference_options",
+    "samaaja.setup.samaaja_setup.seed_badges_and_points",
+]
 
 # Uninstallation
 # ------------
@@ -246,6 +247,13 @@ doc_events = {
     },
     "User Metadata": {
         "validate": "samaaja.doc_events.user_metadata.on_save"
+    },
+    "Samaaja Settings": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate"
+    },
+    "Social Login Key": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate_social_login_key",
+        "on_trash": "samaaja.doc_events.samaaja_settings.on_trash_social_login_key"
     },
     "Energy Point Log": {
         "before_insert": "samaaja.doc_events.energy_point_log.before_insert"

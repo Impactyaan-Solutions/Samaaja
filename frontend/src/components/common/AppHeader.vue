@@ -24,11 +24,13 @@ const handleLogout = async () => {
   try {
     await apiLogout()
   } catch (error) {
-    console.warn("Logout error:", error)
+    console.error("Logout error:", error)
+    alert(t('menu.logoutFailedWarning'))
   } finally {
-    isMenuOpen.value = false
-    localStorage.clear()
-    window.location.href = '/login'
+    // Always clear local state and leave, even if the server call above failed.
+    isMenuOpen.value = false;
+    localStorage.clear();
+    window.location.href = '/login';
   }
 }
 </script>

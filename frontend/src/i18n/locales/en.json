@@ -32,7 +32,8 @@
   },
   "menu": {
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "logoutFailedWarning": "We couldn't confirm your session was ended on the server, but you've been signed out on this device."
   },
   "actionSheet": {
     "title": "Choose an action",
@@ -46,7 +47,7 @@
   },
   "landing": {
     "appName": "Samaaja",
-    "logo": { "src": "/samaaja.png", "alt": "Samaaja Logo", "name": "Samaaja" },
+    "logo": { "src": "samaaja.png", "alt": "Samaaja Logo", "name": "Samaaja" },
     "tagline": "Build Your Community. Take Action.",
     "subtitle": "Join people in your area solving real issues and improving their community together.",
     "signUp": "Sign Up",
@@ -62,7 +63,9 @@
   "login": {
     "title": "Log In",
     "subtitle": "Enter your mobile number to get a verification code and securely log in.",
+    "passwordSubtitle": "Enter your mobile number and password to log in.",
     "mobileNumberPlaceholder": "Mobile Number",
+    "passwordPlaceholder": "Password",
     "otpLabel": "OTP",
     "sendOtp": "Send OTP",
     "loginButton": "Login",
@@ -76,7 +79,22 @@
     "invalidMobile": "Please enter a valid 10-digit mobile number",
     "otpSent": "OTP Sent Successfully. Use 1111 to login",
     "invalidOtp": "Please enter a valid 4-digit OTP",
-    "connectionFailed": "Connection failed: {error}"
+    "passwordRequired": "Please enter your password",
+    "loginFailed": "Incorrect mobile number or password",
+    "connectionFailed": "Connection failed: {error}",
+    "loadOptionsFailed": "Failed to load login options. Please refresh the page.",
+    "adminLoginLink": "Admin login"
+  },
+  "adminLogin": {
+    "title": "Admin Login",
+    "subtitle": "Sign in with your admin username and password.",
+    "usernamePlaceholder": "Username",
+    "passwordPlaceholder": "Password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "invalidCredentials": "Incorrect username or password.",
+    "missingFields": "Enter both username and password.",
+    "backToLogin": "Back to login"
   },
   "signup": {
     "title": "Sign Up",
@@ -95,11 +113,17 @@
     "mobileNumber": "Mobile Number",
     "bio": "Bio",
     "bioPlaceholder": "Short bio",
+    "password": "Password",
+    "passwordPlaceholder": "Password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
     "createAccount": "Create Account",
     "orSignUpWith": "Or sign up with",
     "SignUpWith": "Sign up with",
     "google": "Google",
     "fillRequiredFields": "Please fill in all the required fields.",
+    "passwordRequired": "Please enter a password",
+    "passwordMismatch": "Passwords do not match",
     "connectionFailed": "Connection failed: {error}"
   },
   "profileCompletion": {
@@ -107,19 +131,12 @@
     "subtitle": "Almost there! We just need a few more details to set up your account.",
     "gender": "Gender",
     "selectGender": "Select Gender",
-    "genderMale": "Male",
-    "genderFemale": "Female",
-    "genderOther": "Other",
     "category": "Category",
     "selectCategory": "Select Category",
-    "categoryCitizen": "Citizen",
-    "categoryNgoPartner": "NGO Partner",
     "dob": "Date of Birth",
     "mobileNumber": "Mobile Number",
     "mobileNumberPlaceholder": "e.g. 9876543210",
     "bio": "Bio",
-    "selectOrganisationLabel": "Select College",
-    "organisation": "College",
     "bioPlaceholder": "Tell us a bit about yourself and why you joined.",
     "savingProfile": "Saving Profile...",
     "completeRegistration": "Complete Registration"
@@ -159,7 +176,14 @@
     "postLabel": "Post",
     "failedToLoadActions": "Failed to load actions.",
     "failedToLoadPosts": "Failed to load posts.",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "shareProfile": "Share my profile",
+    "shareTitle": "Share your profile",
+    "shareSubtitle": "Let others see your impact on Samaaja",
+    "shareText": "Check out my Samaaja profile!",
+    "copyLink": "Copy",
+    "copied": "Copied",
+    "shareVia": "Share via..."
   },
   "addPost": {
     "headerTitle": "Add a Post",

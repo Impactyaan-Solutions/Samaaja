@@ -2,16 +2,22 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Samaaja Settings', {
-	refresh: function (frm) {
-        frm.add_custom_button(__('Setup Samaaja'), function () {
-            frappe.call({
-                method: "samaaja.setup.samaaja_setup.setup_samaaja",
-                callback: function (r) {
-                    if (r.message === "ok") {
-                        frappe.msgprint("Samaaja setup completed successfully!");
-                    }
-                }
-            });
-        });
-    }
+	go_to_gender: function (frm) {
+		frappe.set_route('List', 'Gender');
+	},
+	go_to_action_type: function (frm) {
+		frappe.set_route('List', 'Action Type');
+	},
+	go_to_action_category: function (frm) {
+		frappe.set_route('List', 'Action Category');
+	},
+	go_to_user_category: function (frm) {
+		frappe.set_route('List', 'User Category');
+	},
+	go_to_badges: function (frm) {
+		frappe.set_route('List', 'Badge');
+	},
+	go_to_energy_point_rule: function (frm) {
+		frappe.set_route('List', 'Energy Point Rule');
+	}
 });

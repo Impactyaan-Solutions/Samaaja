@@ -57,7 +57,8 @@ def create_user():
 		user_gender = user_data.get("gender")
 		user_category = user_data.get("category")
 		user_bio = user_data.get("bio")
-		user_dob = user_data.get("dob") 
+		user_dob = user_data.get("dob")
+		user_password = user_data.get("password")
 
 		if not user_name:
 			frappe.throw("Name is required")
@@ -68,16 +69,19 @@ def create_user():
 		if not user_category:
 			frappe.throw("Category is required")
 		if not user_bio:
-			frappe.throw("Bio is required")	
+			frappe.throw("Bio is required")
 		if not user_dob:
 			frappe.throw("Date of birth is required")
+		if not user_password:
+			frappe.throw("Password is required")
 		result = UserManager.create(
 			user_name,
 			user_dob,
 			user_gender,
 			user_category,
 			user_mobile_no,
-			user_bio
+			user_bio,
+			user_password
 		)
 		return result.to_custom_response()
 	except Exception as e:
