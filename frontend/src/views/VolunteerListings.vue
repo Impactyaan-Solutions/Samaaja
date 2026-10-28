@@ -9,8 +9,7 @@ import {
   SlidersHorizontal,
   X,
   Loader2,
-  Users,
-  CheckCircle2
+  Users
 } from 'lucide-vue-next'
 
 import AppHeader from '@/components/common/AppHeader.vue'
@@ -504,7 +503,12 @@ const formatDescription = (description) => {
       <div
         v-for="item in listings"
         :key="item.name || item.title"
-        class="rounded-xl border border-gray-100 bg-white p-3.5 shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
+        @click="goToDetail(item)"
+        @keydown.enter="goToDetail(item)"
+        @keydown.space.prevent="goToDetail(item)"
+        role="link"
+        tabindex="0"
+        class="cursor-pointer rounded-xl border border-gray-100 bg-white p-3.5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition hover:border-primary-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500"
       >
 
         <!-- Category, Team-based and Applied badges -->
@@ -524,15 +528,6 @@ const formatDescription = (description) => {
           >
             <Users class="h-3 w-3" />
             Team-based
-          </span>
-
-          <!-- Applied -->
-          <span
-            v-if="item.already_applied"
-            class="inline-flex items-center gap-1.5 rounded-md bg-[#FFF0E5] px-2 py-1 text-[10px] font-semibold text-[#C85A00]"
-          >
-            <CheckCircle2 class="h-3 w-3" />
-            Applied
           </span>
 
         </div>
