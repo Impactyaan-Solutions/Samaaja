@@ -398,7 +398,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="min-h-full bg-gray-50 pb-32 text-gray-900">
+  <main class="min-h-full bg-gray-50 text-gray-900">
     <!-- Header -->
     <header
       class="sticky top-0 z-20 flex items-center justify-between border-b border-gray-50 bg-white px-5 py-5"
@@ -472,9 +472,9 @@ onMounted(async () => {
             </span>
             <span
               v-if="isProject"
-              class="inline-flex items-center gap-1.5 rounded-md bg-[#E2F7E8] px-2 py-1 text-[10px] font-semibold text-[#159447]"
+              class="inline-flex items-center gap-1.5 text-xs text-gray-500"
             >
-              <Users class="h-3 w-3" />
+              <Users :size="14" class="shrink-0 text-gray-400" />
               Team-based
             </span>
           </div>
@@ -784,14 +784,14 @@ onMounted(async () => {
       </div>
 
       <!-- Bottom application button -->
-      <div
-        class="fixed inset-x-0 bottom-[88px] z-40 border-t border-gray-100 bg-white/95 px-4 py-3 backdrop-blur"
+      <footer
+        class="sticky bottom-0 z-10 border-t border-gray-100 bg-white px-5 py-4"
       >
         <button
           v-if="!alreadyApplied"
           type="button"
           @click="applyForOpportunity"
-          class="mx-auto block w-full max-w-md rounded-xl bg-primary-600 px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-primary-700 active:scale-[0.99]"
+          class="mx-auto block w-full max-w-md rounded-xl bg-primary-600 px-6 py-3.5 text-base font-bold text-white transition hover:bg-primary-700 active:scale-[0.99]"
         >
           {{ t('volunteerOpportunityDetail.applyNow') }}
         </button>
@@ -804,7 +804,7 @@ onMounted(async () => {
         >
           Applied
         </button>
-      </div>
+      </footer>
     </template>
   </main>
 </template>

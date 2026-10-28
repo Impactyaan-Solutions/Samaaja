@@ -561,11 +561,10 @@ watch(
         </div>
 
         <button
-          v-if="application.workflow_state === 'Selected'"
-          @click="router.push(`/project/${application.volunteer_opportunity}`)"
+          @click="router.push({ name: 'volunteer-opportunity-detail', params: { id: application.volunteer_opportunity } })"
           class="mt-4 text-sm font-semibold text-blue-600"
         >
-          View Project →
+          View Details →
         </button>
       </div>
     </div>
