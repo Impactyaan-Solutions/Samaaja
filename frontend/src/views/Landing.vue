@@ -69,15 +69,19 @@ const features = computed(() => [
       </header>
 
       <section class="space-y-2 mb-2">
-        <h3 class="text-4xl font-extrabold text-slate-900 leading-tight">
+        <h4 class="text-4xl font-extrabold text-slate-900 leading-tight">
           {{ t('landing.tagline1') }}
-        </h3>
-                <h3 class="text-4xl font-extrabold text-slate-900 leading-tight">
+        </h4>
+      </section>
+      <section class="space-y-2 mb-2">
+                <h4 class="text-4xl font-extrabold text-slate-900 leading-tight">
           {{ t('landing.tagline2') }}
-        </h3>
-                <h3 class="text-4xl font-extrabold text-slate-900 leading-tight">
+        </h4>
+      </section>
+      <section class="space-y-2 mb-2">
+        <h4 class="text-4xl font-extrabold text-slate-900 leading-tight">
           {{ t('landing.tagline3') }}
-        </h3>
+        </h4>
       </section>
 
       <section class="flex flex-col gap-3 mb-6">
