@@ -11,7 +11,11 @@ import {
 
 const { t, locale } = useI18n();
 
-const logoSrc = computed(() => import.meta.env.BASE_URL + t('landing.logo.src'));
+// Query param busts the browser/CDN cache whenever the logo image is
+// replaced in place (same filename), so bump this after swapping the file.
+const LOGO_VERSION = 2;
+
+const logoSrc = computed(() => `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=${LOGO_VERSION}`);
 
 const features = computed(() => [
   {
