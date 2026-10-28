@@ -54,32 +54,26 @@ const features = computed(() => [
     
     <div class="w-full max-w-md bg-white min-h-screen shadow-sm px-8 py-0 flex flex-col gap-0">
       
-      <header class="flex justify-between items-center mt-4 mb-2">
-        <div class="flex items-center gap-2">
-         <img
+      <header class="relative flex items-center justify-center mt-6 mb-6">
+        <img
           :src="logoSrc"
           :alt="t('landing.logo.alt')"
-          class="h-10 w-auto"
+          class="h-16 w-auto"
         />
-        </div>
-        <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
+        <button class="absolute right-0 flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
           {{ locale }}
         </button>
       </header>
 
-      <section class="space-y-2 mb-2">
-        <h4 class="text-4xl font-extrabold text-slate-900 leading-tight">
+      <section class="space-y-1.5 mt-4 mb-8">
+        <h4 class="text-2xl font-extrabold text-slate-900 leading-snug">
           {{ t('landing.tagline1') }}
         </h4>
-      </section>
-      <section class="space-y-2 mb-2">
-                <h4 class="text-4xl font-extrabold text-slate-900 leading-tight">
+        <h4 class="text-2xl font-extrabold text-slate-900 leading-snug">
           {{ t('landing.tagline2') }}
         </h4>
-      </section>
-      <section class="space-y-2 mb-2">
-        <h4 class="text-4xl font-extrabold text-slate-900 leading-tight">
+        <h4 class="text-2xl font-extrabold text-slate-900 leading-snug">
           {{ t('landing.tagline3') }}
         </h4>
       </section>
