@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Loader2 } from 'lucide-vue-next'
 import {
-  getAnnouncementDetail,
+  getEventDetail,
   registerForEvent
 } from '@/services/api'
 import { authState } from '@/auth'
@@ -49,15 +49,28 @@ const fields = ref([
 
 onMounted(async () => {
   try {
-    const result = await getAnnouncementDetail(route.params.id)
+    const result = await getEventDetail(route.params.id)
+
+    const candidates = [
+      result?.data?.data,
+      result?.data?.message?.data,
+      result?.message?.data,
+      result?.data,
+      result
+    ]
 
     event.value =
-      result?.data?.data ||
-      result?.data?.message?.data ||
-      result?.message?.data ||
-      result?.data ||
-      result?.message ||
-      result
+      candidates.find(
+      item =>
+        item &&
+        typeof item === 'object' &&
+        !Array.isArray(item) &&
+        item.name
+    ) || null
+
+    if (!event.value) {
+      error.value = 'Event details not found.'
+    }
   } catch (e) {
     error.value = e.message || 'Unable to load event details.'
   } finally {
@@ -69,11 +82,10 @@ const handleFormSubmit = async (formData) => {
   try {
     formLoading.value = true
     formError.value = null
-    if (!event.value?.event_id) {
-  throw new Error('Event ID is missing.')
-}
+   
     const result = await registerForEvent({
-      event: event.value.event_id
+     ...formData,
+  event: event.value.name
     })
 
     success.value = result.message || 'Registration successful!'

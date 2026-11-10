@@ -358,6 +358,19 @@ export const getAnnouncementDetail = async (name) => {
 
   return result;
 };
+export const getEventDetail = async (name) => {
+  const headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+
+  const result = await callAPI(
+    headers,
+    `${baseurl}/api/method/samaaja.api.event.get_event_details?name=${encodeURIComponent(name)}`
+  );
+
+  return result;
+};
 
 export const getVolunteerListings = async (
     filters = {},

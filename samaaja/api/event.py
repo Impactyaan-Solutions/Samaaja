@@ -75,3 +75,7 @@ def event_check_in(event):
             message="Failed to check in to event",
             status_code=500,
         )
+
+@frappe.whitelist(methods=["GET"])
+def get_event_details(name: str):
+    return EventManager.get_event_details(name).to_custom_response()

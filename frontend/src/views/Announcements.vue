@@ -24,7 +24,7 @@ const viewDetails = (item) => {
 
 
 const registerEvent = async (item) => {
-  if (item.announcement_type !== "Event") {
+  if (item.type !== "Event") {
     return
   }
   try {
@@ -70,7 +70,9 @@ onMounted(async () => {
 console.log("this",announcements)
 const handleInteraction = (item) => {
  router.push({
-    name: "event-detail",
+    name: item.type === "Event"
+      ? "event-detail"
+      : "announcement-detail",
     params: { id: item.name }
   })
 }
@@ -139,7 +141,7 @@ const formatDate = (timeStr) => {
    {{ t('announcements.viewDetails') }}
   </button>
 
-  <button v-if="item.announcement_type === 'Event'"
+  <button v-if="item.type === 'Event'"
   type="button"
   @click.stop="registerEvent(item)"
   :disabled="item.registered || registering"

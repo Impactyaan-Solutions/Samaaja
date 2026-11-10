@@ -9,22 +9,18 @@
  "field_order": [
   "title",
   "message",
-  "url_link",
   "image",
   "valid_from",
   "valid_to",
   "target_audience",
   "published",
   "column_break_8",
-  "publish_on",
-  "is_recurring",
   "frequency",
   "repeat_until",
   "total_repeat_times",
   "current_repeat_count",
   "last_sent_on",
   "section_break_channels",
-  "delivery_channels",
   "total_views",
   "total_clicks"
  ],
@@ -42,12 +38,6 @@
    "in_list_view": 1,
    "label": "Message",
    "reqd": 1
-  },
-  {
-   "fieldname": "url_link",
-   "fieldtype": "Data",
-   "label": "URL Link",
-   "options": "URL"
   },
   {
    "fieldname": "image",
@@ -82,17 +72,6 @@
   {
    "fieldname": "column_break_8",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "publish_on",
-   "fieldtype": "Datetime",
-   "label": "Publish On (Scheduler)"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_recurring",
-   "fieldtype": "Check",
-   "label": "Is Recurring"
   },
   {
    "depends_on": "eval:doc.is_recurring==1",
@@ -133,12 +112,6 @@
    "label": "Delivery Channels"
   },
   {
-   "fieldname": "delivery_channels",
-   "fieldtype": "Table",
-   "label": "Delivery Channels",
-   "options": "Announcement Channel"
-  },
-  {
    "fieldname": "total_views",
    "fieldtype": "Int",
    "label": "Total Views",
@@ -153,7 +126,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-22 19:03:18.491092",
+ "modified": "2026-11-05 13:19:35.208390",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Announcement",

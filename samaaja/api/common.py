@@ -16,8 +16,8 @@ from frappe.utils import flt
 import requests
 from frappe.utils import get_url
 
-logger.set_log_level("DEBUG")
 logger = frappe.logger("api", allow_site=True, file_count=50)
+logger.setLevel("DEBUG")
 
 def custom_response(message=None, data={}, status_code=200, error=False):
     """

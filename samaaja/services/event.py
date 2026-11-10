@@ -214,3 +214,80 @@ class EventManager:
                 "Unable to check in for the event",
                 error_data=str(e),
             )
+    
+    @staticmethod
+    def get_event_details(name: str) -> Result:
+        try:
+            now = frappe.utils.now_datetime()
+            user = frappe.session.user
+
+            if not name:
+                return Result.bad_request("Event name is mandatory")
+
+            if not frappe.db.exists("Event", name):
+                return Result.not_found("Event not found")
+
+            doc = frappe.get_doc("Event", name)
+
+            # Validate event dates
+            if doc.ends_on and doc.ends_on < now:
+                return Result.bad_request("Event has ended")
+
+            # Check registration status
+            registered = False
+            checked_in = False
+
+            if user != "Guest":
+                registration = frappe.db.get_value(
+                    "Event Registration",
+                    {
+                        "event": doc.name,
+                        "user": user
+                    },
+                    ["name", "checked_in"],
+                    as_dict=True
+                )
+
+                if registration:
+                    registered = True
+                    checked_in = bool(registration.checked_in)
+
+                # Prepare event details
+                event = {
+                    "name": doc.name,
+                    "type": "Event",
+                    "event_category": doc.event_category,
+                    "event_type": doc.event_type,
+                    "title": doc.subject,
+                    "message": doc.description,
+                    "image": (
+                        f"{AnnouncementManager.media_base_url}{doc.custom_image}"
+                        if doc.custom_image
+                        else ""
+                    ),
+                    "location": doc.location,
+                    "valid_from": doc.starts_on,
+                    "valid_to": doc.ends_on,
+                    "starts_on": doc.starts_on,
+                    "ends_on": doc.ends_on,
+                    "status": doc.status,
+                    "sender": doc.sender,
+                    "attending": doc.attending,
+                    "all_day": doc.all_day,
+                    "registered": registered,
+                    "checked_in": checked_in,
+                }
+
+            return Result.success(
+                "Event details fetched successfully",
+                data=event,
+            )
+
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to fetch event details",
+            )
+            return Result.bad_request(
+                "Failed to fetch event details"
+            )

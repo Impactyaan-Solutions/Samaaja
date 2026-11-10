@@ -9,7 +9,7 @@ import {
   Users,
   ArrowRightCircle,
 } from "lucide-vue-next"
-import { getAnnouncementDetail , checkRegisterForEvent } from "@/services/api"
+import { getAnnouncementDetail , checkRegisterForEvent ,getEventDetail } from "@/services/api"
 import { useI18n } from "vue-i18n"
 
 
@@ -28,9 +28,16 @@ const loadEvent = async () => {
   event.value = null
 
   try {
-    const result = await getAnnouncementDetail(route.params.id)
-   console.log(result)
-    // Handle Axios responses and direct API responses.
+    console.log("this is " ,route.name)
+    let result
+
+    if (route.name === "event-detail") {
+      // Fetch from Event DocType
+      result = await getEventDetail(route.params.id)
+    } else if (route.name === "announcement-detail") {
+      // Fetch from Announcement DocType
+      result = await getAnnouncementDetail(route.params.id)
+    }
     const candidates = [
       result?.data?.data,
       result?.data?.message?.data,
@@ -138,12 +145,12 @@ const shareEvent = async () => {
 }
 
 const registerEvent = async (item) => {
-  if (item.announcement_type !== "Event") {
+  if (item.type !== "Event") {
     return
   }
   try {
     registering.value = true
-    const result = await checkRegisterForEvent(item.event_id)
+    const result = await checkRegisterForEvent(item.name)
    console.log("Full result:", result)
     const isRegistered = result?.registered
     console.log("Is registered:", isRegistered)
@@ -171,8 +178,8 @@ const exploreMore = () => {
 }
 
 const announcementType = computed(
-  () => event.value?.announcement_type ||
-        event.value?.custom_announcement_type ||
+  () => event.value?.type ||
+        event.value?.type ||
         "General"
 )
 

@@ -10,77 +10,145 @@ class AnnouncementManager:
     def get_announcement(name: str) -> dict:
         return frappe.get_doc("Announcement", name).as_dict()
 
+    
     @staticmethod
     def get_active_announcements() -> Result:
         try:
             now = frappe.utils.now_datetime()
             user = frappe.session.user
-
-
-            names = frappe.get_all("Announcement",
-                filters={"published": 1},
-                pluck="name"
-            )
-             
-            announcements = []
-            for name in names:
-                doc = frappe.get_doc("Announcement", name)
-
-                
-                if doc.valid_to and doc.valid_to < now:
-                    continue
-                if doc.target_audience == "Registered Users" and frappe.session.user == "Guest":
-                    continue
-                is_event = doc.custom_announcement_type == "Event"
-                event_id = doc.custom_event if is_event else None
-                registered = False
-                if event_id and user != "Guest":
-                    registered = bool(
-                        frappe.db.exists(
-                            "Event Registration",
-                            {
-                                "event": event_id,
-                                "user": user,
-                            },
-                        )
+            announcement_records = frappe.db.sql(
+                """
+                SELECT
+                    name,
+                    title,
+                    message,
+                    url_link,
+                    image,
+                    valid_from,
+                    valid_to,
+                    target_audience
+                    FROM `tabAnnouncement`
+                    WHERE published = 1
+                    AND (
+                        valid_to IS NULL
+                        OR valid_to >= %(now)s
                     )
+                    AND (
+                        %(user)s != 'Guest'
+                        OR target_audience != 'Registered Users'
+                        OR target_audience IS NULL
+                    )
+                """,
+                {
+                    "now": now,
+                    "user": user
+                },
+                as_dict=True
+            )
+
+            announcements = []
+
+            for doc in announcement_records:
                 announcement = {
                     "name": doc.name,
+                    "type": "Announcement",
                     "title": doc.title,
-                    "announcement_type":doc.custom_announcement_type,
                     "message": doc.message,
                     "url_link": doc.url_link,
-                    "image":  f"{AnnouncementManager.media_base_url}{doc.image}" if doc.image else "",
+                    "image": (
+                        f"{AnnouncementManager.media_base_url}{doc.image}"
+                        if doc.image else ""
+                    ),
                     "valid_from": doc.valid_from,
                     "valid_to": doc.valid_to,
                     "target_audience": doc.target_audience,
-                    "event_id": doc.custom_event if doc.custom_announcement_type == "Event" else None,
-                    "registered": registered,
-                    
                 }
-                if doc.custom_announcement_type == "Event" and doc.custom_event:
-                    event_details = frappe.db.get_value(
-                        "Event",
-                        doc.custom_event,
-                        ["starts_on", "custom_even_format", "location"],
-                        as_dict=True,
-                    )
-                    if event_details:
-                        announcement.update({
-                            "starts_on": event_details.starts_on,
-                            "event_format": event_details.custom_even_format,
-                            "location": event_details.location,
-                        })
+
                 announcements.append(announcement)
-    
-            announcements.sort(key=lambda x: x["valid_from"] or "", reverse=True)
-            return Result.success("Announcements fetched successfully", data=announcements)
-        except Exception as e:
+
+            # 2. Fetch events and registration status using SQL
+            events = []
+
+            if user != "Guest":
+
+                event_records = frappe.db.sql(
+                    """
+                    SELECT
+                        e.name,
+                        e.event_category,
+                        e.event_type,
+                        e.location,
+                        e.custom_image,
+                        e.starts_on,
+                        e.ends_on,
+                        e.status,
+                        e.sender,
+                        e.attending,
+                        e.all_day,
+                        e.description,
+
+                        EXISTS (
+                            SELECT 1
+                            FROM `tabEvent Registration` er
+                            WHERE er.event = e.name
+                            AND er.user = %(user)s
+                        ) AS registered
+
+                    FROM `tabEvent` e
+                    ORDER BY e.starts_on DESC
+                    """,
+                    {
+                        "user": user
+                    },
+                    as_dict=True
+                )
+
+                for event in event_records:
+                    event_data = {
+                        "name": event.name,
+                        "type": "Event",
+                        "event_category": event.event_category,
+                        "event_type": event.event_type,
+                        "image":(
+                        f"{AnnouncementManager.media_base_url}{doc.custom_image}"
+                        if doc.image else ""
+                        ),
+                        "location": event.location,
+                        "valid_from": event.starts_on,
+                        "valid_to": event.ends_on,
+                        "status": event.status,
+                        "sender": event.sender,
+                        "attending": event.attending,
+                        "all_day": event.all_day,
+                        "message": event.description,
+                        "registered": bool(event.registered)
+                    }
+
+                    events.append(event_data)
+
+            # 3. Combine announcements and events
+            combined_data = announcements + events
+
+            # 4. Sort by date (newest first)
+            combined_data.sort(
+                key=lambda x: x.get("valid_from") or x.get("starts_on") or "",
+                reverse=True
+            )
+
+            return Result.success(
+                "   Announcements and events fetched successfully",
+                data=combined_data
+            )
+
+        except Exception:
             frappe.log_error(
                 frappe.get_traceback(),
-                "Failed to fetch announcements"
+                "Failed to fetch announcements and events"
             )
-            return Result.error("Failed to fetch announcements")
+
+            return Result.error(
+                "Failed to fetch announcements and events"
+            )
 
     
     @staticmethod
@@ -115,31 +183,11 @@ class AnnouncementManager:
                 return Result.bad_request(
                     "Please login to view this announcement"
                 )
-            is_event = doc.custom_announcement_type == "Event"
-            event_id = doc.custom_event if is_event else None
-            registered = False
-            checked_in = False
-            if event_id and user != "Guest":
-                registration = frappe.db.get_value(
-                        "Event Registration",
-                        {
-                            "event": event_id,
-                            "user": user,
-                        },
-                        ["checked_in"],
-                        as_dict=True,
-                    )
-                
-                if registration:
-                    registered = True
-                    checked_in = bool(registration.checked_in)
-    
 
         # Prepare announcement details
             announcement = {
                 "name": doc.name,
                 "title": doc.title,
-                "announcement_type": doc.custom_announcement_type,
                 "message": doc.message,
                 "url_link": doc.url_link,
                 "image": (
@@ -150,42 +198,7 @@ class AnnouncementManager:
                 "valid_from": doc.valid_from,
                 "valid_to": doc.valid_to,
                 "target_audience": doc.target_audience,
-                "event_id": doc.custom_event if doc.custom_announcement_type == "Event" else None,
-                "registered": registered,
-                "checked_in": checked_in,
             }
-
-            # Include Event details for Event announcements
-            if (
-                doc.custom_announcement_type == "Event"
-                and doc.custom_event
-            ):
-                event_details = frappe.db.get_value(
-                    "Event",
-                    doc.custom_event,
-                    [
-                        
-                        "starts_on",
-                        "custom_even_format",
-                        "location",
-                    ],
-                    as_dict=True,
-                )
-
-                if event_details:
-                    announcement.update({
-                        "starts_on": event_details.starts_on,
-                        "event_format": event_details.custom_even_format,
-                        "location": event_details.location,
-                    })
-
-            # Include the online meeting link if this field exists
-            # on the Announcement DocType.
-            if doc.get("custom_online_meeting_link"):
-                announcement["online_meeting_link"] = (
-                    doc.custom_online_meeting_link
-                )
-
             return Result.success(
                 "Announcement details fetched successfully",
                 data=announcement,
