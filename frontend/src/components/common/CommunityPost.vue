@@ -28,39 +28,38 @@ const isVisible = ref(true)
 const containerRef = ref(null)
 const savedHeight = ref(0)
 let observer = null
-const isLiked = ref(false)
-
+const isLiked = ref(props.post.is_liked ?? false)
+const isLoading = ref(false)
 const showComments = ref(false)
 const commentText = ref('')
 const comments = ref([])
 
+console.log("this is post ",props.post)
 
 
 const handleLikeToggle = async () => {
-  const userEmail = authState.email || localStorage.getItem('user')
-  
-  if (!userEmail) {
-    console.error("No user email found")
-    return
-  }
+  if (isLoading.value) return
+
+  isLoading.value = true
 
   try {
-    if (isLiked.value) {
-      // If already liked, call unlike API
-      await unlikePost(props.post.name, userEmail)
-      props.post.like_count--
-    } else {
-      // If not liked, call like API
-      await likePost(props.post.name, userEmail)
-      props.post.like_count++
-    }
-    
+    await likePost(props.post.name)
+
+    // Toggle the UI state after the API succeeds
     isLiked.value = !isLiked.value
-    
+
+    // Update the displayed count
+    props.post.like_count = Math.max(
+      0,
+      (props.post.like_count || 0) + (isLiked.value ? 1 : -1)
+    )
   } catch (err) {
-    console.error("FETCH FAILED", err)
+    console.error("Failed to toggle like:", err)
+  } finally {
+    isLoading.value = false
   }
 }
+
 
 
 const openComments = () => {
@@ -149,10 +148,20 @@ onUnmounted(() => {
       <!-- Actions Footer -->
       <div class="px-4 py-3 border-t border-gray-50 flex items-center justify-between">
         <div class="flex items-center space-x-6">
-          <button @click="handleLikeToggle" class="flex items-center space-x-1.5 text-gray-500 hover:text-red-500 transition-colors">
-            <Heart class="w-5 h-5" />
-            <span class="text-xs font-semibold">{{ post.like_count }}</span>
-          </button>
+          <button
+  @click="handleLikeToggle"
+  :class="[
+    'flex items-center space-x-1.5 transition-colors',
+    isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'
+  ]"
+>
+  <Heart
+    class="w-5 h-5"
+    :fill="isLiked ? 'currentColor' : 'none'"
+    :class="isLiked ? 'text-red-500' : ''"
+  />
+  <span class="text-xs font-semibold">{{ post.like_count }}</span>
+</button>
          <button @click="openComments" class="flex items-center space-x-1.5 text-gray-500 hover:text-primary-500 transition-colors">
             <MessageSquare class="w-5 h-5" />
             <span class="text-xs font-semibold">{{ post.comment_count }}</span>

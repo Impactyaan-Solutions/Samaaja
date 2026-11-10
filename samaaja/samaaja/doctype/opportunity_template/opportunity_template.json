@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:title",
  "creation": "2025-07-22 20:43:02.075680",
@@ -90,7 +91,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-23 07:20:35.861562",
+ "modified": "2026-10-22 19:03:19.167986",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Opportunity Template",

@@ -27,6 +27,13 @@ class VolunteerManager:
             VolunteerOpportunity = DocType("Volunteer Opportunity")
             SamaajaLocation = DocType("Samaaja Location")
 
+            current_user = frappe.session.user
+            applied_opportunities = frappe.get_all(
+                "Volunteer Application",
+                filters={"user": current_user},
+                pluck="volunteer_opportunity",
+            )
+
             query = (
                 frappe.qb.from_(VolunteerOpportunity)
                 .left_join(SamaajaLocation)
@@ -46,9 +53,12 @@ class VolunteerManager:
                     VolunteerOpportunity.expected_time_commitment,
                     VolunteerOpportunity.compensation_type,
                     VolunteerOpportunity.status,
+                    VolunteerOpportunity.is_project,
+                    VolunteerOpportunity.team_size,
                 )
                 .where(VolunteerOpportunity.status == "Active")
             )
+
 
             categories = filters.get("categories") or []
             locations = filters.get("locations") or []
@@ -90,6 +100,10 @@ class VolunteerManager:
             )
 
             opportunities = query.run(as_dict=True)
+            for opportunity in opportunities:
+                opportunity["already_applied"] = (
+                    opportunity["name"] in applied_opportunities
+                )
 
             opportunity_names = [opportunity["name"] for opportunity in opportunities]
 
@@ -155,6 +169,7 @@ class VolunteerManager:
                 .select(
                     VolunteerOpportunity.name,
                     VolunteerOpportunity.title,
+                    VolunteerOpportunity.image,
                     VolunteerOpportunity.description,
                     VolunteerOpportunity.category,
                     SamaajaLocation.city.as_("location"),
@@ -165,6 +180,7 @@ class VolunteerManager:
                     VolunteerOpportunity.expected_time_commitment,
                     VolunteerOpportunity.compensation_type,
                     VolunteerOpportunity.status,
+                    VolunteerOpportunity.is_project,
                 )
                 .where(
                     (VolunteerOpportunity.name == volunteer_id)
@@ -181,6 +197,13 @@ class VolunteerManager:
 
             opportunity = opportunity[0]
 
+            media_base_url = frappe.conf.media_base_url
+            opportunity["image"] = (
+                f"{media_base_url}{opportunity['image']}"
+                if opportunity.get("image")
+                else ""
+            )
+
             opportunity["skills_needed"] = frappe.get_all(
                 "Skill Child Table",
                 filters={
@@ -190,6 +213,23 @@ class VolunteerManager:
                 fields=["skill"],
                 pluck="skill",
             )
+            opportunity["project_tasks"] = frappe.get_all(
+                "Project Task",
+                filters={
+                    "parent": volunteer_id,
+                    "parenttype": "Volunteer Opportunity",
+                    "parentfield": "project_tasks",
+                },
+                fields=[
+                    "name",
+                    "task",
+                    "description",
+                    "status",
+                    "assignee",
+                ],
+                order_by="idx asc",
+            )
+
 
             return Result.success(
                 "Volunteer opportunity fetched successfully",
@@ -336,3 +376,4 @@ class VolunteerManager:
                 "Failed to submit volunteer application",
                 error_data=str(e),
             )
+    

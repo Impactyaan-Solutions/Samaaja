@@ -14,3 +14,10 @@ def record_interaction(announcement, interaction_type, contact_id=None):
         return Result.bad_request("announcement and interaction_type are mandatory").to_custom_response()
 
     return AnnouncementManager.record_interaction(announcement, interaction_type, contact_id).to_custom_response()
+
+@frappe.whitelist()
+def get_announcement_details(name: str):
+    if not name:
+        return Result.bad_request("Announcement name is mandatory").to_custom_response()
+
+    return AnnouncementManager.get_announcement_details(name).to_custom_response()

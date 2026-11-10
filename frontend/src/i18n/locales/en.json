@@ -32,6 +32,7 @@
   },
   "menu": {
     "settings": "Settings",
+    "updateProfile": "Update Profile",
     "logout": "Logout",
     "logoutFailedWarning": "We couldn't confirm your session was ended on the server, but you've been signed out on this device."
   },
@@ -43,21 +44,31 @@
     "addPost": "Add a Post",
     "addPostDesc": "Post an update to share with your community.",
     "volunteerListings": "Volunteer Opportunities",
-    "volunteerListingsDesc": "Discover roles to support your community."
+    "volunteerListingsDesc": "Discover roles to support your community.",
+    "completeProject": "Complete Project",
+    "completeProjectDesc": "Complete the tasks on your projects!"
+  },
+  "myProjects": {
+    "headerTitle": "My Projects",
+    "loading": "Loading your projects...",
+    "loadError": "Failed to load your projects.",
+    "noProjects": "No active projects",
+    "noProjectsHint": "Projects you're selected for will show up here."
   },
   "landing": {
     "appName": "Samaaja",
     "logo": { "src": "samaaja.png", "alt": "Samaaja Logo", "name": "Samaaja" },
-    "tagline": "Build Your Community. Take Action.",
-    "subtitle": "Join people in your area solving real issues and improving their community together.",
+    "tagline1": "Connect people.",
+    "tagline2": "Build communities.",
+    "tagline3": "Enable action.",
     "signUp": "Sign Up",
     "login": "Login",
     "whatYouCanDo": "What you can do",
     "features": {
-      "reportAct": { "title": "Report & Act", "description": "Raise local problems and track progress." },
-      "connect": { "title": "Connect", "description": "Post or join community discussions." },
-      "getRecognised": { "title": "Get Recognised", "description": "See your impact and leaderboard rank." },
-      "askForHelp": { "title": "Ask for Help", "description": "Get support from experts and community." }
+      "reportAct": { "title": "Make a Difference", "description": "Report local issues and turn concerns into collective action." },
+      "connect": { "title": "Be Part of the Community", "description": "Share ideas, join conversations, and collaborate with others." },
+      "getRecognised": { "title": "Volunteer & Take Action", "description": "Discover volunteering opportunities and join projects that create meaningful change." },     
+      "askForHelp": { "title": "Celebrate Your Impact", "description": "Track your contributions, earn recognition, and inspire others." }
     }
   },
   "login": {
@@ -101,6 +112,8 @@
     "subtitle": "Join the community to start making a real impact!",
     "fullName": "Full Name",
     "fullNamePlaceholder": "e.g. Rahul Poddar",
+    "email": "Email ID",
+    "emailPlaceholder": "e.g. rahul{'@'}example.com",
     "dob": "Date of Birth",
     "dobPlaceholder": "DD/MM/YYYY",
     "gender": "Gender",
@@ -153,8 +166,8 @@
     "noActive": "No active announcements."
   },
   "leaderboard": {
-    "organisation": "Organisation",
-    "global": "Global",
+    "Individual": "Individual",
+    "global": "Geography",
     "searchPlaceholder": "Search City or Country...",
     "loading": "Loading leaderboard...",
     "actions": "Actions"
@@ -168,6 +181,10 @@
     "noBadges": "No badges earned",
     "actionsTab": "Actions",
     "postsTab": "Posts",
+    "opportunitiesTab": "Opportunities",
+    "loadingApplications": "Loading your applications...",
+    "noApplicationsFound": "You haven't applied to any opportunities yet.",
+    "viewDetails": "View Details →",
     "loadingActions": "Loading actions...",
     "loadingPosts": "Loading posts...",
     "noActionsFound": "No actions found.",
@@ -330,5 +347,88 @@
     "submitError": "Failed to submit application",
     "privacyConsentText": "By submitting this application, I authorize the NGO to contact me via phone or email for further information and updates regarding this volunteer opportunity.",
     "goBack": "Go back"
+  },
+  "announcements": {
+    "loading": "Loading announcements...",
+    "noActive": "No active announcements.",
+    "title": "Announcements",
+    "viewDetails": "View Details",
+    "register": "Register",
+    "registered": "Registered",
+    "registering": "Checking registration...",
+    "registrationFailed": "Unable to check registration status.",
+    "loadError": "Failed to load announcements. Please try again."
+  },
+  "eventDetails": {
+    "headerTitle": "Event Details",
+    "loading": "Loading event details...",
+    "loadErrorTitle": "Unable to Open Event",
+    "loadError": "Unable to load event details. Please try again.",
+    "eventNotFound": "Event not found or is no longer available.",
+    "backToAnnouncements": "Back to Announcements",
+    "retry": "Retry",
+    "dateTime": "Date & Time",
+    "venue": "Venue",
+    "locationToBeAnnounced": "Location to be announced",
+    "dateToBeAnnounced": "Date to be announced",
+    "expectedAttendees": "Expected Attendees",
+    "aboutEvent": "About This Event",
+    "moreInformation": "More information about this event will be available soon.",
+    "onlineMeeting": "Online Meeting",
+    "joinMeeting": "Join meeting",
+    "register": "Register",
+    "registered": "Registered",
+    "exploreMore": "Explore More",
+    "share": "Share event",
+    "linkCopied": "Event link copied!",
+    "registrationFailed": "Unable to check registration status.",
+    "aboutEvent": "About This Event"
+  },
+  
+  "eventCheckIn": {
+    "headerTitle": "Event Attendance",
+    "backToEvents": "Back to events",
+    "markingAttendance": "Marking Attendance...",
+    "pleaseWait": "Please wait while we mark your attendance.",
+    "alreadyCheckedIn": "Already Checked In",
+    "attendanceConfirmed": "Attendance Confirmed",
+    "checkInUnsuccessful": "Check-in Unsuccessful",
+    "unableToMarkAttendance": "Unable to mark attendance. Please try again.",
+    "eventId": "Event ID",
+    "notAvailable": "Not available",
+    "eventIdMissing": "Event ID is missing from the QR code.",
+    "registration": "Registration",
+    "confirmed": "Confirmed",
+    "notConfirmed": "Not confirmed",
+    "attendance": "Attendance",
+    "present": "Present",
+    "checkedInAt": "Checked in at",
+    "retry": "Try Again",
+    "retrying": "Retrying...",
+    "checkInSuccess": "Attendance marked successfully.",
+    "serverNotConfirmed": "The server did not confirm your attendance.",
+    "footer": "Samaaja · Event Management"
+  },
+  "eventRegistration": {
+    "headerTitle": "Register for Event",
+    "goBack": "Go back",
+    "loading": "Loading event details...",
+    "loadError": "Unable to load event details.",
+    "eventType": "Event",
+    "locationToBeAnnounced": "Location to be announced",
+    "yourDetails": "Your Details",
+    "fullName": "Full Name",
+    "age": "Age",
+    "contactNumber": "Contact Number",
+    "email": "Email (Optional)",
+    "confirmRegistration": "Confirm Registration",
+    "eventIdMissing": "Event ID is missing.",
+    "registrationSuccess": "Registration successful!",
+    "registrationFailed": "Failed to register for the event.",
+    "registrationConfirmed": "Registration Confirmed!",
+    "successDescription": "You're all set for the event.",
+    "exploreMore": "Explore More"
   }
+
 }
+

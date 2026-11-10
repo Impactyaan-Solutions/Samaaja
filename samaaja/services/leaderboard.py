@@ -13,17 +13,20 @@ class LeaderboardManager:
                 result = frappe.db.sql("""
                                             SELECT
                                                 um.user,
-                                                u.name
+                                                u.name,
+                                                um.hours_invested
                                             FROM `tabUser Metadata` um
                                             LEFT JOIN `tabUser` u
                                                 ON um.user = u.name
                                             WHERE um.action_count > 0
-                                            ORDER BY um.action_count DESC
+                                            ORDER BY um.action_count DESC , um.hours_invested DESC
                                             LIMIT 10
                                         """, as_dict=True)
                 for row in result:
                     user = UserManager.get_profile(row["user"]).data
-                    leaderboard_data.append(user)
+                    if user:
+                        user["hours_invested"] = row["hours_invested"] or 0
+                        leaderboard_data.append(user)
             return Result.success("Leaderboard fetched successfully", data=leaderboard_data)
         except Exception as e:
             frappe.log_error(frappe.get_traceback(), "Failed to fetch leaderboard")

@@ -11,7 +11,11 @@ import {
 
 const { t, locale } = useI18n();
 
-const logoSrc = computed(() => import.meta.env.BASE_URL + t('landing.logo.src'));
+// Query param busts the browser/CDN cache whenever the logo image is
+// replaced in place (same filename), so bump this after swapping the file.
+const LOGO_VERSION = 2;
+
+const logoSrc = computed(() => `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=${LOGO_VERSION}`);
 
 const features = computed(() => [
   {
@@ -29,15 +33,15 @@ const features = computed(() => [
     iconColor: 'text-blue-600'
   },
   {
-    title: t('landing.features.getRecognised.title'),
-    description: t('landing.features.getRecognised.description'),
+    title: t('landing.features.askForHelp.title'),
+    description: t('landing.features.askForHelp.description'),
     icon: Medal,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
   },
   {
-    title: t('landing.features.askForHelp.title'),
-    description: t('landing.features.askForHelp.description'),
+    title: t('landing.features.getRecognised.title'),
+    description: t('landing.features.getRecognised.description'),
     icon: LifeBuoy,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600'
@@ -50,28 +54,28 @@ const features = computed(() => [
     
     <div class="w-full max-w-md bg-white min-h-screen shadow-sm px-8 py-0 flex flex-col gap-0">
       
-      <header class="flex justify-between items-center mt-4 mb-2">
-        <div class="flex items-center gap-2">
-         <img
+      <header class="flex items-center justify-between mt-6 mb-6">
+        <img
           :src="logoSrc"
           :alt="t('landing.logo.alt')"
-          class="w-12 h-12"
+          class="h-16 w-auto"
         />
-          <h1 class="text-2xl font-black text-blue-600">{{ t('landing.appName') }}</h1>
-        </div>
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
           <Globe :size="12" />
           {{ locale }}
         </button>
       </header>
 
-      <section class="space-y-2 mb-2">
-        <h2 class="text-4xl font-extrabold text-slate-900 leading-tight">
-          {{ t('landing.tagline') }}
-        </h2>
-        <p class="text-slate-500 text-lg leading-relaxed">
-          {{ t('landing.subtitle') }}
-        </p>
+      <section class="space-y-1.5 mt-4 mb-8">
+        <h4 class="text-3xl font-extrabold text-slate-900 leading-snug">
+          {{ t('landing.tagline1') }}
+        </h4>
+        <h4 class="text-3xl font-extrabold text-slate-900 leading-snug">
+          {{ t('landing.tagline2') }}
+        </h4>
+        <h4 class="text-3xl font-extrabold text-slate-900 leading-snug">
+          {{ t('landing.tagline3') }}
+        </h4>
       </section>
 
       <section class="flex flex-col gap-3 mb-6">

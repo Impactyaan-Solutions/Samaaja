@@ -18,13 +18,7 @@ class CommentManager:
             comment.user_id = user_id
             comment.save(ignore_permissions=True)
 
-            # Increment comment count on the post via ORM
-            post = frappe.get_doc("Community Post", post_id)
-            post.comment_count = frappe.db.count(
-    "User Comment",
-    {"post_id": post_id}
-)
-            post.save(ignore_permissions=True)
+           
 
             return Result.success(
                 "Comment created successfully",

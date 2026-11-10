@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_guest_to_view": 1,
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2025-06-16 03:04:06.196531",
  "default_view": "List",
@@ -163,7 +164,7 @@
    "link_fieldname": "campaign"
   }
  ],
- "modified": "2025-07-08 14:00:27.262365",
+ "modified": "2026-10-22 19:03:19.685862",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Campaign Template",

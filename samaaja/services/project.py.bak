@@ -1,0 +1,141 @@
+import frappe
+
+from samaaja.utils.result import Result
+
+
+class ProjectManager:
+
+    @staticmethod
+    def get_my_applications() -> Result:
+        try:
+            current_user = frappe.session.user
+
+            if current_user == "Guest":
+                return Result.failure(
+                    "Please log in to view your applications"
+                )
+
+            applications = frappe.get_all(
+                "Volunteer Application",
+                filters={"user": current_user},
+                fields=[
+                    "name",
+                    "volunteer_opportunity",
+                    "workflow_state",
+                    "creation",
+                ],
+                order_by="creation desc",
+            )
+
+            for application in applications:
+                opportunity = frappe.db.get_value(
+                    "Volunteer Opportunity",
+                    application["volunteer_opportunity"],
+                    [
+                        "title",
+                        "type",
+                        "category",
+                    ],
+                    as_dict=True,
+                )
+
+                application["opportunity"] = opportunity
+
+            return Result.success(
+                "Your volunteer applications fetched successfully",
+                data={"applications": applications},
+            )
+
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to fetch volunteer applications",
+            )
+
+            return Result.failure(
+                "Failed to fetch volunteer applications"
+            )
+
+    
+    @staticmethod
+    def get_project(volunteer_opportunity: str) -> Result:
+        try:
+            current_user = frappe.session.user
+
+            if current_user == "Guest":
+                return Result.failure(
+                    "Please log in to view project tasks"
+                )
+
+            if not volunteer_opportunity:
+                return Result.bad_request(
+                    "Volunteer opportunity is required"
+                )
+
+            opportunity = frappe.db.get_value(
+                "Volunteer Opportunity",
+                volunteer_opportunity,
+                [
+                    "name",
+                    "title",
+                    "description",
+                    "is_project",
+                ],
+                as_dict=True,
+            )
+
+            if not opportunity:
+                return Result.not_found("Project not found")
+
+            if not opportunity.is_project:
+                return Result.bad_request(
+                    "This volunteer opportunity is not a project"
+                )
+
+            tasks = frappe.get_all(
+                "Project Task",
+                filters={
+                    "parent": volunteer_opportunity,
+                    "parenttype": "Volunteer Opportunity",
+                    "parentfield": "project_tasks",
+                },
+                fields=[
+                    "name",
+                    "task",
+                    "description",
+                    "assignee",
+                    "status",
+                    "idx",
+                ],
+                order_by="idx asc",
+            )
+
+            for task in tasks:
+                if task.get("status") == "Completed":
+                    task["display_status"] = "Completed"
+                elif not task.get("assignee"):
+                    task["display_status"] = "Open"
+                else:
+                    task["display_status"] = "Assigned"
+
+                task["is_assigned_to_current_user"] = (
+                    task.get("assignee") == current_user
+                )
+
+            return Result.success(
+                "Project details fetched successfully",
+                data={
+                    "project": opportunity,
+                    "tasks": tasks,
+                },
+            )
+
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to fetch project details",
+            )
+
+            return Result.failure(
+                "Failed to fetch project details"
+            )

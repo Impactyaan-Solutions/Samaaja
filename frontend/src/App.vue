@@ -21,7 +21,7 @@ watch(
 
     const favicon = document.getElementById('favicon')
     if (favicon) {
-      favicon.href = import.meta.env.BASE_URL + t('landing.logo.src')
+      favicon.href = import.meta.env.BASE_URL + 'favicon.png'
     }
   },
   { immediate: true }

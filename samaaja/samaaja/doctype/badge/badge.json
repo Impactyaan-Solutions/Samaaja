@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:title",
  "creation": "2022-10-09 23:15:15.482700",
@@ -31,7 +32,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-12 08:21:40.194449",
+ "modified": "2026-10-22 19:03:21.074352",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Badge",

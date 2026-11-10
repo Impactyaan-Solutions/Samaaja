@@ -122,3 +122,4 @@ def apply(
             message="Failed to submit volunteer application",
             status_code=500
         )
+        
