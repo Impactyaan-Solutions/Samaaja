@@ -95,10 +95,17 @@ class AnnouncementManager:
                         ) AS registered
 
                     FROM `tabEvent` e
+                    WHERE
+                        (
+                            e.ends_on IS NULL
+                            OR e.ends_on >= %(now)s
+                        )
+
                     ORDER BY e.starts_on DESC
                     """,
                     {
-                        "user": user
+                        "user": user,
+                        "now":now
                     },
                     as_dict=True
                 )
@@ -110,8 +117,8 @@ class AnnouncementManager:
                         "event_category": event.event_category,
                         "event_type": event.event_type,
                         "image":(
-                        f"{AnnouncementManager.media_base_url}{doc.custom_image}"
-                        if doc.image else ""
+                            f"{AnnouncementManager.media_base_url}{event.custom_image}"
+                            if event.custom_image else ""
                         ),
                         "location": event.location,
                         "valid_from": event.starts_on,

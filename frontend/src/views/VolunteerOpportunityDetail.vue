@@ -485,7 +485,7 @@ onMounted(async () => {
       <!-- Title and metadata -->
       <div class="px-5 pt-4">
         <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-          <h1 class="text-lg font-bold leading-snug text-gray-900">
+          <h1 class="text-lg font-bold leading-6 text-gray-900">
             {{ title }}
           </h1>
 
@@ -535,11 +535,11 @@ onMounted(async () => {
               <CalendarDays :size="15" />
             </div>
 
-            <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+            <p class="text-xs font-semibold text-gray-500">
               Timeline
             </p>
 
-            <p class="mt-1 break-words text-xs font-medium leading-5 text-gray-900">
+            <p class="mt-1 break-words text-sm font-medium leading-5 text-gray-900">
               {{ timeline }}
             </p>
           </article>
@@ -716,7 +716,7 @@ onMounted(async () => {
           >
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
-                <h3 class="text-xs font-bold leading-5 text-gray-900">
+                <h3 class="text-sm font-bold leading-5 text-gray-900">
                   {{ task.task || 'Untitled task' }}
                 </h3>
               </div>
@@ -738,7 +738,7 @@ onMounted(async () => {
 
             <p
               v-if="task.description"
-              class="mt-1.5 whitespace-pre-line text-[11px] leading-[1.65] text-gray-500"
+              class="mt-1.5 whitespace-pre-line text-sm leading-5 text-gray-500"
             >
               {{ task.description }}
             </p>
@@ -746,7 +746,7 @@ onMounted(async () => {
             <div
               class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 pt-2.5"
             >
-              <p class="min-w-0 text-[10px] text-gray-500">
+              <p class="min-w-0 text-xs text-gray-500">
                 <span class="font-semibold">
                   {{
                     task.assignee_name ||

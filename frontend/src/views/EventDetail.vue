@@ -248,36 +248,36 @@ console.log("clciked")
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 text-gray-800">
+  <div class="page-wrapper bg-gray-50 text-body">
     <!-- Loading -->
     <div
       v-if="loading"
-      class="flex min-h-screen flex-col items-center justify-center gap-3 text-gray-500"
+      class="loading-state"
     >
-      <CalendarDays class="h-10 w-10 animate-pulse text-blue-500" />
+      <CalendarDays class="loading-icon text-blue-500" />
       <p>{{ t('eventDetails.loading') }}</p>
     </div>
 
     <!-- Error -->
     <div
       v-else-if="error"
-      class="flex min-h-screen flex-col items-center justify-center px-5 text-center"
+      class="error-state"
     >
-      <CalendarDays class="mb-3 h-12 w-12 text-gray-400" />
+      <CalendarDays class="error-icon" />
 
-      <h2 class="text-xl font-bold text-gray-900">
+      <h2 class="error-title">
           {{ t('eventDetails.loadErrorTitle') }}
       </h2>
 
-      <p class="mt-2 text-sm text-red-600">
+      <p class="error-message">
         {{ error }}
       </p>
 
-      <div class="mt-5 flex gap-3">
+      <div class="error-actions">
         <button
           type="button"
           @click="goBack"
-          class="rounded-xl bg-gray-100 px-4 py-3 text-sm font-semibold hover:bg-gray-200"
+          class="btn btn-secondary"
         >
           Back to Announcements
         </button>
@@ -285,7 +285,7 @@ console.log("clciked")
         <button
           type="button"
           @click="loadEvent"
-          class="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+          class="btn btn-primary"
         >
           Retry
         </button>
@@ -296,18 +296,18 @@ console.log("clciked")
     <template v-else-if="event">
       <!-- Header -->
       <header
-        class="sticky top-0 z-20 flex items-center justify-between border-b border-gray-100 bg-white px-4 py-4"
+        class="event-header"
       >
         <button
           type="button"
           aria-label="Back to announcements"
           @click="goBack"
-          class="rounded-xl bg-gray-100 p-2 hover:bg-gray-200"
+          class="btn-icon bg-gray-100 hover:bg-gray-200"
         >
-          <ArrowLeft class="h-5 w-5" />
+          <ArrowLeft class="icon-md" />
         </button>
 
-        <h1 class="text-base font-bold text-gray-900">
+        <h1 class="event-header-title">
          {{ t('eventDetails.headerTitle') }}
         </h1>
 
@@ -315,41 +315,41 @@ console.log("clciked")
           type="button"
           aria-label="Share event"
           @click="shareEvent"
-          class="rounded-xl bg-gray-100 p-2 hover:bg-gray-200"
+          class="btn-icon bg-gray-100 hover:bg-gray-200"
         >
-          <Share2 class="h-5 w-5" />
+          <Share2 class="icon-md" />
         </button>
       </header>
 
       <!-- Event Image -->
-      <div class="h-56 w-full overflow-hidden bg-blue-50 sm:h-72">
+      <div class="event-image-container">
         <img
           v-if="event.image"
           :src="event.image"
           :alt="eventTitle"
-          class="h-full w-full object-cover"
+          class="event-image"
         />
 
         <div
           v-else
-          class="flex h-full items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100"
+          class="event-image-placeholder"
         >
-          <CalendarDays class="h-16 w-16 text-blue-400" />
+          <CalendarDays class="placeholder-icon" />
         </div>
       </div>
 
       <!-- Main Content -->
-      <main class="mx-auto max-w-3xl space-y-6 px-5 py-6">
+      <main class="event-main-content">
         <!-- Tags -->
-        <div class="flex flex-wrap gap-2">
+        <div class="event-tags">
           <span
-            class="rounded-md bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800"
+            class="badge badge-primary"
           >
             {{ event.announcement_type || "Event" }}
           </span>
 
           <span
-            class="rounded-md bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800"
+            class="badge badge-primary"
           >
             {{ eventFormat }}
           </span>
@@ -358,7 +358,7 @@ console.log("clciked")
         <!-- Title -->
         <section>
           <h2
-            class="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl"
+            class="event-title"
           >
             {{ eventTitle }}
           </h2>
@@ -366,45 +366,45 @@ console.log("clciked")
 
         <!-- Event Information -->
         <section
-          class="space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+          class="event-info-card"
         >
           <!-- Date -->
-          <div class="flex items-start gap-3">
-            <div class="rounded-lg bg-blue-50 p-2">
-              <CalendarDays class="h-5 w-5 text-blue-600" />
+          <div class="info-item">
+            <div class="info-icon-wrapper">
+              <CalendarDays class="icon-md text-blue-600" />
             </div>
 
-            <div class="min-w-0 flex-1">
+            <div class="info-content">
               <p
-                class="text-xs font-semibold uppercase tracking-wide text-gray-500"
+                class="info-label"
               >
                 Date &amp; Time
               </p>
 
-              <p class="mt-1 text-sm font-medium text-gray-900">
+              <p class="info-value">
                 {{ eventDate }}
               </p>
             </div>
           </div>
 
           <template v-if="announcementType === 'Event'">
-            <div class="border-t border-gray-100"></div>
+            <div class="divider"></div>
 
             <!-- Venue -->
-            <div class="flex items-start gap-3">
-              <div class="rounded-lg bg-blue-50 p-2">
-                <MapPin class="h-5 w-5 text-blue-600" />
+            <div class="info-item">
+              <div class="info-icon-wrapper">
+                <MapPin class="icon-md text-blue-600" />
               </div>
 
-              <div class="min-w-0 flex-1">
+              <div class="info-content">
                 <p
-                  class="text-xs font-semibold uppercase tracking-wide text-gray-500"
+                  class="info-label"
                 >
                   Venue
                 </p>
 
                 <p
-                  class="mt-1 break-words text-sm font-medium text-gray-900"
+                  class="info-value"
                 >
                   {{ eventLocation }}
                 </p>
@@ -414,21 +414,21 @@ console.log("clciked")
 
           <!-- Expected Attendees -->
           <template v-if="event.expected_attendees">
-            <div class="border-t border-gray-100"></div>
+            <div class="divider"></div>
 
-            <div class="flex items-start gap-3">
-              <div class="rounded-lg bg-blue-50 p-2">
-                <Users class="h-5 w-5 text-blue-600" />
+            <div class="info-item">
+              <div class="info-icon-wrapper">
+                <Users class="icon-md text-blue-600" />
               </div>
 
               <div>
                 <p
-                  class="text-xs font-semibold uppercase tracking-wide text-gray-500"
+                  class="info-label"
                 >
                   Expected Attendees
                 </p>
 
-                <p class="mt-1 text-sm font-medium text-gray-900">
+                <p class="info-value">
                   {{ event.expected_attendees }}
                 </p>
               </div>
@@ -439,14 +439,14 @@ console.log("clciked")
         <!-- Description -->
         <section>
           <h3
-            class="mb-3 text-sm font-bold uppercase tracking-wide text-gray-900"
+            class="section-title"
           >
           {{ t('eventDetails.aboutEvent') }}
           </h3>
 
           <!-- Use text interpolation instead of v-html for safety. -->
          <div
-  class="text-sm text-gray-700 event-description mb-3"
+  class="event-description"
   v-html="eventDescription"
 ></div>
         </section>
@@ -454,9 +454,9 @@ console.log("clciked")
         <!-- Online Meeting -->
         <section
           v-if="event.online_meeting_link"
-          class="rounded-xl border border-blue-100 bg-blue-50 p-4"
+          class="meeting-link-card"
         >
-          <p class="text-sm font-semibold text-gray-900">
+          <p class="meeting-label">
             Online Meeting
           </p>
 
@@ -464,7 +464,7 @@ console.log("clciked")
             :href="event.online_meeting_link"
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-2 inline-block break-all text-sm text-blue-700 underline"
+            class="meeting-link"
           >
             Join meeting
           </a>
@@ -473,19 +473,19 @@ console.log("clciked")
 
       <!-- Bottom Actions -->
       <footer
-        class="sticky bottom-0 z-10 border-t border-gray-100 bg-white px-5 py-4"
+        class="event-footer"
       >
-        <div class="mx-auto flex max-w-3xl gap-3">
+        <div class="event-footer-content">
 <button
   v-if="eventAction === 'register'"
   type="button"
   @click.stop="registerEvent(event)"
   :disabled="registering || event.registered"
   :class="[
-    'rounded-xl px-4 py-3 font-semibold text-sm',
+    'btn',
     event.registered
-      ? 'bg-gray-200 text-gray-700 cursor-not-allowed'
-      : 'bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50'
+      ? 'btn-secondary cursor-not-allowed'
+      : 'btn-primary'
   ]"
 >
   {{
@@ -503,10 +503,10 @@ console.log("clciked")
   :disabled="event.checked_in"
    @click="goToCheckIn(event)"
   :class="[
-    'rounded-xl px-4 py-3 font-semibold text-sm transition-colors',
+    'btn transition-colors',
     event.checked_in
-      ? 'bg-gray-200 text-gray-700 cursor-not-allowed'
-      : 'bg-green-600 text-white hover:bg-green-700 disabled:opacity-50'
+      ? 'btn-secondary cursor-not-allowed'
+      : 'btn-success'
   ]"
 >
   {{
@@ -520,7 +520,7 @@ console.log("clciked")
           <button
             type="button"
             @click="exploreMore"
-            class="flex-1 rounded-xl bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900 transition hover:bg-blue-100"
+            class="explore-btn"
           >
            {{ t('eventDetails.exploreMore') }}
           </button>
@@ -531,7 +531,157 @@ console.log("clciked")
 </template>
 
 <style scoped>
+/* Loading & Error States */
+.loading-state {
+  @apply flex min-h-screen flex-col items-center justify-center gap-3 text-subtle;
+}
+
+.loading-icon {
+  @apply h-10 w-10 animate-pulse;
+}
+
+.error-state {
+  @apply flex min-h-screen flex-col items-center justify-center px-5 text-center;
+}
+
+.error-icon {
+  @apply mb-3 h-12 w-12 text-muted;
+}
+
+.error-title {
+  @apply text-xl font-bold text-heading;
+}
+
+.error-message {
+  @apply mt-2 text-sm text-error;
+}
+
+.error-actions {
+  @apply mt-5 flex gap-3;
+}
+
+/* Event Header */
+.event-header {
+  @apply sticky top-0 z-20 flex-between border-b border-gray-100 bg-white px-4 py-4;
+}
+
+.event-header-title {
+  @apply text-base font-bold text-heading;
+}
+
+/* Event Image */
+.event-image-container {
+  @apply h-56 w-full overflow-hidden bg-blue-50;
+}
+
+@media (min-width: 640px) {
+  .event-image-container {
+    @apply h-72;
+  }
+}
+
+.event-image {
+  @apply h-full w-full object-cover;
+}
+
+.event-image-placeholder {
+  @apply flex-center h-full bg-gradient-to-br from-blue-100 to-indigo-100;
+}
+
+.placeholder-icon {
+  @apply h-16 w-16 text-blue-400;
+}
+
+/* Main Content */
+.event-main-content {
+  @apply mx-auto max-w-3xl px-5 py-6;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Tags */
+.event-tags {
+  @apply flex flex-wrap gap-2;
+}
+
+/* Title */
+.event-title {
+  @apply text-2xl font-bold leading-tight text-heading;
+}
+
+@media (min-width: 640px) {
+  .event-title {
+    @apply text-3xl;
+  }
+}
+
+/* Event Info Card */
+.event-info-card {
+  @apply rounded-2xl border border-gray-100 bg-white p-5 shadow-sm;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-item {
+  @apply flex items-start gap-3;
+}
+
+.info-icon-wrapper {
+  @apply rounded-lg bg-blue-50 p-2;
+}
+
+.info-content {
+  @apply min-w-0 flex-1;
+}
+
+.info-label {
+  @apply text-xs font-semibold uppercase tracking-wide text-subtle;
+}
+
+.info-value {
+  @apply mt-1 text-sm font-medium text-heading break-words;
+}
+
+/* Section Title */
+.section-title {
+  @apply mb-3 text-sm font-bold uppercase tracking-wide text-heading;
+}
+
+/* Event Description */
 .event-description {
+  @apply text-sm text-body mb-3;
   overflow-wrap: anywhere;
+}
+
+/* Meeting Link Card */
+.meeting-link-card {
+  @apply rounded-xl border border-blue-100 bg-blue-50 p-4;
+}
+
+.meeting-label {
+  @apply text-sm font-semibold text-heading;
+}
+
+.meeting-link {
+  @apply mt-2 inline-block break-all text-sm text-blue-700 underline;
+}
+
+/* Footer */
+.event-footer {
+  @apply sticky bottom-0 z-10 border-t border-gray-100 bg-white px-5 py-4;
+}
+
+.event-footer-content {
+  @apply mx-auto flex max-w-3xl gap-3;
+}
+
+.explore-btn {
+  @apply flex-1 rounded-xl bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900 transition;
+}
+
+.explore-btn:hover {
+  @apply bg-blue-100;
 }
 </style>

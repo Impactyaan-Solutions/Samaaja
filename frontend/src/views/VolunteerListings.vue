@@ -292,7 +292,7 @@ const formatDescription = (description) => {
 </script>
 
 <template>
-  <div class="min-h-full bg-[#f7f9fb] pb-24 text-[#172033]">
+  <div class="min-h-full bg-gray-50/50 pb-6 text-gray-900">
 
     <AppHeader />
 
@@ -304,7 +304,7 @@ const formatDescription = (description) => {
         <!-- Location -->
         <button
           @click="toggleLocationFilter"
-          class="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition"
+          class="flex h-9 shrink-0 items-center gap-1.5 rounded-xl border px-3 text-xs font-semibold transition"
           :class="
             selectedLocation
               ? 'border-primary-500 bg-primary-50 text-primary-700'
@@ -508,7 +508,7 @@ const formatDescription = (description) => {
         @keydown.space.prevent="goToDetail(item)"
         role="link"
         tabindex="0"
-        class="cursor-pointer rounded-xl border border-gray-100 bg-white p-3.5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition hover:border-primary-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+        class="cursor-pointer rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500"
       >
 
         <!-- Category, Team-based and Applied badges -->
@@ -516,7 +516,7 @@ const formatDescription = (description) => {
 
           <!-- Category -->
           <span
-            class="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2 py-1 text-[10px] font-semibold text-blue-700"
+            class="inline-flex items-center gap-1.5 rounded-lg bg-primary-50 px-2.5 py-1 text-[10px] font-semibold text-primary-700"
           >
             {{ item.category || t('volunteerListings.community') }}
           </span>
@@ -533,12 +533,12 @@ const formatDescription = (description) => {
         </div>
 
         <!-- Title -->
-        <h2 class="mt-2 text-sm font-bold leading-5 text-gray-900">
+        <h2 class="mt-2 text-base font-bold leading-6 text-gray-900">
           {{ item.title || t('volunteerListings.opportunity') }}
         </h2>
 
         <!-- Description -->
-        <p class="mt-1.5 text-xs leading-5 text-gray-500">
+        <p class="mt-1.5 text-sm leading-5 text-gray-500">
           {{ formatDescription(item.description) }}
         </p>
 
@@ -574,7 +574,7 @@ const formatDescription = (description) => {
           <!-- View Details -->
           <button
             @click="goToDetail(item)"
-            class="shrink-0 rounded-md bg-primary-600 px-4 py-2 text-[11px] font-semibold text-white transition hover:bg-primary-700"
+            class="shrink-0 rounded-xl bg-primary-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-primary-700"
           >
             {{ t('volunteerListings.viewDetails') }}
           </button>

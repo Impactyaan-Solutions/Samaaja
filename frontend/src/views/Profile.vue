@@ -252,7 +252,7 @@ watch(
   </script>
 
   <template>
-    <div v-if="!isLoading" class="min-h-full bg-gray-50/50 pb-6 relative">
+    <div v-if="!isLoading" class="page-wrapper relative">
       
       <!-- Header: Now listening for the @menuClick event -->
       <AppHeader @menuClick="toggleMenu" />
@@ -268,26 +268,26 @@ watch(
       >
         <div 
           v-if="isMenuOpen" 
-          class="absolute right-5 top-16 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden"
+          class="profile-dropdown-menu"
         >
           <div class="flex flex-col py-1">
             <!-- Settings Tab -->
             <button 
               @click="goToSettings" 
-              class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors"
+              class="menu-item"
             >
-              <Settings class="w-4 h-4 text-gray-500" />
+              <Settings class="icon-md text-subtle" />
               <span class="text-sm font-medium">{{ t('menu.settings') }}</span>
             </button>
 
-            <div class="border-t border-gray-100 mx-2"></div>
+            <div class="divider mx-2"></div>
 
             <!-- Logout Tab -->
             <button
               @click="handleLogout"
-              class="flex items-center space-x-3 px-4 py-3 hover:bg-red-50 text-red-600 transition-colors"
+              class="menu-item menu-item--danger"
             >
-              <LogOut class="w-4 h-4" />
+              <LogOut class="icon-md" />
               <span class="text-sm font-medium">{{ t('menu.logout') }}</span>
             </button>
           </div>
@@ -309,20 +309,20 @@ watch(
       />
 
       <!-- Original Profile Content -->
-      <div class="px-5 pb-2 rounded-2xl shadow-sm mb-5 relative">
+      <div class="profile-card">
         <!-- Share my profile -->
         <button
           v-if="isOwnProfile"
           @click="isShareOpen = true"
           :aria-label="t('profile.shareProfile')"
-          class="absolute top-2 right-6 p-2.5 bg-white rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors z-10"
+          class="share-profile-btn"
         >
-          <Share2 class="w-4 h-4 text-gray-600" />
+          <Share2 class="icon-md text-body" />
         </button>
 
-        <div class="flex flex-col items-center p-2 px-4 text-center">
+        <div class="profile-content">
           <!-- Avatar -->
-          <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4">
+          <div class="profile-avatar">
 
             <!-- User Image -->
             <img 
@@ -360,26 +360,26 @@ watch(
 
           </div>
           
-          <h1 class="text-2xl font-bold text-gray-900">{{ user.name }}</h1>
-          <p class="text-blue-600 font-semibold text-sm mt-1">{{ user.role }}</p>
+          <h1 class="profile-name">{{ user.name }}</h1>
+          <p class="profile-role">{{ user.role }}</p>
           
           <p 
             v-if="user.bio" 
-            class="text-gray-500 italic text-sm mt-4 px-2 tracking-wide leading-relaxed"
+            class="profile-bio"
           >
             {{ user.bio }}
           </p>
 
           <!-- Tags -->
-          <div class="flex items-center space-x-3 mt-6">
+          <div class="profile-interests">
             <!-- Render interests -->
             <div 
               v-for="(interest, index) in user.interests"
               :key="index"
-              class="bg-blue-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-blue-100/50"
+              class="interest-tag"
             >
               <img :src="interest.icon" class="w-8 h-8 mb-1 rounded-full"/>
-              <span class="text-[11px] font-bold text-gray-700">{{ interest.action_category?.trim() }}</span>
+              <span class="interest-label">{{ interest.action_category?.trim() }}</span>
             </div>
           </div>
 
@@ -482,7 +482,7 @@ watch(
       <div
         v-for="action in userActions"
         :key="action.id"
-        class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
+        class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm mb-[15px]"
       >
         <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">{{ t('profile.actionLabel') }}</p>
         <h3 class="font-bold text-gray-900">{{ action.title }}</h3>
@@ -503,7 +503,7 @@ watch(
       <div
         v-for="post in userPosts"
         :key="post.id"
-        class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
+        class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm mb-[15px]"
       >
         <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1">{{ t('profile.postLabel') }}</p>
         <h3 class="font-bold text-gray-900">{{ post.title }}</h3>
@@ -581,8 +581,77 @@ watch(
     <!-- Loading State -->
     <div v-else class="h-screen flex items-center justify-center bg-white">
       <div class="flex flex-col items-center space-y-4">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p class="text-gray-500 font-medium tracking-wide">{{ t('profile.loading') }}</p>
+          <div class="spinner spinner-lg"></div>
+          <p class="text-subtle font-medium tracking-wide">{{ t('profile.loading') }}</p>
       </div>
     </div>
   </template>
+
+  <style scoped>
+  /* Profile Dropdown Menu */
+  .profile-dropdown-menu {
+    @apply absolute right-5 top-16 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden;
+  }
+
+  .menu-item {
+    @apply flex items-center gap-3 px-4 py-3 transition-colors text-body;
+  }
+
+  .menu-item:hover {
+    @apply bg-gray-50;
+  }
+
+  .menu-item--danger {
+    @apply text-red-600;
+  }
+
+  .menu-item--danger:hover {
+    @apply bg-red-50;
+  }
+
+  /* Profile Card */
+  .profile-card {
+    @apply px-5 pb-2 rounded-2xl shadow-sm mb-5 relative;
+  }
+
+  .share-profile-btn {
+    @apply absolute top-2 right-6 p-2.5 bg-white rounded-full shadow-md border border-gray-100 transition-colors z-10 cursor-pointer;
+  }
+
+  .share-profile-btn:hover {
+    @apply bg-gray-50;
+  }
+
+  .profile-content {
+    @apply flex flex-col items-center p-2 px-4 text-center;
+  }
+
+  .profile-avatar {
+    @apply w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg mb-4;
+  }
+
+  .profile-name {
+    @apply text-2xl font-bold text-heading;
+  }
+
+  .profile-role {
+    @apply text-blue-600 font-semibold text-sm mt-1;
+  }
+
+  .profile-bio {
+    @apply text-subtle italic text-sm mt-4 px-2 tracking-wide leading-relaxed;
+  }
+
+  .profile-interests {
+    @apply flex items-center gap-3 mt-6;
+  }
+
+  .interest-tag {
+    @apply bg-blue-50/80 px-4 py-2 rounded-2xl flex flex-col items-center shadow-sm border border-blue-100/50;
+  }
+
+  .interest-label {
+    @apply font-bold text-body;
+    font-size: 11px;
+  }
+  </style>
