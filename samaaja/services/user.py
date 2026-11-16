@@ -100,7 +100,6 @@ class UserManager:
                 "User Metadata",
                 {"user": user_email},
                 [
-                    "action_count",
                     "last_action",
                     "last_action_date",
                     "last_action_type",
@@ -142,8 +141,13 @@ class UserManager:
                 }
                 )
             result["posts"] = community_count
-            
-
+            action_count = frappe.db.count(
+                "Action",
+                filters={
+                    "user": user_email
+                }
+            )
+            result["actions"] = action_count
             badges = frappe.get_list(
                 "User Badge",
                 filters={

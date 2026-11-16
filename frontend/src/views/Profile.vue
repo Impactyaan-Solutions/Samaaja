@@ -588,13 +588,15 @@ watch(
   </template>
 
   <style scoped>
+  @reference "../style.css";
+
   /* Profile Dropdown Menu */
   .profile-dropdown-menu {
     @apply absolute right-5 top-16 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden;
   }
 
   .menu-item {
-    @apply flex items-center gap-3 px-4 py-3 transition-colors text-body;
+    @apply flex items-center gap-3 px-4 py-3 transition-colors text-gray-700;
   }
 
   .menu-item:hover {
@@ -631,7 +633,7 @@ watch(
   }
 
   .profile-name {
-    @apply text-2xl font-bold text-heading;
+    @apply text-2xl font-bold text-gray-900 font-semibold;
   }
 
   .profile-role {
@@ -639,7 +641,7 @@ watch(
   }
 
   .profile-bio {
-    @apply text-subtle italic text-sm mt-4 px-2 tracking-wide leading-relaxed;
+    @apply text-gray-500 italic text-sm mt-4 px-2 tracking-wide leading-relaxed;
   }
 
   .profile-interests {
@@ -651,7 +653,7 @@ watch(
   }
 
   .interest-label {
-    @apply font-bold text-body;
+    @apply font-bold text-gray-700;
     font-size: 11px;
   }
   </style>

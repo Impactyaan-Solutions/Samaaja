@@ -24,7 +24,6 @@ const offset = ref(0)
 
 const hasMore = ref(true)
 
-
 const startY = ref(0)
 const currentY = ref(0)
 const isRefreshing = ref(false)
@@ -53,7 +52,6 @@ const handleTouchMove = (e) => {
   const y = e.touches[0].clientY;
   const deltaY = y - startY.value;
   if (deltaY > 0) {
-    // Apply resistance
     currentY.value = deltaY * 0.4;
   } else {
     isPulling.value = false;
@@ -65,12 +63,8 @@ const handleTouchEnd = () => {
   if (currentY.value > 60) {
     isRefreshing.value = true;
     currentY.value = 50;
-    
-    // Simulate API refresh
     setTimeout(() => {
-      // Actually reset the posts array back to default 2 posts to simulate a true "fresh" pull
       posts.value = posts.value.slice(0, 2);
-      
       isRefreshing.value = false;
       currentY.value = 0;
     }, 1500);
@@ -86,19 +80,16 @@ let observer = null
 const loadMorePosts = async () => {
   await fetchPosts();
 }
+
 const fetchPosts = async () => {
   if (isLoadingMore.value || !hasMore.value) return
-
   isLoadingMore.value = true
-
   try {
     const response = await getFeed(limit, offset.value)
     console.log(response)
     const newPosts = response.posts || []
     posts.value.push(...newPosts)
-
     offset.value += limit
-
     hasMore.value = response.has_more
   } catch (err) {
     console.error(err)
@@ -110,18 +101,14 @@ const fetchPosts = async () => {
 onMounted(async() => {
   const feed = await fetchPosts();
   if(feed){
-       posts.value=feed;
-   }
+    posts.value = feed;
+  }
   observer = new IntersectionObserver((entries) => {
-    if (
-      entries[0].isIntersecting &&
-      hasMore.value &&
-      !isLoadingMore.value
-    ) {
-        loadMorePosts()
+    if (entries[0].isIntersecting && hasMore.value && !isLoadingMore.value) {
+      loadMorePosts()
     }
-  }, { rootMargin: '200px' }) // Trigger 200px before reaching the bottom
-  
+  }, { rootMargin: '200px' })
+
   if (loadMoreSentinel.value) {
     observer.observe(loadMoreSentinel.value)
   }
@@ -213,13 +200,15 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+@reference "../style.css";
+
 /* Pull to Refresh */
 .pull-refresh-indicator {
-  @apply absolute left-0 right-0 flex-center pointer-events-none z-50 text-blue-600;
+  @apply absolute left-0 right-0 flex justify-center items-center pointer-events-none z-50 text-blue-600;
 }
 
 .pull-refresh-bubble {
-  @apply bg-white rounded-full shadow-md flex-center mt-2 border border-gray-100;
+  @apply bg-white rounded-full shadow-md flex justify-center items-center mt-2 border border-gray-100;
   padding: 0.625rem;
 }
 
@@ -229,7 +218,7 @@ onUnmounted(() => {
 }
 
 .stat-card {
-  @apply text-white p-3 rounded-2xl flex-col-center shadow-md;
+  @apply text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md;
 }
 
 .stat-card--dark {
@@ -263,7 +252,7 @@ onUnmounted(() => {
 }
 
 .quick-action-btn {
-  @apply bg-white border border-gray-100 py-2 rounded-xl flex-center gap-2 shadow-sm text-body cursor-pointer transition;
+  @apply bg-white border border-gray-100 py-2 rounded-xl flex justify-center items-center gap-2 shadow-sm text-gray-700 cursor-pointer transition-all duration-200;
 }
 
 .quick-action-btn:hover {
@@ -280,15 +269,15 @@ onUnmounted(() => {
 }
 
 .feed-title {
-  @apply text-lg font-bold text-heading mb-4 px-1;
+  @apply text-lg font-bold text-gray-900 mb-4 px-1;
 }
 
 .load-more-sentinel {
-  @apply py-8 flex-center opacity-70;
+  @apply py-8 flex justify-center items-center opacity-70;
 }
 
 .no-more-posts {
-  @apply text-center text-sm text-muted py-6;
+  @apply text-center text-sm text-gray-400 py-6;
 }
 
 /* Animations */

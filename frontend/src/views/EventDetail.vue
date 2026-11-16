@@ -531,9 +531,11 @@ console.log("clciked")
 </template>
 
 <style scoped>
+@reference "../style.css";
+
 /* Loading & Error States */
 .loading-state {
-  @apply flex min-h-screen flex-col items-center justify-center gap-3 text-subtle;
+  @apply flex min-h-screen flex-col items-center justify-center gap-3 text-gray-500;
 }
 
 .loading-icon {
@@ -545,15 +547,15 @@ console.log("clciked")
 }
 
 .error-icon {
-  @apply mb-3 h-12 w-12 text-muted;
+  @apply mb-3 h-12 w-12 text-gray-400;
 }
 
 .error-title {
-  @apply text-xl font-bold text-heading;
+  @apply text-xl font-bold text-gray-900;
 }
 
 .error-message {
-  @apply mt-2 text-sm text-error;
+  @apply mt-2 text-sm text-red-500;
 }
 
 .error-actions {
@@ -562,11 +564,11 @@ console.log("clciked")
 
 /* Event Header */
 .event-header {
-  @apply sticky top-0 z-20 flex-between border-b border-gray-100 bg-white px-4 py-4;
+  @apply sticky top-0 z-20 flex justify-between items-center border-b border-gray-100 bg-white px-4 py-4;
 }
 
 .event-header-title {
-  @apply text-base font-bold text-heading;
+  @apply text-base font-bold text-gray-900;
 }
 
 /* Event Image */
@@ -585,7 +587,7 @@ console.log("clciked")
 }
 
 .event-image-placeholder {
-  @apply flex-center h-full bg-gradient-to-br from-blue-100 to-indigo-100;
+  @apply flex justify-center items-center h-full bg-gradient-to-br from-blue-100 to-indigo-100;
 }
 
 .placeholder-icon {
@@ -607,7 +609,7 @@ console.log("clciked")
 
 /* Title */
 .event-title {
-  @apply text-2xl font-bold leading-tight text-heading;
+  @apply text-2xl font-bold leading-tight text-gray-900;
 }
 
 @media (min-width: 640px) {
@@ -637,21 +639,21 @@ console.log("clciked")
 }
 
 .info-label {
-  @apply text-xs font-semibold uppercase tracking-wide text-subtle;
+  @apply text-xs font-semibold uppercase tracking-wide text-gray-500;
 }
 
 .info-value {
-  @apply mt-1 text-sm font-medium text-heading break-words;
+  @apply mt-1 text-sm font-medium text-gray-900 break-words;
 }
 
 /* Section Title */
 .section-title {
-  @apply mb-3 text-sm font-bold uppercase tracking-wide text-heading;
+  @apply mb-3 text-sm font-bold uppercase tracking-wide text-gray-900;
 }
 
 /* Event Description */
 .event-description {
-  @apply text-sm text-body mb-3;
+  @apply text-sm text-gray-700 mb-3;
   overflow-wrap: anywhere;
 }
 
@@ -661,7 +663,7 @@ console.log("clciked")
 }
 
 .meeting-label {
-  @apply text-sm font-semibold text-heading;
+  @apply text-sm font-semibold text-gray-900;
 }
 
 .meeting-link {
