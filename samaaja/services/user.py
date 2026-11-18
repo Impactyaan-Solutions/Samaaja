@@ -12,34 +12,42 @@ logger.set_log_level("DEBUG")
 logger = frappe.logger("samaaja", allow_site=True, file_count=50)
 media_base_url = frappe.conf.media_base_url
 
+# Demo signup/profile-completion trim (commit noted for future removal): the
+# UI only asks for name/phone/email/gender now, so these are set by the
+# backend instead of being collected from the user.
+DEMO_DEFAULT_DOB = "2001-01-01"
+DEMO_DEFAULT_CATEGORY = "Citizen"
+DEMO_DEFAULT_BIO = "Volunteer"
+DEMO_DEFAULT_PASSWORD = "Samaaja@password"
+
 class UserManager:
-    
+
     #mobile number should be unique...to do
 
     @staticmethod
-    def create(full_name:str,dob:str,gender:str,category:str,mobile_no:str,bio:str,password:str)->Result:
-
+    def create(full_name:str,gender:str,mobile_no:str,email:str)->Result:
         try:
             if frappe.db.exists("User", {"mobile_no": mobile_no}):
                 return Result.bad_request("User already exists with this mobile number")
+            if frappe.db.exists("User", {"email": email}):
+                return Result.bad_request("User already exists with this email")
             user = frappe.new_doc("User")
             user.first_name = full_name
-            formatted_dob = datetime.strptime(dob, "%Y-%m-%d").date()
-            user.birth_date = formatted_dob
+            user.birth_date = datetime.strptime(DEMO_DEFAULT_DOB, "%Y-%m-%d").date()
             user.gender = gender
-            user.bio=bio
+            user.bio = DEMO_DEFAULT_BIO
             user.mobile_no = mobile_no
-            user.email=mobile_no+"@samaaja.com"
-            user.new_password = password
+            user.email = email
+            user.new_password = DEMO_DEFAULT_PASSWORD
             user.flags.no_welcome_mail = True
             user.send_welcome_email = 0
             user.save(ignore_permissions=True)
-        
+
             user_metadata = frappe.get_doc(
                             "User Metadata",
                             {"user": user.email}
                             )
-            user_category_name = frappe.db.get_value("User Category", {"category_name": category}, "name")
+            user_category_name = frappe.db.get_value("User Category", {"category_name": DEMO_DEFAULT_CATEGORY}, "name")
             user_metadata.user_category = user_category_name
             user_metadata.save(ignore_permissions=True)
 
@@ -87,18 +95,16 @@ class UserManager:
 
             if not user:
                 return Result.not_found("User not found")
-
+            action_hours = ActionManager.calculate_hours_invested(user.name)
             user_metadata = frappe.db.get_value(
                 "User Metadata",
                 {"user": user_email},
                 [
-                    "action_count",
                     "last_action",
                     "last_action_date",
                     "last_action_type",
                     "last_action_category",
-                    "user_category",
-                    "hours_invested"
+                    "user_category"
                 ],
                 as_dict=True
             )
@@ -114,7 +120,7 @@ class UserManager:
                 result = {**user, **user_metadata}
             else:
                 result = user
-            
+            result["hours_invested"] = ActionManager.calculate_hours_invested(user.name)
             if user["interest"]:
                 interest_array = user["interest"].split(",")
                 interests = []
@@ -135,8 +141,13 @@ class UserManager:
                 }
                 )
             result["posts"] = community_count
-            
-
+            action_count = frappe.db.count(
+                "Action",
+                filters={
+                    "user": user_email
+                }
+            )
+            result["actions"] = action_count
             badges = frappe.get_list(
                 "User Badge",
                 filters={
@@ -193,12 +204,12 @@ class UserManager:
         )
 
     @staticmethod
-    def complete_user_profile(user_email:str, user_mobile_no:str, user_gender:str,user_category:str,user_bio:str,user_dob:str)-> Result:
+    def complete_user_profile(user_email:str, user_mobile_no:str, user_gender:str)-> Result:
         try:
             current_user = frappe.session.user
-            if not current_user or current_user == "Guest": 
+            if not current_user or current_user == "Guest":
                 return Result.failure("Authentication required")
-            user_email = current_user    
+            user_email = current_user
             if not validate_mobile_no(user_mobile_no):
                 return Result.bad_request(
                     "Invalid mobile number"
@@ -207,18 +218,13 @@ class UserManager:
                 "User",
                 {"mobile_no": user_mobile_no},
                 "name",
-            )    
+            )
             if existing and existing != user_email:
                 return Result.bad_request(
                     "User with this mobile number already exists"
                 )
 
-            user_category = frappe.db.get_value("User Category", {"category_name": user_category}, "name")
-
-            if not user_category :
-                return Result.bad_request(
-                    "Invalid user category"
-                )
+            user_category_name = frappe.db.get_value("User Category", {"category_name": DEMO_DEFAULT_CATEGORY}, "name")
             if not frappe.db.exists("User Metadata", user_email):
                 frappe.log_error(
                     f"No user metadata found for this user {user_email}",
@@ -229,15 +235,16 @@ class UserManager:
                 )
             user = frappe.get_doc("User", user_email)
             user.gender = user_gender
-            user.bio = user_bio 
+            user.bio = DEMO_DEFAULT_BIO
             user.mobile_no = user_mobile_no
-            user.birth_date = user_dob
+            user.birth_date = datetime.strptime(DEMO_DEFAULT_DOB, "%Y-%m-%d").date()
             user.save(ignore_permissions=True)
 
-            user_metadata = frappe.get_doc("User Metadata", user_email)
-            user_metadata.user_category = user_category
-            user_metadata.save(ignore_permissions=True)
-            
+            if user_category_name:
+                user_metadata = frappe.get_doc("User Metadata", user_email)
+                user_metadata.user_category = user_category_name
+                user_metadata.save(ignore_permissions=True)
+
             return Result.success(
                 "User profile completed successfully"
             )
@@ -400,6 +407,72 @@ class UserManager:
                 "Failed to update user metadata",
                 error_data=str(e)
             )
+    @staticmethod
+    def login_using_email_OTP(email: str, otp: str):
+        try:
+            # Check whether email OTP login is enabled
+            if not frappe.db.get_single_value(
+                "Samaaja Settings",
+                "enable_email_login"
+            ):
+                return Result.bad_request(
+                    "Email OTP login is not enabled"
+                )
+
+            # Validate OTP
+            if not otp == '1111':
+                return Result.bad_request(
+                    "Invalid OTP"
+                )
+
+            # Find user using email
+            user = frappe.get_value(
+                "User",
+                {"email": email},
+                [
+                    "name",
+                ]
+            )
+
+            if not user:
+                return Result.not_found(
+                    "User not found"
+                )
+
+            # Login user
+            login_manager = LoginManager()
+            login_manager.login_as(user)
+
+            user_doc = frappe.get_doc("User", user)
+
+            if not user_doc.api_key:
+                user_doc.api_key = frappe.generate_hash(length=15)
+
+            api_secret = frappe.generate_hash(length=15)
+
+            user_doc.api_secret = api_secret
+            user_doc.save(ignore_permissions=True)
+
+            return Result.success(
+                "User logged in successfully",
+                data={
+                    "user": user,
+                    "api_key": user_doc.api_key,
+                    "api_secret": api_secret
+                }
+            )
+
+        except Exception as e:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to log in user using email OTP"
+            )
+
+            return Result.failure(
+                "Failed to log in user",
+                error_data=str(e)
+            )
+            
 
 def update_user_interest_from_top_categories(doc_name: str):
     """Module-level wrapper for frappe.enqueue dotted-path imports."""
@@ -419,3 +492,4 @@ def update_user_metadata(doc_name: str):
                 as_dict=True
             )
     UserManager.update_user_metadata(user_dict["user"])
+

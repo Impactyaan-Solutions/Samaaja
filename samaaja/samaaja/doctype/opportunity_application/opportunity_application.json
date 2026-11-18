@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2025-07-22 20:49:10.478733",
  "doctype": "DocType",
@@ -78,7 +79,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-22 20:51:18.948460",
+ "modified": "2026-10-22 19:03:19.011469",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Opportunity Application",

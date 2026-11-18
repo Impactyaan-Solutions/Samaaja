@@ -4,31 +4,25 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { completeProfile, getMetadataOptions } from '@/services/api';
 import { checkAuth, authState } from '@/auth';
-import { User, Calendar, Phone, BookOpen, Tag } from 'lucide-vue-next';
+import { User, Phone } from 'lucide-vue-next';
 
 const router = useRouter();
 const { t } = useI18n();
 const formData = ref({
   gender: '',
-  bio: '',
-  category: '',
-  dob: '',
   mobileNumber: ''
 });
 
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 const genderOptions = ref([]);
-const categoryOptions = ref([]);
 
 const fetchMetadataOptions = async () => {
   try {
-    const [genders, categories] = await Promise.all([
-      getMetadataOptions('Gender'),
-      getMetadataOptions('User Category')
+    const [genders] = await Promise.all([
+      getMetadataOptions('Gender')
     ]);
     genderOptions.value = genders;
-    categoryOptions.value = categories;
   } catch (error) {
     console.error('Failed to load metadata options:', error);
     errorMessage.value = 'Failed to load profile options. Please refresh the page.';
@@ -39,9 +33,6 @@ fetchMetadataOptions();
 
 const isFormValid = computed(() => {
   return formData.value.gender &&
-         formData.value.bio &&
-         formData.value.category &&
-         formData.value.dob &&
          formData.value.mobileNumber;
 });
 
@@ -53,12 +44,8 @@ const submitForm = async () => {
 
   try {
     // Call the backend update API
-    console.log(authState.email)
     await completeProfile({
       user_gender: formData.value.gender,
-      user_bio: formData.value.bio,
-      user_category: formData.value.category,
-      user_dob: formData.value.dob,
       user_mobile_no: formData.value.mobileNumber,
       user_email: authState.email
     });
@@ -108,32 +95,6 @@ const submitForm = async () => {
           </div>
         </div>
 
-        <!-- Category -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.category') }}</label>
-          <div class="relative flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
-            <span class="pl-4 text-gray-400"><Tag :size="14" /></span>
-            <select v-model="formData.category" required class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent appearance-none">
-              <option value="" disabled>{{ t('profileCompletion.selectCategory') }}</option>
-              <option v-for="option in categoryOptions" :key="option" :value="option">{{ option }}</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Date of Birth -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.dob') }}</label>
-          <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
-            <span class="pl-4 text-gray-400"><Calendar :size="14" /></span>
-            <input
-              v-model="formData.dob"
-              type="date"
-              required
-              class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent"
-            />
-          </div>
-        </div>
-
         <!-- Mobile Number -->
         <div class="space-y-1.5">
           <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.mobileNumber') }}</label>
@@ -146,21 +107,6 @@ const submitForm = async () => {
               :placeholder="t('profileCompletion.mobileNumberPlaceholder')"
               class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent"
             />
-          </div>
-        </div>
-
-        <!-- Bio -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ t('profileCompletion.bio') }}</label>
-          <div class="flex border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-gray-50/50 transition-all">
-            <span class="pl-4 pt-3.5 text-gray-400"><BookOpen :size="14" /></span>
-            <textarea
-              v-model="formData.bio"
-              required
-              :placeholder="t('profileCompletion.bioPlaceholder')"
-              rows="3"
-              class="w-full px-1 py-1.5 outline-none text-gray-700 bg-transparent resize-none"
-            ></textarea>
           </div>
         </div>
 

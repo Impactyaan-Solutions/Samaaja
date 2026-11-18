@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:title",
  "creation": "2022-12-08 00:50:43.584780",
@@ -30,7 +31,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-09 19:24:43.060062",
+ "modified": "2026-10-22 19:03:20.762177",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Flag Type",
@@ -50,6 +51,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

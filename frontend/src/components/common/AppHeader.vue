@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Menu, Settings, LogOut, Bell, HandHeart } from 'lucide-vue-next'
+import { Menu, Settings, LogOut, Bell, HandHeart, UserCog } from 'lucide-vue-next'
 import { authState } from '@/auth'
 import { logout as apiLogout } from '@/services/api'
 
@@ -30,7 +30,7 @@ const handleLogout = async () => {
     // Always clear local state and leave, even if the server call above failed.
     isMenuOpen.value = false;
     localStorage.clear();
-    window.location.href = '/login';
+    window.location.href = '/';
   }
 }
 </script>
@@ -105,6 +105,15 @@ const handleLogout = async () => {
                 <Settings class="w-4 h-4 text-gray-500" />
                 <span class="text-sm font-medium">{{ t('menu.settings') }}</span>
               </router-link>
+
+              <button
+                v-if="false"
+                @click="isMenuOpen = false"
+                class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 text-gray-700 transition-colors text-left"
+              >
+                <UserCog class="w-4 h-4 text-gray-500" />
+                <span class="text-sm font-medium">{{ t('menu.updateProfile') }}</span>
+              </button>
 
               <div class="border-t border-gray-100 mx-2"></div>
 

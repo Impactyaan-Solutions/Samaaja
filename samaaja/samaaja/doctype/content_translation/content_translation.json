@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2026-03-02 14:46:36.238446",
  "doctype": "DocType",
@@ -36,7 +37,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-02 14:47:55.828258",
+ "modified": "2026-10-22 19:03:18.772793",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Content Translation",

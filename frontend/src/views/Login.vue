@@ -1,23 +1,33 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter , useRoute  } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
   ArrowLeft
 } from 'lucide-vue-next';
-import { getLoginOptions, loginUsingOtp, loginUsingPassword } from '@/services/api';
+import { getLoginOptions, loginUsingOtp , loginUsingEmailOtp  } from '@/services/api';
 
 const { t } = useI18n();
-const mobileNumber = ref('');
-const password = ref('');
-const otp = ref('');
+const logoSrc = `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`;
+const mobileNumber = ref('')
+const email = ref('');
+const phoneOtp = ref('');
+const emailOtp = ref('');
 const router = useRouter();
+const route = useRoute();
+
+// UI state
+const showPhoneOtpField = ref(false);
+const showEmailOtpField = ref(false);
+
 // Navigation Helper
 const goBack = () => {
   window.history.length > 1 ? window.history.back() : console.log('No history to go back');
 };
+
 // Default true so the form doesn't flash/hide while options load.
 const phoneLoginEnabled = ref(true);
+const emailLoginEnabled = ref(false);
 const otpEnabled = ref(false);
 const providers = ref([]);
 const errorMessage = ref('');
@@ -26,81 +36,83 @@ const isSubmitting = ref(false);
 onMounted(async () => {
   try {
     const options = await getLoginOptions();
-    phoneLoginEnabled.value = options.phone_login_enabled !== false;
+    phoneLoginEnabled.value = !!options.otp_enabled;
+    emailLoginEnabled.value = options.email_login_enabled !== false;
     otpEnabled.value = !!options.otp_enabled;
     providers.value = options.providers || [];
+     if (phoneLoginEnabled.value && otpEnabled.value) {
+      loginMethod.value = 'phone';
+    } else if (emailLoginEnabled.value) {
+      loginMethod.value = 'email';
+    }
+
   } catch (error) {
     console.error("Failed to load login options:", error);
     errorMessage.value = t('login.loadOptionsFailed');
   }
 });
 
-const handleSendOTP = () => {
-  if (mobileNumber.value.length != 10) {
-    alert(t('login.invalidMobile'))
-    return
-  }
-  alert(t('login.otpSent'))
-  // Show OTP field
-  const otpField = document.querySelector('.hidden');
-  otpField.classList.remove('hidden');
-  // Show login button
-  const loginBtn = document.getElementById('login-btn');
-  loginBtn.classList.remove('hidden');
-  // Change send otp button to verify otp
-  const sendOtpBtn = document.getElementById('send-otp-btn');
-  sendOtpBtn.classList.add('hidden');
-}
-
-const handleOtpLogin = async () => {
-  try {
-    if (otp.value.length != 4) {
-      alert(t('login.invalidOtp'))
-      return
-    }
-    const data = {
-      mobile_no: mobileNumber.value,
-      otp: otp.value
-    }
-    const result = await loginUsingOtp(data)
-    if (result) {
-      router.push('/homepage')
-    }
-  } catch (error) {
-    console.error("Login Error:", error);
-    alert(t('login.connectionFailed', { error: error.message }));
-  }
-}
-
-const handlePasswordLogin = async () => {
+// Phone OTP Handlers
+const handleSendPhoneOTP = () => {
   errorMessage.value = '';
-
   if (mobileNumber.value.length != 10) {
-    errorMessage.value = t('login.invalidMobile')
-    return
+    errorMessage.value = t('login.invalidMobile');
+    return;
   }
-  if (!password.value) {
-    errorMessage.value = t('login.passwordRequired')
-    return
-  }
+  alert(t('login.otpSent'));
+  showPhoneOtpField.value = true;
+}
 
-  isSubmitting.value = true;
+const handlePhoneOtpLogin = async () => {
+  errorMessage.value = '';
   try {
+    if (phoneOtp.value.length != 4) {
+      errorMessage.value = t('login.invalidOtp');
+      return;
+    }
     const data = {
       mobile_no: mobileNumber.value,
-      password: password.value
+      otp: phoneOtp.value
     }
-    const result = await loginUsingPassword(data)
+    const result = await loginUsingOtp(data);
     if (result) {
-      router.push('/homepage')
-    } else {
-      errorMessage.value = t('login.loginFailed')
+      redirectAfterLogin();
     }
   } catch (error) {
     console.error("Login Error:", error);
-    errorMessage.value = t('login.loginFailed')
-  } finally {
-    isSubmitting.value = false;
+    errorMessage.value = t('login.connectionFailed', { error: error.message });
+  }
+}
+
+// Email OTP Handlers
+const handleSendEmailOTP = () => {
+  errorMessage.value = '';
+  if (!email.value || !email.value.includes('@')) {
+    errorMessage.value = t('login.invalidEmail');
+    return;
+  }
+  alert(t('login.emailOtpSent'));
+  showEmailOtpField.value = true;
+}
+const loginMethod = ref('phone');
+const handleEmailOtpLogin = async () => {
+  errorMessage.value = '';
+  try {
+    if (emailOtp.value.length != 4) {
+      errorMessage.value = t('login.invalidOtp');
+      return;
+    }
+    const data = {
+      email: email.value,
+      otp: emailOtp.value
+    }
+    const result = await loginUsingEmailOtp(data);
+    if (result) {
+      redirectAfterLogin();
+    }
+  } catch (error) {
+    console.error("Login Error:", error);
+    errorMessage.value = t('login.connectionFailed', { error: error.message });
   }
 }
 
@@ -108,6 +120,30 @@ const loginWithProvider = (authUrl) => {
   window.location.href = authUrl;
 };
 
+const redirectAfterLogin = () => {
+  const redirect = route.query.redirect;
+
+  if (
+    typeof redirect === 'string' &&
+    redirect.startsWith('/') &&
+    !redirect.startsWith('//')
+  ) {
+    router.replace(redirect);
+  } else {
+    router.replace({ name: 'home' });
+  }
+};
+const switchLoginMethod = (method) => {
+  loginMethod.value = method;
+  errorMessage.value = '';
+
+  // Reset OTP fields when switching methods
+  showPhoneOtpField.value = false;
+  showEmailOtpField.value = false;
+
+  phoneOtp.value = '';
+  emailOtp.value = '';
+};
 </script>
 
 <template>
@@ -120,14 +156,14 @@ const loginWithProvider = (authUrl) => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeft class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
+        <img :src="logoSrc" :alt="t('landing.logo.alt')" class="h-9 w-auto" />
         <div class="w-5"></div>
       </div>
 
       <div class="mb-2">
         <h2 class="text-2xl font-extrabold text-gray-900 mb-1">{{ t('login.title') }}</h2>
-        <p class="text-gray-500 text-xs leading-relaxed" v-if="phoneLoginEnabled">
-          {{ otpEnabled ? t('login.subtitle') : t('login.passwordSubtitle') }}
+        <p class="text-gray-500 text-xs leading-relaxed" v-if="phoneLoginEnabled || emailLoginEnabled">
+          {{ t('login.subtitle') }}
         </p>
       </div>
 
@@ -135,90 +171,139 @@ const loginWithProvider = (authUrl) => {
         {{ errorMessage }}
       </div>
 
-      <!-- Phone + Password (default login method) -->
-      <form @submit.prevent="handlePasswordLogin" class="space-y-4" v-if="phoneLoginEnabled && !otpEnabled">
-        <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
-          <span class="px-4 py-3 text-gray-900 font-semibold border-r border-gray-100 bg-gray-50/50">
-            +91
-          </span>
-          <input
-            v-model="mobileNumber"
-            type="tel"
-            :placeholder="t('login.mobileNumberPlaceholder')"
-            @input="mobileNumber = $event.target.value.replace(/[^0-9]/g, '')"
-            maxlength="10"
-            class="w-full px-4 py-3 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
-          />
-        </div>
+     <!-- Login Method Toggle -->
+<div
+  v-if="phoneLoginEnabled && otpEnabled && emailLoginEnabled"
+  class="flex bg-gray-100 rounded-xl p-1 mb-6"
+>
+  <button
+    @click="switchLoginMethod('phone')"
+    :class="loginMethod === 'phone'
+      ? 'bg-blue-600 text-white shadow-sm'
+      : 'text-gray-600 hover:bg-gray-200'"
+    class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all"
+  >
+    Phone
+  </button>
 
-        <input
-          v-model="password"
-          type="password"
-          :placeholder="t('login.passwordPlaceholder')"
-          class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-gray-400"
-        />
+  <button
+    @click="switchLoginMethod('email')"
+    :class="loginMethod === 'email'
+      ? 'bg-blue-600 text-white shadow-sm'
+      : 'text-gray-600 hover:bg-gray-200'"
+    class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all"
+  >
+    Email
+  </button>
+</div>
 
-        <button
-          type="submit"
-          :disabled="isSubmitting"
-          class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
-        >
-          {{ t('login.loginButton') }}
-        </button>
-      </form>
+<!-- Phone Login -->
+<div
+  v-if="loginMethod === 'phone' && phoneLoginEnabled && otpEnabled"
+  class="space-y-4 mb-6"
+>
+  <h3 class="text-sm font-semibold text-gray-700">
+    {{ t('login.phoneLoginTitle') }}
+  </h3>
 
-      <!-- Phone + OTP (only shown when enabled during setup) -->
-      <div class="space-y-4" v-if="phoneLoginEnabled && otpEnabled">
-        <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
-          <span class="px-4 py-3 text-gray-900 font-semibold border-r border-gray-100 bg-gray-50/50">
-            +91
-          </span>
-          <input
-            v-model="mobileNumber"
-            type="tel"
-            :placeholder="t('login.mobileNumberPlaceholder')"
-            @input="mobileNumber = $event.target.value.replace(/[^0-9]/g, '')"
-            maxlength="10"
-            class="w-full px-4 py-3 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
-          />
-        </div>
+  <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+    <span class="px-4 py-3 text-gray-900 font-semibold border-r border-gray-100 bg-gray-50">
+      +91
+    </span>
 
-        <div class="space-y-1 hidden">
-          <label class="block text-sm font-semibold text-gray-700">{{ t('login.otpLabel') }} <span class="text-red-500">*</span></label>
-          <div class="relative">
-            <input
-              v-model="otp"
-              type="text"
-              maxlength="4"
-              placeholder="1111"
-              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-300"
-            />
-          </div>
-        </div>
+    <input
+      v-model="mobileNumber"
+      type="tel"
+      :placeholder="t('login.mobileNumberPlaceholder')"
+      @input="mobileNumber = $event.target.value.replace(/[^0-9]/g, '')"
+      maxlength="10"
+      class="w-full px-4 py-3 outline-none text-gray-700 bg-transparent"
+    />
+  </div>
 
-        <button
-          @click="handleSendOTP"
-          id="send-otp-btn"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
-        >
-          {{ t('login.sendOtp') }}
-        </button>
+  <div v-if="showPhoneOtpField" class="space-y-1">
+    <label class="block text-sm font-semibold text-gray-700">
+      {{ t('login.otpLabel') }}
+    </label>
 
-        <button
-          id="login-btn"
-          @click="handleOtpLogin"
-          class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-md"
-        >
-          {{ t('login.loginButton') }}
-        </button>
-      </div>
+    <input
+      v-model="phoneOtp"
+      type="text"
+      maxlength="4"
+      placeholder="1111"
+      class="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none"
+    />
+  </div>
 
+  <button
+    v-if="!showPhoneOtpField"
+    @click="handleSendPhoneOTP"
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl"
+  >
+    {{ t('login.sendOtp') }}
+  </button>
+
+  <button
+    v-else
+    @click="handlePhoneOtpLogin"
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl"
+  >
+    {{ t('login.loginButton') }}
+  </button>
+</div>
+
+<!-- Email Login -->
+<div
+  v-if="loginMethod === 'email' && emailLoginEnabled"
+  class="space-y-4 mb-6"
+>
+  <h3 class="text-sm font-semibold text-gray-700">
+    {{ t('login.emailLoginTitle') }}
+  </h3>
+
+  <input
+    v-model="email"
+    type="email"
+    :placeholder="t('login.emailPlaceholder')"
+    class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"
+  />
+
+  <div v-if="showEmailOtpField" class="space-y-1">
+    <label class="block text-sm font-semibold text-gray-700">
+      {{ t('login.emailOtpLabel') }}
+    </label>
+
+    <input
+      v-model="emailOtp"
+      type="text"
+      maxlength="4"
+      placeholder="1111"
+      class="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none"
+    />
+  </div>
+
+  <button
+    v-if="!showEmailOtpField"
+    @click="handleSendEmailOTP"
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl"
+  >
+    {{ t('login.sendEmailOtp') }}
+  </button>
+
+  <button
+    v-else
+    @click="handleEmailOtpLogin"
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl"
+  >
+    {{ t('login.loginButton') }}
+  </button>
+</div>
       <div class="relative my-10 text-center" v-if="providers.length">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-gray-100"></div>
         </div>
         <span class="relative px-4 bg-white text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-          {{ phoneLoginEnabled ? t('login.orContinueWith') : t('login.ContinueWith') }}
+          {{ (phoneLoginEnabled || emailLoginEnabled) ? t('login.orContinueWith') : t('login.ContinueWith') }}
         </span>
       </div>
 
@@ -241,7 +326,15 @@ const loginWithProvider = (authUrl) => {
       >
         {{ t('login.adminLoginLink') }}
       </router-link>
-
+      <router-link
+        :to="{ name: 'signup', query: route.query.redirect ? { redirect: route.query.redirect } : {} }"
+        class="mb-4 text-center text-sm text-gray-600"
+      >
+        Don't have an account?
+        <span class="font-semibold text-blue-600 hover:underline">
+          Sign up
+        </span>
+      </router-link>
       <p class="mb-6 text-center text-[10px] text-gray-400 leading-relaxed px-4">
         {{ t('login.agreementPrefix') }}
         <a href="#" class="text-blue-600 font-semibold hover:underline">{{ t('login.termsOfService') }}</a> {{ t('login.and') }}
