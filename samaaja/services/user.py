@@ -147,7 +147,7 @@ class UserManager:
                     "user": user_email
                 }
             )
-            result["actions"] = action_count
+            result["action_count"] = action_count
             badges = frappe.get_list(
                 "User Badge",
                 filters={
