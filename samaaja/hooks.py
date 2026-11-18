@@ -275,6 +275,9 @@ doc_events = {
     "Event": {
         "validate": "samaaja.doc_events.event.generate_check_in_qr"
     },
+    "Samaaja Settings": {
+        "validate": "samaaja.doc_events.samaaja_settings.validate"
+    },
 }
 
 fixtures = ["Client Script"]

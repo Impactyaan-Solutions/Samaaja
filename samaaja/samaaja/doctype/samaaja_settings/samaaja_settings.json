@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "authentication_tab",
-  "enable_phone_login",
+  "enable_email_login",
   "enable_otp_login",
   "enable_google_login",
   "metadata_tab",
@@ -41,15 +41,7 @@
    "label": "Authentication"
   },
   {
-   "default": "1",
-   "description": "Off means no phone-number sign-in at all (password or OTP) - citizens can only use social login. At least one sign-in method must stay enabled; turning this off is blocked unless Google login (or another configured social login) is enabled.",
-   "fieldname": "enable_phone_login",
-   "fieldtype": "Check",
-   "label": "Enable Phone Number Login"
-  },
-  {
    "default": "0",
-   "depends_on": "eval:doc.enable_phone_login",
    "description": "When off, citizens log in with phone number + password. When on, OTP replaces password as the login method entirely. Needs SMS to be configured in SMS Settings first - not production-ready until a real SMS provider is wired in there.",
    "fieldname": "enable_otp_login",
    "fieldtype": "Check",
@@ -175,12 +167,19 @@
    "fieldname": "colour",
    "fieldtype": "Color",
    "label": "Color"
+  },
+  {
+   "default": "1",
+   "description": "Off means no email sign-in at all (password or OTP) - citizens can only use social login. At least one sign-in method must stay enabled; turning this off is blocked unless Google login (or another configured social login) is enabled.",
+   "fieldname": "enable_email_login",
+   "fieldtype": "Check",
+   "label": "Enable Email Login"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-11-13 13:46:16.564803",
+ "modified": "2026-11-16 14:59:02.198155",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Samaaja Settings",
