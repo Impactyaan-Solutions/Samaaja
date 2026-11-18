@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { branding } from '@/branding';
 import {
   ClipboardCheck,
   Users,
@@ -15,7 +16,7 @@ const { t, locale } = useI18n();
 // replaced in place (same filename), so bump this after swapping the file.
 const LOGO_VERSION = 2;
 
-const logoSrc = computed(() => `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=${LOGO_VERSION}`);
+const logoSrc = computed(() => branding.appLogo || `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=${LOGO_VERSION}`);
 
 const features = computed(() => [
   {
@@ -57,7 +58,7 @@ const features = computed(() => [
       <header class="flex items-center justify-between mt-6 mb-6">
         <img
           :src="logoSrc"
-          :alt="t('landing.logo.alt')"
+          :alt="branding.appName || t('landing.logo.alt')"
           class="h-16 w-auto"
         />
         <button class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 uppercase">
@@ -66,7 +67,14 @@ const features = computed(() => [
         </button>
       </header>
 
-      <section class="space-y-1.5 mt-4 mb-8">
+      <!-- A tag line set in Desk replaces the three translated ones. -->
+      <section v-if="branding.tagLine" class="space-y-1.5 mt-4 mb-8">
+        <h4 class="text-3xl font-extrabold text-slate-900 leading-snug">
+          {{ branding.tagLine }}
+        </h4>
+      </section>
+
+      <section v-else class="space-y-1.5 mt-4 mb-8">
         <h4 class="text-3xl font-extrabold text-slate-900 leading-snug">
           {{ t('landing.tagline1') }}
         </h4>

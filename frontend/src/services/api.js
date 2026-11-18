@@ -906,3 +906,20 @@ export const getMetadataOptions = async (doctype) => {
         throw error
     }
 }
+
+
+// App name, logo and tag line from Samaaja Settings > Branding.
+// Guest access, so it works on the landing and login pages.
+export const getBranding = async () => {
+    const response = await fetch(baseurl + '/api/method/samaaja.api.branding.get_branding', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+    }
+    const result = await response.json();
+    return result.data || {}
+}

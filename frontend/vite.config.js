@@ -40,10 +40,17 @@ export default defineConfig(({ mode }) => {
           // It is injected here rather than written into index.html because
           // Vite regenerates that file on every build.
           const csrf = '<script>window.csrf_token = "{{ frappe.session.csrf_token }}";</scr' + 'ipt>'
-          html = html.replace('</head>', `  ${csrf}\n  </head>`)
+
+          // Branding from Samaaja Settings (see samaaja/utils/theme.py).
+          // It goes after the bundled stylesheet so its primary-* values
+          // win, and it is in the page from the first paint, so there is
+          // no flash of the default colour.
+          const theme = '<style id="samaaja-theme">{{ theme_css }}</style>'
+
+          html = html.replace('</head>', `  ${csrf}\n  ${theme}\n  </head>`)
 
           writeFileSync('../samaaja/www/index.html', html)
-          console.log('[copy-index-to-www] wrote www/index.html with csrf token')
+          console.log('[copy-index-to-www] wrote www/index.html with csrf token and theme')
         }
       }
     ],

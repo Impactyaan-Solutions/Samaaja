@@ -1,11 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-:root {
- 
-  --color-primary: #2563eb;
-}
 @theme {
-  --color-primary-600: var(--color-primary);
+  /* Default brand colours. Samaaja Settings > Branding overrides them
+     at page load (samaaja/utils/theme.py). */
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
@@ -83,7 +80,7 @@ body {
 }
 
 .text-primary-color {
-  @apply text-blue-600;
+  @apply text-primary-600;
 }
 
 .text-success {
@@ -129,15 +126,15 @@ body {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer border-0 outline-none no-underline bg-blue-600 text-white;
+  @apply inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer border-0 outline-none no-underline bg-primary-600 text-white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  @apply bg-blue-700;
+  @apply bg-primary-700;
 }
 
 .btn-primary:active:not(:disabled) {
-  @apply bg-blue-800;
+  @apply bg-primary-800;
 }
 
 .btn-primary:disabled {
@@ -239,7 +236,7 @@ body {
 }
 
 .badge-primary {
-  @apply inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full whitespace-nowrap bg-blue-100 text-blue-700;
+  @apply inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full whitespace-nowrap bg-primary-100 text-primary-700;
 }
 
 .badge-success {
@@ -264,7 +261,7 @@ body {
 }
 
 .input:focus {
-  @apply border-blue-500 ring-3 ring-blue-500/10;
+  @apply border-primary-500 ring-3 ring-primary-500/10;
 }
 
 .input:disabled {
@@ -285,7 +282,7 @@ body {
 }
 
 .textarea:focus {
-  @apply border-blue-500 ring-3 ring-blue-500/10;
+  @apply border-primary-500 ring-3 ring-primary-500/10;
 }
 
 .form-label {
@@ -310,7 +307,7 @@ body {
 }
 
 .select:focus {
-  @apply border-blue-500 ring-3 ring-blue-500/10;
+  @apply border-primary-500 ring-3 ring-primary-500/10;
 }
 
 /* Avatars */
@@ -340,7 +337,7 @@ body {
 /* Loading Spinners */
 .spinner {
   @apply rounded-full border-2 border-gray-100 animate-spin;
-  border-top-color: theme('colors.blue.600');
+  border-top-color: var(--color-primary-600);
 }
 
 .spinner-sm { @apply w-4 h-4; }

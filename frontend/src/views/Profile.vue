@@ -340,22 +340,22 @@ watch(
             xmlns="http://www.w3.org/2000/svg"
           >
             <!-- Background -->
-            <circle cx="60" cy="60" r="60" fill="#EEF2FF"/>
+            <circle cx="60" cy="60" r="60" class="fill-primary-50"/>
 
             <!-- Decorative Circle -->
-            <circle cx="60" cy="60" r="52" fill="#E0E7FF"/>
+            <circle cx="60" cy="60" r="52" class="fill-primary-100"/>
 
             <!-- Head -->
-            <circle cx="60" cy="42" r="20" fill="#6366F1"/>
+            <circle cx="60" cy="42" r="20" class="fill-primary-500"/>
 
             <!-- Body -->
             <path
               d="M30 98C30 80.3269 43.3269 67 61 67C78.6731 67 92 80.3269 92 98V120H30V98Z"
-              fill="#6366F1"
+              class="fill-primary-500"
             />
 
             <!-- Shine -->
-            <circle cx="52" cy="36" r="4" fill="#A5B4FC" fill-opacity="0.7"/>
+            <circle cx="52" cy="36" r="4" class="fill-primary-300" fill-opacity="0.7"/>
           </svg>
 
           </div>

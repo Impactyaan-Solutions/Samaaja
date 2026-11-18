@@ -259,7 +259,7 @@ function exploreMore() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #3674f9;
+  background: var(--color-primary-600, #2563eb);
   color: white;
   border-radius: 50%;
 }
@@ -310,8 +310,8 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3674f9;
-  background: #eaf2ff;
+  color: var(--color-primary-600, #2563eb);
+  background: var(--color-primary-50, #eff6ff);
   border-radius: 7px;
 }
 
@@ -348,7 +348,7 @@ h1 {
 .confirmation-box {
   padding: 16px 10px;
   text-align: center;
-  background: #eaf2ff;
+  background: var(--color-primary-50, #eff6ff);
   border-radius: 7px;
 }
 
@@ -359,7 +359,7 @@ h1 {
 }
 
 .confirmation-box strong {
-  color: #3674f9;
+  color: var(--color-primary-600, #2563eb);
   font-size: 15px;
   overflow-wrap: anywhere;
 }
@@ -386,7 +386,7 @@ h1 {
 }
 
 .primary-button {
-  background: #3674f9;
+  background: var(--color-primary-600, #2563eb);
   color: white;
 }
 
@@ -396,7 +396,7 @@ h1 {
 }
 
 .secondary-button {
-  background: #eaf2ff;
-  color: #17396d;
+  background: var(--color-primary-50, #eff6ff);
+  color: var(--color-primary-900, #1e3a8a);
 }
 </style>

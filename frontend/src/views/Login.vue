@@ -1,14 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter , useRoute  } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
   ArrowLeft
 } from 'lucide-vue-next';
 import { getLoginOptions, loginUsingOtp, loginUsingPassword } from '@/services/api';
+import { branding } from '@/branding';
 
 const { t } = useI18n();
-const logoSrc = `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`;
+const logoSrc = computed(() => branding.appLogo || `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`);
 const mobileNumber = ref('');
 const password = ref('');
 const otp = ref('');
@@ -134,7 +135,7 @@ const redirectAfterLogin = () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeft class="w-5 h-5 text-gray-600" />
         </button>
-        <img :src="logoSrc" :alt="t('landing.logo.alt')" class="h-9 w-auto" />
+        <img :src="logoSrc" :alt="branding.appName || t('landing.logo.alt')" class="h-9 w-auto" />
         <div class="w-5"></div>
       </div>
 

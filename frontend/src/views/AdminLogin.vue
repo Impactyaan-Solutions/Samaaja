@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowLeft } from 'lucide-vue-next';
 import { loginWithUsernamePassword } from '@/services/api';
+import { branding } from '@/branding';
 
 const { t } = useI18n();
 const username = ref('');
@@ -45,7 +46,7 @@ const handleLogin = async () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeft class="w-5 h-5 text-gray-600" />
         </button>
-        <h1 class="text-blue-600 font-bold text-xl tracking-tight">{{ t('landing.appName') }}</h1>
+        <h1 class="text-primary-600 font-bold text-xl tracking-tight">{{ branding.appName || t('landing.appName') }}</h1>
         <div class="w-5"></div>
       </div>
 

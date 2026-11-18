@@ -28,11 +28,12 @@
   "go_to_badges",
   "badges_column_break",
   "go_to_energy_point_rule",
-  "tab_3_tab",
+  "branding_tab",
   "app_name",
   "app_logo",
   "tag_line",
-  "colour"
+  "colour",
+  "custom_css"
  ],
  "fields": [
   {
@@ -152,9 +153,9 @@
    "label": "Edit Energy Point Rules"
   },
   {
-   "fieldname": "tab_3_tab",
+   "fieldname": "branding_tab",
    "fieldtype": "Tab Break",
-   "label": "Tab 3"
+   "label": "Branding"
   },
   {
    "fieldname": "app_name",
@@ -175,12 +176,19 @@
    "fieldname": "colour",
    "fieldtype": "Color",
    "label": "Color"
+  },
+  {
+   "description": "Added to every page after the theme colours. Use for small overrides only.",
+   "fieldname": "custom_css",
+   "fieldtype": "Code",
+   "label": "Custom CSS",
+   "options": "CSS"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-11-13 13:46:16.564803",
+ "modified": "2026-11-18 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Samaaja Settings",

@@ -9,10 +9,11 @@ import {
 } from 'lucide-vue-next';
 import router from '../router';
 import { createAccount, getLoginOptions, getMetadataOptions } from '@/services/api';
+import { branding } from '@/branding';
 
 // const router = useRouter();
 const { t } = useI18n();
-const logoSrc = `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`;
+const logoSrc = computed(() => branding.appLogo || `${import.meta.env.BASE_URL}${t('landing.logo.src')}?v=2`);
 
 const genderOptions = ref([]);
 
@@ -107,7 +108,7 @@ const goBack = () => {
         <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2">
           <ArrowLeftIcon class="w-5 h-5 text-gray-600" />
         </button>
-        <img :src="logoSrc" :alt="t('landing.logo.alt')" class="h-9 w-auto" />
+        <img :src="logoSrc" :alt="branding.appName || t('landing.logo.alt')" class="h-9 w-auto" />
         <div class="w-5"></div> 
       </div>
 

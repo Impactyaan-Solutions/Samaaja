@@ -4,6 +4,7 @@ import { RouterView, useRoute } from 'vue-router'
 import BottomTabBar from './components/layout/BottomTabBar.vue'
 import ActionBottomSheet from './components/Overlays/ActionBottomSheet.vue'
 import { useI18n } from 'vue-i18n'
+import { branding } from './branding'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -14,9 +15,9 @@ const handleActClick = () => {
 }
 
 watch(
-  locale,
+  [locale, () => branding.appName],
   () => {
-    document.title = t('landing.appName')
+    document.title = branding.appName || t('landing.appName')
     document.documentElement.lang = locale.value
 
     const favicon = document.getElementById('favicon')
