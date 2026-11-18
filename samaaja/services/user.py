@@ -95,18 +95,16 @@ class UserManager:
 
             if not user:
                 return Result.not_found("User not found")
-
+            action_hours = ActionManager.calculate_hours_invested(user.name)
             user_metadata = frappe.db.get_value(
                 "User Metadata",
                 {"user": user_email},
                 [
-                    "action_count",
                     "last_action",
                     "last_action_date",
                     "last_action_type",
                     "last_action_category",
-                    "user_category",
-                    "hours_invested"
+                    "user_category"
                 ],
                 as_dict=True
             )
@@ -122,7 +120,7 @@ class UserManager:
                 result = {**user, **user_metadata}
             else:
                 result = user
-            
+            result["hours_invested"] = ActionManager.calculate_hours_invested(user.name)
             if user["interest"]:
                 interest_array = user["interest"].split(",")
                 interests = []
@@ -143,8 +141,13 @@ class UserManager:
                 }
                 )
             result["posts"] = community_count
-            
-
+            action_count = frappe.db.count(
+                "Action",
+                filters={
+                    "user": user_email
+                }
+            )
+            result["actions"] = action_count
             badges = frappe.get_list(
                 "User Badge",
                 filters={

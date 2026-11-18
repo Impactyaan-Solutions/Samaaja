@@ -1,7 +1,7 @@
 from samaaja.utils.result import Result
 import frappe
 from samaaja.services.user import UserManager
-
+from samaaja.services.event import EventManager
 class LeaderboardManager:
     @staticmethod
     def get_leaderboard(org_name: str = None) -> Result:
@@ -12,20 +12,33 @@ class LeaderboardManager:
             else:
                 result = frappe.db.sql("""
                                             SELECT
-                                                um.user,
-                                                u.name,
-                                                um.hours_invested
-                                            FROM `tabUser Metadata` um
-                                            LEFT JOIN `tabUser` u
-                                                ON um.user = u.name
-                                            WHERE um.action_count > 0
-                                            ORDER BY um.action_count DESC , um.hours_invested DESC
+                                            a.user,
+                                            COUNT(a.name) AS action_count,
+                                            COALESCE(SUM(a.hours_invested), 0) AS hours_invested,
+                                            um.user_category
+                                            FROM `tabAction` a
+                                            INNER JOIN `tabUser` u
+                                                ON a.user = u.name
+                                            LEFT JOIN `tabUser Metadata` um
+                                                ON um.user = a.user
+                                            WHERE a.user IS NOT NULL
+                                            GROUP BY a.user,  um.user_category
+                                            ORDER BY action_count DESC, hours_invested DESC
                                             LIMIT 10
                                         """, as_dict=True)
                 for row in result:
                     user = UserManager.get_profile(row["user"]).data
                     if user:
                         user["hours_invested"] = row["hours_invested"] or 0
+                        user["action_count"] = row["action_count"]
+                        user_category_name = frappe.db.get_value(
+                        "User Category",
+                        row["user_category"],
+                        "category_name"
+                        ) if row["user_category"] else ""
+
+                        user["user_category"] = user_category_name or ""
+
                         leaderboard_data.append(user)
             return Result.success("Leaderboard fetched successfully", data=leaderboard_data)
         except Exception as e:
