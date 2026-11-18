@@ -12,11 +12,16 @@ def validate(doc, method):
     SMS Configured: {_sms_is_configured()}
     """
     )
-    if doc.enable_email_login and not _email_is_configured():
-        frappe.throw(
-            "Cannot enable Email Login. Please configure and enable "
-            "at least one outgoing Email Account first."
-        )
+    if not frappe.conf.get("enable_custom_login_feature", 0):
+
+        if doc.enable_email_login:
+
+            if not _email_is_configured():
+                frappe.throw(
+                    "Cannot enable Email Login. Please configure and enable "
+                    "at least one outgoing Email Account first."
+                )
+                
     if doc.enable_otp_login and not _sms_is_configured():
         frappe.throw(
            "Cannot enable OTP login. Please configure SMS Settings first."
