@@ -22,6 +22,7 @@ onMounted(async () => {
       name: item.full_name,
       role: item.user_category,
       actions: item.action_count,
+      hours: item.hours_invested ?? 0,
       avatar: item.user_image || (item.full_name ? item.full_name.charAt(0) : '?'),
       verified: false, 
       email: item.user,
@@ -48,7 +49,7 @@ onMounted(async () => {
           class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all"
           :class="scope === 'organisation' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500'"
         >
-          {{ t('leaderboard.organisation') }}
+          {{ t('leaderboard.Individual') }}
         </button>
         <button
           @click="scope = 'global'"
@@ -59,7 +60,7 @@ onMounted(async () => {
         </button>
       </div>
 
-      <div class="relative flex items-center">
+      <!--<div class="relative flex items-center">
         <Search class="absolute left-4 w-5 h-5 text-gray-400" />
         <input
           type="text"
@@ -69,7 +70,7 @@ onMounted(async () => {
         <button class="absolute right-4 text-gray-400 hover:text-gray-600">
           <Filter class="w-5 h-5" />
         </button>
-      </div>
+      </div>-->
     </div>
 
     <!-- Loading State -->
@@ -102,10 +103,23 @@ onMounted(async () => {
           </div>
         </div>
         </router-link>  
-        <div class="bg-blue-50/70 border border-blue-50 text-primary-600 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
-          <span class="font-bold text-sm leading-none">{{ user.actions }}</span>
-          <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">{{ t('leaderboard.actions') }}</span>
-        </div>
+       <div class="flex items-center gap-2">
+  <!-- Actions -->
+  <div class="bg-blue-50/70 border border-blue-50 text-primary-600 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
+    <span class="font-bold text-sm leading-none">{{ user.actions ?? 0 }}</span>
+    <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">
+      {{ t('leaderboard.actions') }}
+    </span>
+  </div>
+
+  <!-- Hours Invested -->
+  <div class="bg-green-50 border border-green-100 text-green-700 px-3 py-2 rounded-xl flex flex-col items-center min-w-[3.5rem]">
+    <span class="font-bold text-sm leading-none">{{ user.hours }}</span>
+    <span class="text-[8px] uppercase font-bold tracking-wider mt-1 opacity-70">
+      Hours
+    </span>
+  </div>
+</div>
       </div>
     </div>
   </div>

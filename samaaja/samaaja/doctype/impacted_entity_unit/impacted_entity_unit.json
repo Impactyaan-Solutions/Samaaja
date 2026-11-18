@@ -20,7 +20,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-05 15:02:01.695032",
+ "modified": "2026-10-22 19:03:21.210359",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Impacted Entity Unit",
@@ -39,7 +39,9 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
