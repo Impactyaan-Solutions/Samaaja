@@ -32,7 +32,6 @@
   },
   "menu": {
     "settings": "Settings",
-    "updateProfile": "Update Profile",
     "logout": "Logout",
     "logoutFailedWarning": "We couldn't confirm your session was ended on the server, but you've been signed out on this device."
   },

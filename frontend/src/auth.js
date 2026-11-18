@@ -31,11 +31,9 @@ export const authState = reactive({
 
 export const isProfileComplete = () => {
   const p = authState.profile;
-  // Demo signup/profile-completion trim (commit noted for future removal)
-  // only collects gender + mobile number up front; bio/category/dob are no
-  // longer gathered anywhere, so requiring them here would trap every user
-  // in an unfillable complete-profile redirect loop.
-  return !!(p.gender && p.mobileNumber);
+  // All these are mandatory: Gender, Bio (interests/bio), Category, Date of birth, Mobile Number
+  // Using interests or bio based on what gets saved. Let's rely on 'bio'.
+  return !!(p.gender && p.bio && p.category && p.dob && p.mobileNumber);
 }
 
 const loadCachedAuth = () => {
