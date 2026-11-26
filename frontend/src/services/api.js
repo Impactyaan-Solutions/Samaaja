@@ -82,7 +82,53 @@ export const getLoginOptions = async () => {
     const result = await response.json();
     return result.message
 }
+export const loginUsingEmailOtp = async (data) => {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
 
+    const response = await fetch(baseurl + '/api/method/samaaja.api.login.login_using_email_otp', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data)
+    })
+
+
+    if (response.status === 404) {
+        alert("User not found!")
+        return false
+    }
+    if (!response.ok) {
+        throw new Error(`Failed to verify otp and login: ${response.statusText}`)
+    }
+
+    if (Capacitor.isNativePlatform()) {
+
+        const data = await response.json()
+
+        console.log("LOGIN RESPONSE", data.data)
+
+        // Store user auth tokens
+        localStorage.setItem(
+            'api_key',
+            data.data.api_key
+        )
+
+        localStorage.setItem(
+            'api_secret',
+            data.data.api_secret
+        )
+
+        localStorage.setItem(
+            'user',
+            data.data.user
+        )
+    }
+
+
+    return true
+}
 export const fetchImageAsBase64 = async (url) => {
     try {
         // Rewrite absolute URLs to relative paths in DEV so Vite proxy can handle CORS

@@ -16,7 +16,7 @@ def get_login_options():
     """
     settings = frappe.get_single("Samaaja Settings")
     return {
-        "phone_login_enabled": bool(settings.enable_phone_login),
+        "email_login_enabled": bool(settings.enable_email_login),
         "otp_enabled": bool(settings.enable_otp_login),
         "providers": _get_social_providers(settings),
     }
@@ -100,3 +100,13 @@ def login_using_password(mobile_no:str,password:str):
             "Failed to log in user"
         )
         return custom_response(status_code=500, message="Internal Server Error")
+@frappe.whitelist(allow_guest=True)
+def login_using_email_otp(email, otp):
+    try:
+        return UserManager.login_using_email_OTP(email, otp).to_custom_response()
+    except Exception as e:
+        frappe.log_error(
+            frappe.get_traceback(),
+            "Failed to log in user"
+        )
+        return custom_response(status_code=500, message="Internal Server Error")    

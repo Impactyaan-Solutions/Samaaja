@@ -24,7 +24,6 @@ const offset = ref(0)
 
 const hasMore = ref(true)
 
-
 const startY = ref(0)
 const currentY = ref(0)
 const isRefreshing = ref(false)
@@ -53,7 +52,6 @@ const handleTouchMove = (e) => {
   const y = e.touches[0].clientY;
   const deltaY = y - startY.value;
   if (deltaY > 0) {
-    // Apply resistance
     currentY.value = deltaY * 0.4;
   } else {
     isPulling.value = false;
@@ -65,12 +63,8 @@ const handleTouchEnd = () => {
   if (currentY.value > 60) {
     isRefreshing.value = true;
     currentY.value = 50;
-    
-    // Simulate API refresh
     setTimeout(() => {
-      // Actually reset the posts array back to default 2 posts to simulate a true "fresh" pull
       posts.value = posts.value.slice(0, 2);
-      
       isRefreshing.value = false;
       currentY.value = 0;
     }, 1500);
@@ -86,19 +80,16 @@ let observer = null
 const loadMorePosts = async () => {
   await fetchPosts();
 }
+
 const fetchPosts = async () => {
   if (isLoadingMore.value || !hasMore.value) return
-
   isLoadingMore.value = true
-
   try {
     const response = await getFeed(limit, offset.value)
     console.log(response)
     const newPosts = response.posts || []
     posts.value.push(...newPosts)
-
     offset.value += limit
-
     hasMore.value = response.has_more
   } catch (err) {
     console.error(err)
@@ -110,18 +101,14 @@ const fetchPosts = async () => {
 onMounted(async() => {
   const feed = await fetchPosts();
   if(feed){
-       posts.value=feed;
-   }
+    posts.value = feed;
+  }
   observer = new IntersectionObserver((entries) => {
-    if (
-      entries[0].isIntersecting &&
-      hasMore.value &&
-      !isLoadingMore.value
-    ) {
-        loadMorePosts()
+    if (entries[0].isIntersecting && hasMore.value && !isLoadingMore.value) {
+      loadMorePosts()
     }
-  }, { rootMargin: '200px' }) // Trigger 200px before reaching the bottom
-  
+  }, { rootMargin: '200px' })
+
   if (loadMoreSentinel.value) {
     observer.observe(loadMoreSentinel.value)
   }
@@ -135,75 +122,166 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div 
-    class="min-h-full bg-gray-50/50 pb-6 relative"
+  <div
+    class="page-wrapper relative"
     @touchstart.passive="handleTouchStart"
     @touchmove.passive="handleTouchMove"
     @touchend="handleTouchEnd"
   >
     <!-- Pull to Refresh Indicator -->
-    <div 
-      class="absolute left-0 right-0 flex justify-center pointer-events-none z-50 text-primary-600"
-      :style="{ 
-        transform: `translateY(${Math.max(0, currentY - 20)}px)`, 
+    <div
+      class="pull-refresh-indicator"
+      :style="{
+        transform: `translateY(${Math.max(0, currentY - 20)}px)`,
         opacity: currentY > 5 || isRefreshing ? 1 : 0,
-        transition: isPulling ? 'none' : 'all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)' 
+        transition: isPulling ? 'none' : 'all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)'
       }"
     >
-      <div class="bg-white rounded-full p-2.5 shadow-md flex items-center justify-center mt-2 border border-gray-100">
-        <Loader2 class="w-5 h-5" :class="{ 'animate-spin': isRefreshing, 'rotate-180': currentY > 60 && !isRefreshing }" style="transition: transform 0.2s" />
+      <div class="pull-refresh-bubble">
+        <Loader2
+          class="icon-md"
+          :class="{ 'animate-spin': isRefreshing, 'rotate-180': currentY > 60 && !isRefreshing }"
+          style="transition: transform 0.2s"
+        />
       </div>
     </div>
 
     <AppHeader />
 
     <!-- Stats Grid -->
-    <div class="px-5 mt-5 grid grid-cols-3 gap-3">
-      <div class="bg-primary-700 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
-        <span class="text-2xl font-bold">{{ actions_taken }}</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('home.actions') }}</span>
+    <div class="stats-grid">
+      <div class="stat-card stat-card--dark">
+        <span class="stat-value">{{ actions_taken }}</span>
+        <span class="stat-label">{{ t('home.actions') }}</span>
       </div>
-      <div class="bg-primary-600 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
-        <span class="text-2xl font-bold">{{ posts_created }}</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('home.posts') }}</span>
+      <div class="stat-card stat-card--mid">
+        <span class="stat-value">{{ posts_created }}</span>
+        <span class="stat-label">{{ t('home.posts') }}</span>
       </div>
-      <div class="bg-primary-500 text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md shadow-primary-500/20">
-        <span class="text-2xl font-bold">{{ hours_invested }}h</span>
-        <span class="text-[9px] uppercase tracking-wider opacity-80 mt-1 font-semibold">{{ t('home.invested') }}</span>
+      <div class="stat-card stat-card--light">
+        <span class="stat-value">{{ hours_invested }}h</span>
+        <span class="stat-label">{{ t('home.invested') }}</span>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-<!--     <div class="px-5 mt-4 grid grid-cols-3 gap-3">
-      <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
-        <Plus class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Action</span>
+    <!-- Quick Actions (commented out) -->
+    <!--
+    <div class="quick-actions-grid">
+      <button class="quick-action-btn">
+        <Plus class="icon-md text-primary-color" />
+        <span class="quick-action-label">Action</span>
       </button>
-      <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
-        <Edit3 class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Post</span>
+      <button class="quick-action-btn">
+        <Edit3 class="icon-md text-primary-color" />
+        <span class="quick-action-label">Post</span>
       </button>
-      <button class="bg-white border border-gray-100 py-2 rounded-xl flex items-center justify-center space-x-2 shadow-sm text-gray-700 hover:bg-gray-50">
-        <HelpCircle class="w-4 h-4 text-primary-500" />
-        <span class="text-[11px] font-semibold">Ask Help</span>
+      <button class="quick-action-btn">
+        <HelpCircle class="icon-md text-primary-color" />
+        <span class="quick-action-label">Ask Help</span>
       </button>
-    </div> -->
+    </div>
+    -->
 
     <!-- Feed -->
-    <div class="px-5 mt-6">
-      <h3 class="font-bold text-gray-900 mb-4 px-1 text-lg">{{ t('home.communityFeed') }}</h3>
+    <div class="feed-section">
+      <h3 class="feed-title">{{ t('home.communityFeed') }}</h3>
       <CommunityPost v-for="post in posts" :key="post.id" :post="post" />
-      
-      <!-- Infinite Scroll Trigger Sentinel -->
-      <div ref="loadMoreSentinel" class="py-8 flex justify-center items-center opacity-70">
-        <Loader2 v-if="isLoadingMore" class="w-6 h-6 animate-spin text-primary-500" />
+
+      <!-- Infinite Scroll Sentinel -->
+      <div ref="loadMoreSentinel" class="load-more-sentinel">
+        <Loader2 v-if="isLoadingMore" class="spinner spinner-md" />
       </div>
-      <div
-        v-if="!hasMore"
-        class="text-center text-sm text-gray-400 py-6"
-      >
+
+      <div v-if="!hasMore" class="no-more-posts">
         {{ t('home.noMorePosts') }}
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+@reference "../style.css";
+
+/* Pull to Refresh */
+.pull-refresh-indicator {
+  @apply absolute left-0 right-0 flex justify-center items-center pointer-events-none z-50 text-blue-600;
+}
+
+.pull-refresh-bubble {
+  @apply bg-white rounded-full shadow-md flex justify-center items-center mt-2 border border-gray-100;
+  padding: 0.625rem;
+}
+
+/* Stats */
+.stats-grid {
+  @apply px-5 mt-5 grid grid-cols-3 gap-3;
+}
+
+.stat-card {
+  @apply text-white p-3 rounded-2xl flex flex-col items-center justify-center shadow-md;
+}
+
+.stat-card--dark {
+  @apply bg-blue-700;
+  box-shadow: 0 4px 6px -1px rgba(29, 78, 216, 0.25);
+}
+
+.stat-card--mid {
+  @apply bg-blue-600;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.25);
+}
+
+.stat-card--light {
+  @apply bg-blue-500;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.25);
+}
+
+.stat-value {
+  @apply text-2xl font-bold;
+}
+
+.stat-label {
+  @apply text-xs uppercase font-semibold opacity-80 mt-1;
+  letter-spacing: 0.08em;
+  font-size: 9px;
+}
+
+/* Quick Actions */
+.quick-actions-grid {
+  @apply px-5 mt-4 grid grid-cols-3 gap-3;
+}
+
+.quick-action-btn {
+  @apply bg-white border border-gray-100 py-2 rounded-xl flex justify-center items-center gap-2 shadow-sm text-gray-700 cursor-pointer transition-all duration-200;
+}
+
+.quick-action-btn:hover {
+  @apply bg-gray-50;
+}
+
+.quick-action-label {
+  @apply text-xs font-semibold;
+}
+
+/* Feed */
+.feed-section {
+  @apply px-5 mt-6;
+}
+
+.feed-title {
+  @apply text-lg font-bold text-gray-900 mb-4 px-1;
+}
+
+.load-more-sentinel {
+  @apply py-8 flex justify-center items-center opacity-70;
+}
+
+.no-more-posts {
+  @apply text-center text-sm text-gray-400 py-6;
+}
+
+/* Animations */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+</style>

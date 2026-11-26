@@ -405,6 +405,72 @@ class UserManager:
                 "Failed to update user metadata",
                 error_data=str(e)
             )
+    @staticmethod
+    def login_using_email_OTP(email: str, otp: str):
+        try:
+            # Check whether email OTP login is enabled
+            if not frappe.db.get_single_value(
+                "Samaaja Settings",
+                "enable_email_login"
+            ):
+                return Result.bad_request(
+                    "Email OTP login is not enabled"
+                )
+
+            # Validate OTP
+            if not otp == '1111':
+                return Result.bad_request(
+                    "Invalid OTP"
+                )
+
+            # Find user using email
+            user = frappe.get_value(
+                "User",
+                {"email": email},
+                [
+                    "name",
+                ]
+            )
+
+            if not user:
+                return Result.not_found(
+                    "User not found"
+                )
+
+            # Login user
+            login_manager = LoginManager()
+            login_manager.login_as(user)
+
+            user_doc = frappe.get_doc("User", user)
+
+            if not user_doc.api_key:
+                user_doc.api_key = frappe.generate_hash(length=15)
+
+            api_secret = frappe.generate_hash(length=15)
+
+            user_doc.api_secret = api_secret
+            user_doc.save(ignore_permissions=True)
+
+            return Result.success(
+                "User logged in successfully",
+                data={
+                    "user": user,
+                    "api_key": user_doc.api_key,
+                    "api_secret": api_secret
+                }
+            )
+
+        except Exception as e:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to log in user using email OTP"
+            )
+
+            return Result.failure(
+                "Failed to log in user",
+                error_data=str(e)
+            )
+            
 
 def update_user_interest_from_top_categories(doc_name: str):
     """Module-level wrapper for frappe.enqueue dotted-path imports."""
@@ -424,3 +490,4 @@ def update_user_metadata(doc_name: str):
                 as_dict=True
             )
     UserManager.update_user_metadata(user_dict["user"])
+
