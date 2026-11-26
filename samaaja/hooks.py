@@ -75,14 +75,11 @@ web_include_js = ""
 after_install = "samaaja.setup.samaaja_setup.after_install"
 
 # Runs on every `bench migrate`, i.e. on every deploy. Only creates dropdown
-# records that are missing, so it is cheap and safe to repeat. This is why it
-# can live here while the old setup_samaaja (which also seeded demo users and
-# crashed on missing doctypes) had to stay commented out.
-after_migrate = "samaaja.setup.samaaja_setup.seed_reference_options"
-
-# See samaaja/public/js/setup_wizard.js and samaaja/setup/wizard.py.
-setup_wizard_requires = "assets/samaaja/js/setup_wizard.js"
-setup_wizard_stages = "samaaja.setup.wizard.get_setup_stages"
+# records that are missing, so it is cheap and safe to repeat.
+after_migrate = [
+    "samaaja.setup.samaaja_setup.seed_reference_options",
+    "samaaja.setup.samaaja_setup.seed_badges_and_points",
+]
 
 # Uninstallation
 # ------------
@@ -241,7 +238,7 @@ doc_events = {
     "Action": {
         "after_insert": "samaaja.doc_events.action.after_insert"
     },
-        "Project Task": {
+    "Project Task": {
         "after_insert": "samaaja.doc_events.project_task.after_insert"
     },
     "User": {
@@ -273,18 +270,17 @@ doc_events = {
         "validate": "samaaja.utils.route_check.validate_route_not_claimed"
     },
     "Event": {
-        "validate": "samaaja.doc_events.event.generate_check_in_qr"
+   	 "validate": "samaaja.doc_events.event.generate_check_in_qr"
     },
 }
 
 fixtures = [
     "Client Script",
-     {
+    {
         "dt": "Custom Field",
         "filters": [
             ["dt", "=", "Event"]
         ]
     }
-
 ]
 on_session_creation = "samaaja.utils.cookie_patch.apply_patch"
