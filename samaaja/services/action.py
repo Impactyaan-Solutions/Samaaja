@@ -293,7 +293,7 @@ class ActionManager:
                 "Failed to create action"
             )
             return Result.failure(str(e))
-            
+
     @staticmethod
     def create_from_dashboard(title: str, description: str, hours_invested: float, category: str):
         if not frappe.session.user == "Guest":

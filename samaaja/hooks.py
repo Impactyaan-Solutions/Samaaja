@@ -277,5 +277,14 @@ doc_events = {
     },
 }
 
-fixtures = ["Client Script"]
+fixtures = [
+    "Client Script",
+     {
+        "dt": "Custom Field",
+        "filters": [
+            ["dt", "=", "Event"]
+        ]
+    }
+
+]
 on_session_creation = "samaaja.utils.cookie_patch.apply_patch"

@@ -60,5 +60,7 @@ export default defineConfig(({ mode }) => {
         '/private': { target: devProxyTarget, changeOrigin: true }
       }
     }
+    ///const theme = ///write the html line here to import color theme
+   /// html = html.replace/// we have to replace css theme
   }
 })

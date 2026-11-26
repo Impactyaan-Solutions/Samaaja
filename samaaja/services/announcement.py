@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 from samaaja.utils.result import Result
-
+from datetime import datetime
 
 class AnnouncementManager:
     media_base_url = frappe.conf.media_base_url
@@ -86,7 +86,6 @@ class AnnouncementManager:
                         e.attending,
                         e.all_day,
                         e.description,
-
                         EXISTS (
                             SELECT 1
                             FROM `tabEvent Registration` er
@@ -138,8 +137,7 @@ class AnnouncementManager:
 
             # 4. Sort by date (newest first)
             combined_data.sort(
-                key=lambda x: x.get("valid_from") or x.get("starts_on") or "",
-                reverse=True
+                key=lambda x: x.get("valid_from") or datetime.min, reverse=True
             )
 
             return Result.success(
@@ -153,7 +151,7 @@ class AnnouncementManager:
                 "Failed to fetch announcements and events"
             )
 
-            return Result.error(
+            return Result.bad_request(
                 "Failed to fetch announcements and events"
             )
 

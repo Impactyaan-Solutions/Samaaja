@@ -4,6 +4,7 @@ from samaaja.utils.result import Result
 
 
 class EventManager:
+    media_base_url = frappe.conf.media_base_url
     @staticmethod
     def register_for_event(event: str) -> Result:
         try:
@@ -261,7 +262,7 @@ class EventManager:
                     "title": doc.subject,
                     "message": doc.description,
                     "image": (
-                        f"{AnnouncementManager.media_base_url}{doc.custom_image}"
+                        f"{EventManager.media_base_url}{doc.custom_image}"
                         if doc.custom_image
                         else ""
                     ),
