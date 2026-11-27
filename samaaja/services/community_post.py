@@ -14,23 +14,46 @@ class CommunityPostManager:
     @staticmethod
     def like(post_id:str, user_id:str) -> Result:
         try:
+            user = frappe.session.user
+            if user == "Guest":
+                return Result.bad_request("Authentication required")
+
+            user_id = user
             post = frappe.get_doc("Community Post",post_id)
             if not post:
                 return Result.bad_request("Community post not found")
+            
+            existing_like = frappe.db.get_value(
+                "Community Post Like",
+                {
+                    "post_id": post_id,
+                    "user_id": user_id,
+                },
+                "name",
+            )
 
-            if post.user == user_id:
-                return Result.bad_request("You cannot like your own post")
-
-            if(post.like_count is None):
-                post.like_count = 0
-            post.like_count += 1
-            post.save(ignore_permissions=True)
+            if existing_like:
+                # User already liked the post, so unlike it
+                frappe.delete_doc(
+                    "Community Post Like",
+                    existing_like,
+                    ignore_permissions=True,
+                )
+                return Result.success(
+                    "Community post unliked successfully"
+                )
+            like = frappe.get_doc({
+                "doctype": "Community Post Like",
+                "post_id": post_id,
+                "user_id": user_id,
+            })
+            like.insert(ignore_permissions=True)    
             return Result.success("Community post liked successfully")
 
         except Exception as e:
             frappe.log_error(
                 frappe.get_traceback(),
-                "Failed to like community post"
+                "Failed to toggle community post like"
             )
 
             return Result.failure(
@@ -158,7 +181,8 @@ class CommunityPostManager:
             """, (limit, offset), as_dict=True)
 
             media_base_url = frappe.conf.media_base_url
-
+            posts = CommunityPostManager.get_post_comment_details(posts)
+            posts = CommunityPostManager.get_post_like_details(posts)
             for post in posts:
                 user_profile = UserManager.get_profile(post["user"])
 
@@ -233,6 +257,113 @@ class CommunityPostManager:
                 "Failed to create community post",
                 error_data=str(e)
             )
+
+    
+    @staticmethod
+    def get_post_like_details(posts: list) -> list:
+        try:
+            if not posts:
+                return posts
+
+            current_user = frappe.session.user
+            
+            post_ids =[
+                post.get("name") or post.get("id")
+                for post in posts
+            ]    # Fetch total likes for this post
+            post_ids = [post_id for post_id in post_ids if post_id]
+
+            if not post_ids:
+                return posts
+
+            like_details = frappe.db.sql(
+                """
+                SELECT
+                    post_id,
+                    COUNT(name) AS like_count,
+                    MAX(
+                        CASE
+                            WHEN user_id = %(current_user)s THEN 1
+                            ELSE 0
+                        END
+                    ) AS is_liked
+
+                FROM `tabCommunity Post Like`
+
+                WHERE post_id IN %(post_ids)s
+
+                GROUP BY post_id
+                """,
+                {
+                    "post_ids": tuple(post_ids),
+                    "current_user": current_user,
+                },
+                as_dict=True,
+            )
+
+            like_map = {
+                row.post_id: row
+                for row in like_details
+            }
+
+            for post in posts:
+                post_id = post.get("name") or post.get("id")
+                details = like_map.get(post_id)
+
+                post["like_count"] = (
+                    details.like_count if details else 0
+                )
+
+                post["is_liked"] = (
+                    bool(details.is_liked) if details else False
+                )
+
+            return posts
+
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to fetch post like details",
+            )
+            raise
+
+
+    @staticmethod
+    def get_post_comment_details(posts: list) -> list:
+        try:
+            if not posts:
+                return posts
+
+            post_ids = [post["name"] for post in posts]
+
+            comment_counts = frappe.db.sql(
+                """
+                SELECT post_id, COUNT(name) AS comment_count
+                FROM `tabUser Comment`
+                WHERE post_id IN %(post_ids)s
+                GROUP BY post_id
+                """,
+                {"post_ids": tuple(post_ids)},
+                as_dict=True,
+            )
+
+            counts = {
+                row["post_id"]: row["comment_count"]
+                for row in comment_counts
+            }
+
+            for post in posts:
+                post["comment_count"] = counts.get(post["name"], 0)
+
+            return posts
+
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                "Failed to fetch post comment details",
+            )
+            raise        
+        
 
 def create(doc_name:str):
     """Module-level wrapper for frappe.enqueue dotted-path imports."""

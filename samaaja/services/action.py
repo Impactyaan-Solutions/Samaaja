@@ -240,6 +240,8 @@ class ActionManager:
     action_type: str = None,
     media=None,
     title: Optional[str] = None,
+    volunteer_opportunity: str = None,
+    task_name: str = None,
 
     ) -> Result:
         try:
@@ -281,14 +283,17 @@ class ActionManager:
                 action.attachment_1 = saved_file.file_url
             
             action.insert(ignore_permissions=True)
-            return Result.success("Action created successfully")
+            return Result.success(
+                "Action created successfully",
+                data={"name": action.name}
+            )
         except Exception as e:
             frappe.log_error(
                 frappe.get_traceback(),
                 "Failed to create action"
             )
             return Result.failure(str(e))
-            
+
     @staticmethod
     def create_from_dashboard(title: str, description: str, hours_invested: float, category: str):
         if not frappe.session.user == "Guest":

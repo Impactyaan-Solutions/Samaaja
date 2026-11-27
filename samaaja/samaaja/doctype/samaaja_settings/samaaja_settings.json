@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "creation": "2023-03-11 17:13:17.699564",
  "default_view": "List",
  "doctype": "DocType",
@@ -151,7 +150,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-03-25 10:25:48.690069",
+ "modified": "2026-10-22 19:03:20.580665",
  "modified_by": "Administrator",
  "module": "Samaaja",
  "name": "Samaaja Settings",

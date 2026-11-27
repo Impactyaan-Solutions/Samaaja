@@ -238,6 +238,9 @@ doc_events = {
     "Action": {
         "after_insert": "samaaja.doc_events.action.after_insert"
     },
+    "Project Task": {
+        "after_insert": "samaaja.doc_events.project_task.after_insert"
+    },
     "User": {
         "after_insert": "samaaja.doc_events.user.after_insert",
         "on_trash": "samaaja.doc_events.user.on_trash"
@@ -266,7 +269,18 @@ doc_events = {
     "Web Form": {
         "validate": "samaaja.utils.route_check.validate_route_not_claimed"
     },
+    "Event": {
+   	 "validate": "samaaja.doc_events.event.generate_check_in_qr"
+    },
 }
 
-fixtures = ["Client Script"]
+fixtures = [
+    "Client Script",
+    {
+        "dt": "Custom Field",
+        "filters": [
+            ["dt", "=", "Event"]
+        ]
+    }
+]
 on_session_creation = "samaaja.utils.cookie_patch.apply_patch"

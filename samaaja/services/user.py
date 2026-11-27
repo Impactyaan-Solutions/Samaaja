@@ -17,11 +17,13 @@ class UserManager:
     #mobile number should be unique...to do
 
     @staticmethod
-    def create(full_name:str,dob:str,gender:str,category:str,mobile_no:str,bio:str,password:str)->Result:
+    def create(full_name:str,dob:str,gender:str,category:str,mobile_no:str,bio:str,password:str,email:str)->Result:
 
         try:
             if frappe.db.exists("User", {"mobile_no": mobile_no}):
                 return Result.bad_request("User already exists with this mobile number")
+            if frappe.db.exists("User", {"email": email}):
+                return Result.bad_request("User already exists with this email")
             user = frappe.new_doc("User")
             user.first_name = full_name
             formatted_dob = datetime.strptime(dob, "%Y-%m-%d").date()
@@ -29,7 +31,7 @@ class UserManager:
             user.gender = gender
             user.bio=bio
             user.mobile_no = mobile_no
-            user.email=mobile_no+"@samaaja.com"
+            user.email = email
             user.new_password = password
             user.flags.no_welcome_mail = True
             user.send_welcome_email = 0
@@ -87,18 +89,16 @@ class UserManager:
 
             if not user:
                 return Result.not_found("User not found")
-
+            action_hours = ActionManager.calculate_hours_invested(user.name)
             user_metadata = frappe.db.get_value(
                 "User Metadata",
                 {"user": user_email},
                 [
-                    "action_count",
                     "last_action",
                     "last_action_date",
                     "last_action_type",
                     "last_action_category",
-                    "user_category",
-                    "hours_invested"
+                    "user_category"
                 ],
                 as_dict=True
             )
@@ -114,7 +114,7 @@ class UserManager:
                 result = {**user, **user_metadata}
             else:
                 result = user
-            
+            result["hours_invested"] = ActionManager.calculate_hours_invested(user.name)
             if user["interest"]:
                 interest_array = user["interest"].split(",")
                 interests = []
@@ -135,8 +135,13 @@ class UserManager:
                 }
                 )
             result["posts"] = community_count
-            
-
+            action_count = frappe.db.count(
+                "Action",
+                filters={
+                    "user": user_email
+                }
+            )
+            result["action_count"] = action_count
             badges = frappe.get_list(
                 "User Badge",
                 filters={
